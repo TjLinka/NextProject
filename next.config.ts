@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "image.radargp.com",
+        // hostname: "image.grandchef.info",
+
       },
     ],
   },

@@ -25,7 +25,7 @@ export default function RootLayout({
         <SideMenu />
         <div className="grow flex flex-col">
           <Header />
-          <div className="px-7 pt-14 grow">
+          <div className="px-7 pt-7 grow">
             <Providers>{children}</Providers>
           </div>
         </div>

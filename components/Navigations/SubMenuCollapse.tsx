@@ -13,15 +13,21 @@ export const SubMenuCollapse = ({
   title: string;
 }) => {
   const menuOpen = useSideMenu((state) => state.menuOpen);
+  const menuOpenHandler = useSideMenu((state) => state.setMenuOpen)
   const [subMenuOpen, setSubMenuOpen] = useState<boolean>(false);
-
+  const handleSubMenuOpen = () => {
+    if (!menuOpen) {
+      menuOpenHandler()
+      setSubMenuOpen(true)
+    } else {
+      setSubMenuOpen(!subMenuOpen)
+    }
+  }
   return (
     <div className="cursor-pointer">
       <div
         className="flex justify-between items-center hover:bg-[#bf94ff59] py-1 px-2 rounded"
-        onClick={() => {
-          setSubMenuOpen(!subMenuOpen);
-        }}
+        onClick={handleSubMenuOpen}
       >
         <div className="flex gap-4">
           <img src="/icons/BagShopping.svg" alt="" className="w-7 h-7" />

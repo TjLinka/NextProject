@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { login, password } = await req.json();
-
+  
   const backendRes = await LoginHandler(login, password);
 
   const cookieStore = await cookies();
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   const res = NextResponse.json(resJson, {
     status: backendRes.status,
   });
-
+  
   // пробрасываем Set-Cookie (ВАЖНО: вручную)
   const setCookie = backendRes.headers.get("set-cookie");
 

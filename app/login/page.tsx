@@ -1,9 +1,11 @@
 "use client";
+import { useAgentStore } from "@/store/agentStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
 
+  const setUserInfo = useAgentStore((state) => state.setAgentInfo)
   const router = useRouter()
 
   const [login, setLogin] = useState("");
@@ -16,6 +18,10 @@ export default function LoginPage() {
       body: JSON.stringify({ login, password }),
       credentials: 'include'
     });
+    
+    const data = await res.json()
+    setUserInfo(data)
+    
     router.push('/')
   };
 

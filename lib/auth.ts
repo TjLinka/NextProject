@@ -6,10 +6,7 @@ export async function refreshAccessToken(): Promise<string> {
   const cookieStore = cookies();
   const refreshToken = (await cookieStore).get("refreshToken")?.value;
   
-
   if (!refreshToken) redirect("/login");
-
-  
 
   const res = await fetch(
     "https://back.radargp.com/api/partner/Agent/refresh-token",
@@ -50,7 +47,7 @@ export async function serverFetch(
   const accessToken = cookieStore.get("access_token")?.value;
 
 
-  const res = await fetch(`https://back.radargp.com${url}`, {
+  const res = await fetch(`${process.env.BACKEND_URL}${url}`, {
     ...options,
     headers: {
       ...options.headers,
@@ -63,13 +60,11 @@ export async function serverFetch(
     cache: "no-store",
   });
   
-  
   if (res.status !== 401) return res;
   
-
   const newToken = await refreshAccessToken();
 
-  const retryRes = await fetch(`https://back.radargp.com${url}`, {
+  const retryRes = await fetch(`${process.env.BACKEND_URL}${url}`, {
     ...options,
     headers: {
       ...options.headers,

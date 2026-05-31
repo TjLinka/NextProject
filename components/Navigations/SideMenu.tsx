@@ -10,26 +10,23 @@ import { Button } from "primereact/button";
 import Image from "next/image";
 
 export const SideMenu = () => {
-  const [menuOpen, setMenuOpen] = useState<boolean>(true);
-
   const setSideMenuStore = useSideMenu((state) => state.setMenuOpen);
+  const sideMenuStatus = useSideMenu((state) => state.menuOpen) 
 
-  const [subMenuOpen, setSubMenuOpen] = useState<boolean>(false);
-
+  // const [sideMenuStatus, setMenuOpen] = useState<boolean>(sideMenuStatus);
   const cartLength = useCartStore((state) => state.cart.length);
 
   const handleMenuOpen = () => {
-    setMenuOpen(!menuOpen);
     setSideMenuStore();
   };
 
   return (
     <div
-      className={`bg-white shrink-0 px-5 ${menuOpen ? "min-w-10 w-75" : "w-21"} shadow-md transition-[width] ease-in-out duration-300 overflow-hidden h-screen sticky top-0`}
+      className={`bg-white shrink-0 px-5 ${sideMenuStatus ? "min-w-10 w-75" : "w-21"} shadow-md transition-[width] ease-in-out duration-300 overflow-hidden h-screen sticky top-0`}
     >
       <div className={`py-5 flex justify-between items-center`}>
         <div
-          className={`flex text-2xl gap-2 items-center  uppercase text-center transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"}`}
+          className={`flex text-2xl gap-2 items-center  uppercase text-center transition-opacity duration-200 ${sideMenuStatus ? "opacity-100" : "opacity-0"}`}
         >
           <Image
             src={`/imgs/logo_hippo_menu.svg`}
@@ -44,7 +41,7 @@ export const SideMenu = () => {
           </div>
         </div>
         <div
-          className={`w-6 h-6 ${menuOpen ? "rotate-0" : "rotate-180"} cursor-pointer absolute right-7 transition-[rotate] duration-300`}
+          className={`w-6 h-6 ${sideMenuStatus ? "rotate-0" : "rotate-180"} cursor-pointer absolute right-7 transition-[rotate] duration-300`}
           onClick={handleMenuOpen}
         >
           <img src="/icons/MenuCollapse.svg" alt="" className="w-full h-full" />
@@ -67,12 +64,12 @@ export const SideMenu = () => {
         <li>
           <SubMenuCollapse title="Магазин">
             <SubMenuLink
-              url="/shop/catalog"
+              url="/catalog"
               icon_name="ShoppingCatalog"
               title="Каталог"
             />
             <SubMenuLink
-              url="/shop/order-history"
+              url="/order-history"
               icon_name="BaselineHistory"
               title="История заказов"
             />
@@ -95,7 +92,7 @@ export const SideMenu = () => {
             <div className="flex gap-4">
               <div className="relative w-7 h-7">
                 <img src="/icons/Cart.svg" alt="" className="w-7 h-7" />
-                {cartLength > 0 && !menuOpen && (
+                {cartLength > 0 && !sideMenuStatus && (
                   <span
                     className={`bg-[#bf94ff] rounded-full text-white flex absolute top-0 -right-2 justify-center items-center w-4 h-4 text-sm`}
                   >
@@ -104,7 +101,7 @@ export const SideMenu = () => {
                 )}
               </div>
               <span
-                className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg`}
+                className={`transition-opacity duration-200 ${sideMenuStatus ? "opacity-100" : "opacity-0"} text-lg`}
               >
                 Корзина
               </span>

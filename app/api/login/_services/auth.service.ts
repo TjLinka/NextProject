@@ -9,5 +9,6 @@ export default async function LoginHandler(login: string, password: string) {
       password,
     }),
   });
+  
   return response;
 }
