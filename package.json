@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@siberiacancode/reactuse": "^0.3.29",
+    "animate.css": "^4.1.1",
+    "animejs": "^4.4.1",
     "clsx": "^2.1.1",
     "moment": "^2.30.1",
+    "motion": "^12.40.0",
     "next": "16.2.6",
     "primeicons": "^7.0.0",
     "primelocale": "^2.3.2",
