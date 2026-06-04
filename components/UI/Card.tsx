@@ -3,12 +3,14 @@ import clsx from "clsx";
 export const Card = ({
   children,
   className,
+  contentClass,
   titleClass,
   title,
   fit = false,
 }: {
   children: React.ReactNode;
   className?: string;
+  contentClass?: string
   titleClass?: string
   title?: string;
   fit?: boolean;
@@ -21,10 +23,16 @@ export const Card = ({
         className,
       )}
     >
-      {title && <p className={clsx(`mb-1 font-semibold ${titleClass}`)}>{title}</p>}
-      <div className={clsx('', {
-        'mt-5' : title
-      })}>{children}</div>
+      {title && (
+        <p className={clsx(`mb-1 font-semibold ${titleClass}`)}>{title}</p>
+      )}
+      <div
+        className={clsx(`${contentClass}`, {
+          "mt-2": title,
+        })}
+      >
+        {children}
+      </div>
     </div>
   );
 };

@@ -3,26 +3,40 @@
 import { useCartStore } from "@/store/cartStore";
 import { useSideMenu } from "@/store/sideMenuStore";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubMenuCollapse } from "./SubMenuCollapse";
 import { SubMenuLink } from "./SideMenuLink";
 import { Button } from "primereact/button";
 import Image from "next/image";
+import { useAgentStore } from "@/store/agentStore";
+import clsx from "clsx";
 
 export const SideMenu = () => {
+  const [mounted, setMounted] = useState(false);
   const setSideMenuStore = useSideMenu((state) => state.setMenuOpen);
-  const sideMenuStatus = useSideMenu((state) => state.menuOpen) 
-
+  const sideMenuStatus = useSideMenu((state) => state.menuOpen);
+  const isAuth = useAgentStore((state) => state.isAuth);
   // const [sideMenuStatus, setMenuOpen] = useState<boolean>(sideMenuStatus);
   const cartLength = useCartStore((state) => state.cart.length);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   const handleMenuOpen = () => {
     setSideMenuStore();
   };
-
+  if (!mounted) return null;
   return (
     <div
-      className={`bg-white shrink-0 px-5 ${sideMenuStatus ? "min-w-10 w-75" : "w-21"} shadow-md transition-[width] ease-in-out duration-300 overflow-hidden h-screen sticky top-0`}
+      className={clsx(
+        `bg-white shrink-0 px-0 ${sideMenuStatus ? "min-w-0 w-75" : "w-21"} shadow-md transition-[width, opacity] opacity-0 ease-in-out duration-500 overflow-hidden h-screen sticky top-0`,
+        {
+          "min-w-10 px-5 opacity-100": isAuth && mounted,
+          "w-0! px-0 opacity-0": !isAuth && mounted,
+        },
+      )}
     >
       <div className={`py-5 flex justify-between items-center`}>
         <div
@@ -50,7 +64,7 @@ export const SideMenu = () => {
       <hr className="border-gray-400 mb-5" />
       <ul className="flex flex-col gap-5">
         <li>
-          <SubMenuLink url="/" icon_name="Home" title="Главная" />
+          <SubMenuLink url="/" icon_name="Home" title="Профиль" />
         </li>
         <li>
           <SubMenuCollapse title="Маркетинг">
@@ -73,6 +87,11 @@ export const SideMenu = () => {
               icon_name="BaselineHistory"
               title="История заказов"
             />
+            <SubMenuLink
+              url="/favorite"
+              icon_name="Favorite"
+              title="Избранное"
+            />
           </SubMenuCollapse>
         </li>
         <li>
@@ -84,37 +103,6 @@ export const SideMenu = () => {
             />
           </SubMenuCollapse>
         </li>
-        {/* <li>
-          <Link
-            href={`/shop/cart`}
-            className={`whitespace-nowrap flex justify-between items-center gap-4`}
-          >
-            <div className="flex gap-4">
-              <div className="relative w-7 h-7">
-                <img src="/icons/Cart.svg" alt="" className="w-7 h-7" />
-                {cartLength > 0 && !sideMenuStatus && (
-                  <span
-                    className={`bg-[#bf94ff] rounded-full text-white flex absolute top-0 -right-2 justify-center items-center w-4 h-4 text-sm`}
-                  >
-                    {cartLength}
-                  </span>
-                )}
-              </div>
-              <span
-                className={`transition-opacity duration-200 ${sideMenuStatus ? "opacity-100" : "opacity-0"} text-lg`}
-              >
-                Корзина
-              </span>
-            </div>
-            {cartLength > 0 && (
-              <span
-                className={`bg-[#bf94ff] rounded-full text-white flex justify-center items-center w-5 h-5 text-sm`}
-              >
-                {cartLength}
-              </span>
-            )}
-          </Link>
-        </li> */}
       </ul>
     </div>
   );

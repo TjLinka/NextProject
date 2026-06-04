@@ -6,6 +6,8 @@ interface CartState {
   cart: Product[];
   addToCart: (p: Product) => void;
   removeFromCart: (p: string | number) => void;
+  incrCount: (id: number) => void;
+  decrCount: (id: number) => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -15,9 +17,11 @@ export const useCartStore = create<CartState>()(
 
       addToCart: (p) =>
         set((state) => {
-            if (state.cart.find((prod) => prod.id === p.id)) return {
-                cart: state.cart
-            }
+          if (state.cart.find((prod) => prod.id === p.id))
+            return {
+              cart: state.cart,
+            };
+          p.count = 1;
           return {
             cart: [...state.cart, p],
           };
@@ -25,6 +29,22 @@ export const useCartStore = create<CartState>()(
       removeFromCart: (id) =>
         set((state) => ({
           cart: state.cart.filter((prod) => prod.id !== id),
+        })),
+      incrCount: (id) =>
+        set((state) => ({
+          cart: state.cart.map((product) =>
+            product.id === id
+              ? { ...product, count: product.count + 1 }
+              : product,
+          ),
+        })),
+      decrCount: (id) =>
+        set((state) => ({
+          cart: state.cart.map((product) =>
+            product.id === id && product.count > 1
+              ? { ...product, count: product.count - 1 }
+              : product,
+          ),
         })),
     }),
     {

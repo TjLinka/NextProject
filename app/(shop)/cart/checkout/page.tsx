@@ -63,7 +63,7 @@ export default function CartCheckoutPage() {
       .then((result) => {
         // console.log(result.suggestions.map((address) => address.value));
         
-        setItems(result.suggestions.map((address) => address.value));
+        setItems(result.suggestions.map((address : any) => address.value));
       })
       .catch((error) => console.log("error", error));
   };
@@ -78,9 +78,9 @@ export default function CartCheckoutPage() {
           <p className="font-semibold">Ф.И.О.</p>
           <InputText
             value={userInfo?.fullname}
-            onInput={(e) => {
-              setUserInfo({ ...userInfo, fullname: e.value });
-            }}
+            // onInput={(e) => {
+            //   setUserInfo({ ...userInfo, fullname: e.value });
+            // }}
             className="w-full"
           />
         </div>
@@ -88,9 +88,9 @@ export default function CartCheckoutPage() {
           <p className="font-semibold">Телефон</p>
           <InputText
             value={userInfo?.mobile_phone}
-            onInput={(e) => {
-              setUserInfo({ ...userInfo, mobile_phone: e.value });
-            }}
+            // onInput={(e) => {
+            //   setUserInfo({ ...userInfo, mobile_phone: e.value });
+            // }}
             className="w-full"
           />
         </div>
@@ -98,9 +98,9 @@ export default function CartCheckoutPage() {
           <p className="font-semibold">E-mail (необязательно)</p>
           <InputText
             value={userInfo?.email}
-            onInput={(e) => {
-              setUserInfo({ ...userInfo, email: e.value });
-            }}
+            // onInput={(e) => {
+            //   setUserInfo({ ...userInfo, email: e.value });
+            // }}
             className="w-full"
           />
         </div>

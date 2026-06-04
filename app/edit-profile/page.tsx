@@ -3,5 +3,5 @@ import { EditProfileClient } from "./components/EditProfileClient";
 
 export default async function EditProfile() {
     const data = await getUser()
-    return <EditProfileClient data={data}/>
+    return <EditProfileClient data={data.agentInfo} socials={data.socialsInfo}/>
 }

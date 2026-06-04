@@ -7,7 +7,6 @@ export const getStructureTreeData = async () => {
     agentid: "105",
     level_agent: "105",
   });
-  console.log(params);
   
   const res = await serverFetch(
     `/api/partner/Structure/get-agent-structure?${params}`,

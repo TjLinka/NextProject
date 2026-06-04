@@ -13,7 +13,6 @@ export async function middleware(request: NextRequest) {
     !refreshToken &&
     request.nextUrl.pathname !== "/api/login"
   ) {
-    console.log(111);
     
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -104,5 +103,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!login|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ['/((?!login|_next/static|_next/image|favicon.ico|.*\\.(?:jpg|jpeg|gif|png|svg|webp|ico|css|js|woff|woff2|ttf)).*)'],
 };

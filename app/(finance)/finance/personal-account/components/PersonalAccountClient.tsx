@@ -7,11 +7,15 @@ import { Dialog } from "primereact/dialog";
 import { Column } from "primereact/column";
 import { localInt } from "@/lib/utils";
 import moment from "moment";
+import { Calendar } from "primereact/calendar";
 import { Card } from "@/components/UI/Card";
 import { Button } from "@/components/UI/Button";
+import { Nullable } from "primereact/ts-helpers";
 import { TransferMoneyBetweenUsersModal } from "./modals/TransferMoneyBetweenUsers";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getPersonalAccountHistory } from "@/lib/actions";
 
-export const PersonalAccoutClient = ({ data }: { data: [] }) => {
+export const PersonalAccoutClient = () => {
   const tableColumns = [
     {
       f: "dte",
@@ -23,7 +27,7 @@ export const PersonalAccoutClient = ({ data }: { data: [] }) => {
     {
       f: "income",
       h: "Поступление",
-      formatter: (row: any) => {
+      formatter: (row: { income: number }) => {
         return (
           <div className="text-green-500 font-semibold">
             {row.income !== 0 && localInt(row.income)}
@@ -34,7 +38,7 @@ export const PersonalAccoutClient = ({ data }: { data: [] }) => {
     {
       f: "outcome",
       h: "Списание",
-      formatter: (row: any) => {
+      formatter: (row: { outcome: number }) => {
         return (
           <div className="text-red-500 font-semibold">
             {row.outcome !== 0 && localInt(row.outcome)}
@@ -57,24 +61,84 @@ export const PersonalAccoutClient = ({ data }: { data: [] }) => {
       },
     },
   ];
+  const [dates, setDates] = useState<Nullable<(Date | null)[]>>([]);
   const [visible, setVisible] = useState<boolean>(false);
-  const [tableData, setTableData] = useState(data);
+
+  const { data } = useQuery({
+    queryKey: ["personal_acc"],
+    queryFn: async () => {
+      if (dates) {
+        return await getPersonalAccountHistory({
+          from: dates[0],
+          to: dates[1],
+        });
+      } else {
+        return await getPersonalAccountHistory({ from: null, to: null });
+      }
+    },
+  });
+
+  const qc = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: getPersonalAccountHistory,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["personal_acc"] });
+    },
+  });
 
   const totals = useMemo(() => {
     return {
-      incomes: localInt(tableData.reduce((acc, row) => acc + row.income, 0)),
-      outcome: localInt(tableData.reduce((acc, row) => acc + row.outcome, 0)),
+      incomes: localInt(
+        data.reduce(
+          (acc: number, row: { income: number }) => acc + row.income,
+          0,
+        ),
+      ),
+      outcome: localInt(
+        data.reduce(
+          (acc: number, row: { outcome: number }) => acc + row.outcome,
+          0,
+        ),
+      ),
       rest: localInt(
-        tableData.reduce((acc, row) => acc + Number(row.income), 0) -
-          tableData.reduce((acc, row) => acc + Number(row.outcome), 0),
+        data.reduce(
+          (acc: number, row: { income: number }) => acc + Number(row.income),
+          0,
+        ) -
+          data.reduce(
+            (acc: number, row: { outcome: number }) =>
+              acc + Number(row.outcome),
+            0,
+          ),
       ),
     };
-  }, [tableData]);
-
+  }, [data]);
+  const handleRangeSelect = async () => {
+    if (dates) {
+      console.log(dates[0], 222);
+      mutation.mutate({
+        from: moment(dates[0]).format("YYYY-MM-DD"),
+        to: moment(dates[1]).format("YYYY-MM-DD"),
+      });
+    }
+  };
   return (
     <>
-      <div className="flex justify-between items-center">
-        <Card fit>1</Card>
+      <div className="flex justify-between items-end">
+        <Card fit title="Диапозон">
+          <Calendar
+            value={dates}
+            onChange={(e) => setDates(e.value)}
+            locale="ru"
+            onHide={handleRangeSelect}
+            numberOfMonths={2}
+            placeholder="Укажите диапазон от и до"
+            selectionMode="range"
+            readOnlyInput
+            hideOnRangeSelection
+          />
+        </Card>
         <div className="flex gap-4">
           <Button onClick={() => setVisible(true)}>
             Перевести средства между партнёрами
@@ -83,11 +147,12 @@ export const PersonalAccoutClient = ({ data }: { data: [] }) => {
           <Button>Вывод средств</Button>
         </div>
       </div>
-      <Card>
+      <Card className="mt-5">
         <DataTable
           scrollHeight="60vh"
           scrollable
-          value={tableData}
+          stripedRows
+          value={data}
           tableStyle={{ minWidth: "50rem" }}
           size="small"
         >

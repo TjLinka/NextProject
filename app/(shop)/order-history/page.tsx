@@ -9,6 +9,7 @@ import { getOrders } from "./actions";
 import { localInt } from "@/lib/utils";
 import moment from "moment";
 import { Card } from "@/components/UI/Card";
+import Link from "next/link";
 
 export default function BasicDemo() {
   const [orders, setOrders] = useState([]);
@@ -17,6 +18,16 @@ export default function BasicDemo() {
     {
       f: "id",
       h: "ID",
+      formatter: (row: any) => {
+        return (
+          <Link
+            href={`/order-history/order/${row.id}`}
+            className="text-(--main-text) hover:underline"
+          >
+            {row.id}
+          </Link>
+        );
+      },
     },
     {
       f: "price_total",
@@ -28,6 +39,9 @@ export default function BasicDemo() {
     {
       f: "status",
       h: "Статус",
+      formatter: (row: any) => {
+        return <span className="capitalize">{row.status}</span>;
+      },
     },
     {
       f: "dte",
@@ -51,7 +65,6 @@ export default function BasicDemo() {
       const data = await getOrders(dates);
       setOrders(data);
     }
-    
   };
 
   return (
@@ -72,12 +85,15 @@ export default function BasicDemo() {
       <Card className="mt-4">
         <DataTable
           value={orders}
+          stripedRows
+          scrollHeight="60vh"
           tableStyle={{ minWidth: "50rem" }}
           size="small"
         >
           {columns.map((c) => {
             return (
               <Column
+                sortable
                 field={c.f}
                 header={c.h}
                 key={c.f}

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Link from "next/link";
 
 interface CaptionProps {
   title: string;
@@ -7,6 +8,7 @@ interface CaptionProps {
   socials?: boolean;
   linkUrl?: string;
   inline?: boolean;
+  className?: string
 }
 
 export const Caption = ({
@@ -16,6 +18,7 @@ export const Caption = ({
   linkUrl,
   inline,
   socials,
+  className,
 }: CaptionProps) => {
   let captionContent;
 
@@ -28,18 +31,18 @@ export const Caption = ({
         {text}
       </a>
     );
-  } else if (link) {
+  } else if (link && linkUrl) {
     captionContent = (
-      <a href={linkUrl} className="hover:underline text-(--main-text)">
+      <Link href={linkUrl} className="hover:underline text-(--main-text)">
         {text}
-      </a>
+      </Link>
     );
   } else {
-    captionContent = <span className="font-semibold">{text}</span>
+    captionContent = <span className="font-semibold">{text}</span>;
   }
   return (
     <div
-      className={clsx("", {
+      className={clsx(`${className}`, {
         "flex gap-2": inline,
       })}
     >

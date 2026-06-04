@@ -1,4 +1,3 @@
-
 import { SideMenu } from "@/components/Navigations/SideMenu";
 import "./globals.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
@@ -6,9 +5,11 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "animate.css";
 
-import { Raleway } from "next/font/google";
-import Providers from "./providers";
+import { Providers, ProvidersTanStack } from "./providers";
 import { Header } from "@/components/Navigations/Header";
+import { Dialog } from "primereact/dialog";
+import { ClientWrapper } from "@/components/clientProvider";
+import { Raleway } from "next/font/google";
 
 const inter = Raleway({
   subsets: ["latin"],
@@ -27,10 +28,16 @@ export default function RootLayout({
         style={{ fontVariantNumeric: "lining-nums" }}
       >
         <SideMenu />
-        <div className="grow flex flex-col">
+        <div className="grow flex flex-col min-w-0">
           <Header />
-          <div className="px-7 pt-7 grow">
-            <Providers>{children}</Providers>
+          <div className="px-7 pt-7 grow container mx-auto">
+            <ProvidersTanStack>
+              <Providers>
+                <ClientWrapper>
+                  <div>{children}</div>
+                </ClientWrapper>
+              </Providers>
+            </ProvidersTanStack>
           </div>
         </div>
       </body>
