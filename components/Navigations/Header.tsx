@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useAgentStore } from "@/store/agentStore";
 import clsx from "clsx";
@@ -13,7 +14,7 @@ import { useModalAndNotify } from "@/store/modalAndNotify";
 export const Header = () => {
 
 
-  const openSuppModal = useModalAndNotify((state) => state.openSupportModal);
+  const openSuppModal = useModalAndNotify((state: any) => state.openSupportModal);
 
 
   const router = useRouter()

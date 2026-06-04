@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useModalAndNotify } from "@/store/modalAndNotify";
@@ -7,10 +8,10 @@ import { SupportModal } from "./Modals/SupportModal";
 export function ClientWrapper({ children }: { children: React.ReactNode }) {
 
   const isSuppModalOpen = useModalAndNotify(
-    (state) => state.isSupportModalOpen,
+    (state : any) => state.isSupportModalOpen,
   );
   const closeSupportModal = useModalAndNotify(
-    (state) => state.closeSupportModal,
+    (state: any) => state.closeSupportModal,
   );
 
   return (

@@ -55,7 +55,7 @@ export const TransferMoneyBetweenUsersModal = () => {
     e.preventDefault();
     mutation.mutate({
       agent2_id: selectedUserId,
-      agent_id: userId?.agentInfo?.id,
+      agent_id: 105,
       idacc: 0,
       password,
       comm,

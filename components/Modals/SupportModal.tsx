@@ -4,12 +4,17 @@ import { Dropdown } from "primereact/dropdown";
 import { createDialog } from "@/lib/actions";
 import { Skeleton } from "primereact/skeleton";
 
+type Chat = {
+    id: number | string
+    title: string
+}
+
 export const SupportModal = () => {
   const [chatTitles, setChatTitles] = useState([]);
   const [selectedTitleName, setSelectedTitleNames] = useState<string | null>(
     null,
   );
-  const [dialogsList, setDialogsList] = useState([]);
+  const [dialogsList, setDialogsList] = useState<Chat[]>([]);
   const [isChatAddOpen, setIsChatAddOpen] = useState<boolean>(false);
 
   useEffect(() => {

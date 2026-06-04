@@ -64,7 +64,7 @@ export const PersonalAccoutClient = () => {
   const [dates, setDates] = useState<Nullable<(Date | null)[]>>([]);
   const [visible, setVisible] = useState<boolean>(false);
 
-  const { data } = useQuery({
+  const { data = []} = useQuery({
     queryKey: ["personal_acc"],
     queryFn: async () => {
       if (dates) {
