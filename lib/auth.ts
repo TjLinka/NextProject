@@ -17,7 +17,7 @@ export async function refreshAccessToken(): Promise<string> {
         "Content-Type": "application/json",
         Authorization: `Bearer ${refreshToken}`,
         access_token: `Bearer ${refreshToken}`,
-        Cookie: (await cookieStore).toString()
+        Cookie: (await cookieStore).toString(),
       },
       credentials: "include",
       cache: "no-store",
@@ -60,6 +60,9 @@ export async function serverFetch(
     cache: "no-store",
   });
   
+  console.log(res);
+  
+
   if (res.status !== 401) return res;
   
   const newToken = await refreshAccessToken();

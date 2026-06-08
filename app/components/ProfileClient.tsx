@@ -5,6 +5,7 @@ import { Caption } from "@/components/UI/Caption";
 import { Card } from "@/components/UI/Card";
 import { localInt } from "@/lib/utils";
 import { User } from "@/types/user/types";
+import { useCopyToClipboard } from "@reactuses/core";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -29,29 +30,32 @@ export default function ProfileClient({
   agentInfo: User;
   sponsorInfo: User;
   agentBalance: balanceInfo[];
-  socialsInfo: socialsInfo[];
+  socialsInfo?: socialsInfo[];
 }) {
+  const [text, copy] = useCopyToClipboard();
   return (
     <div>
-      <div className="flex items-center justify-between gap-5">
-        <div className="flex items-center justify-between gap-5">
+      <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
+        <div className="flex items-center md:justify-between gap-5">
           <Image
             alt="User Avatar"
             width={500}
             height={500}
-            src={agentInfo.avatar}
+            src={agentInfo?.avatar}
             className="w-20 rounded-full"
           />
-          <p className="text-2xl font-semibold">{agentInfo.fullname}</p>
+          <p className="md:text-2xl text-xl font-semibold">
+            {agentInfo.fullname}
+          </p>
         </div>
         <Link href={`/edit-profile`} className="col-span-2">
           <Button className="w-full">Редактировать</Button>
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-5 items-start mt-10">
+      <div className="grid xl:grid-cols-2 gap-5 items-start md:mt-10 mt-5">
         <div>
-          <Card title="Личные данные" titleClass="text-xl">
-            <div className="grid grid-cols-2 gap-x-5 gap-y-2">
+          <Card title="Личные данные" titleClass="md:text-xl">
+            <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
               <Caption title="ID" text={agentInfo.id} />
               <Caption title="ФИО" text={agentInfo.fullname} />
               <Caption title="Почта" text={agentInfo.email} />
@@ -63,15 +67,15 @@ export default function ProfileClient({
             titleClass="text-xl"
             className="row-start-2 mt-5"
           >
-            <div className="grid grid-cols-2 gap-x-5 gap-y-2">
+            <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
               <Caption title="Адресс" text={agentInfo.address} />
               <Caption title="Страна" text={agentInfo.country} />
               <Caption title="Город" text={agentInfo.city} />
             </div>
           </Card>
           <Card title="Данные спонсора" titleClass="text-xl" className="mt-5">
-            <div className="grid grid-cols-2 gap-x-5 gap-y-2">
-              <div className="rounded-full col-span-2 shadow-md mb-4 w-20 overflow-hidden border border-gray-300">
+            <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
+              <div className="rounded-full md:col-span-2 shadow-md mb-4 w-20 overflow-hidden border border-gray-300">
                 <Image
                   alt="Sponsor Avatar"
                   width={500}
@@ -109,7 +113,7 @@ export default function ProfileClient({
             titleClass="text-xl"
             className="mt-5"
           >
-            <div className="flex gap-5">
+            <div className="flex md:flex-row flex-col md:gap-5 gap-2">
               <Caption
                 inline={true}
                 title={agentBalance[0]?.name}
@@ -123,6 +127,27 @@ export default function ProfileClient({
                 linkUrl="/finance/personal-account"
                 title={agentBalance[1]?.name}
                 text={localInt(agentBalance[1]?.summ)}
+              />
+            </div>
+          </Card>
+          <Card
+            title="Реферальные ссылки"
+            titleClass="text-xl"
+            className="mt-5"
+          >
+            <div className="flex md:gap-5 gap-2 items-center w-fit">
+              <p className=" leading-[100%] text-gray-500 truncate text-sm">
+                http://localhost:3000/registration/000068
+              </p>
+              <Image
+                onClick={() =>
+                  copy("http://localhost:3000/registration/000068")
+                }
+                alt="Copy Icon"
+                src={"/icons/CopyIcon.svg"}
+                width={100}
+                height={100}
+                className="md:w-5.5 w-5 md:h-5.5 h-5 cursor-pointer"
               />
             </div>
           </Card>

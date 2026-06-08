@@ -3,6 +3,7 @@ import { serverFetch } from "@/lib/auth";
 import { transferMoneyBetweenUserRequest } from "@/requsetModel/types";
 import moment from "moment";
 import { Nullable } from "primereact/ts-helpers";
+// import { testConnection } from "./firebird";
 
 export async function getUser() {
   const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
@@ -70,24 +71,41 @@ export const getPersonalAccountHistory = async ({
   return data;
 };
 
-export const createDialog = async ({
-  name,
-  title,
-  sender,
-  reciever,
-}: {
-  name: string | null;
-  title: string | null;
-  sender: number;
-  reciever: number;
-}) => {
-  await serverFetch("/api/partner/Dialogs/update", {
+// export const createDialog = async ({
+//   name,
+//   title,
+//   sender,
+//   reciever,
+// }: {
+//   name: string | null;
+//   title: string | null;
+//   sender: number;
+//   reciever: number;
+// }) => {
+//   await serverFetch("/api/partner/Dialogs/update", {
+//     method: "POST",
+//     body: JSON.stringify({
+//       name,
+//       title,
+//       sender,
+//       reciever,
+//     }),
+//   });
+// };
+
+export const getBinarId = async () => {
+  const res = await serverFetch("/api/partner/Binar/get-binar-id");
+  return await res.json();
+};
+export const getBinarInfo = async (id: string | number) => {
+  const res = await serverFetch(`/api/partner/Binar/get-binar-info/${id}`);
+  return await res.json();
+};
+export const getBinar = async (id_ins: string | number) => {
+  const res = await serverFetch(`/api/partner/Binar/get-binar`, {
     method: "POST",
-    body: JSON.stringify({
-      name,
-      title,
-      sender,
-      reciever,
-    })
+    body: JSON.stringify({ id_ins }),
   });
+
+  return await res.json();
 };

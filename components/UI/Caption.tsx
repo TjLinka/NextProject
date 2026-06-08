@@ -8,7 +8,7 @@ interface CaptionProps {
   socials?: boolean;
   linkUrl?: string;
   inline?: boolean;
-  className?: string
+  className?: string;
 }
 
 export const Caption = ({
@@ -26,19 +26,24 @@ export const Caption = ({
     captionContent = (
       <a
         href={`${linkUrl}${text}`}
-        className="hover:underline text-(--main-text)"
+        className="hover:underline text-(--main-text) md:text-[16px] text-sm"
       >
         {text}
       </a>
     );
   } else if (link && linkUrl) {
     captionContent = (
-      <Link href={linkUrl} className="hover:underline text-(--main-text)">
+      <Link
+        href={linkUrl}
+        className="hover:underline text-(--main-text) md:text-[16px] text-sm"
+      >
         {text}
       </Link>
     );
   } else {
-    captionContent = <span className="font-semibold">{text}</span>;
+    captionContent = (
+      <span className="font-semibold md:text-[16px] text-sm">{text}</span>
+    );
   }
   return (
     <div
@@ -46,7 +51,7 @@ export const Caption = ({
         "flex gap-2": inline,
       })}
     >
-      <p className="text-gray-500">{title}:</p>
+      <p className="text-gray-500 md:text-[16px] text-sm">{title}:</p>
       {captionContent}
     </div>
   );

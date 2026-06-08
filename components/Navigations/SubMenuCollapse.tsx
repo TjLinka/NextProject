@@ -8,7 +8,9 @@ import { useState } from "react";
 export const SubMenuCollapse = ({
   children,
   title,
+  icon
 }: {
+  icon: string
   children: React.ReactNode;
   title: string;
 }) => {
@@ -30,7 +32,7 @@ export const SubMenuCollapse = ({
         onClick={handleSubMenuOpen}
       >
         <div className="flex gap-4">
-          <img src="/icons/BagShopping.svg" alt="" className="w-7 h-7" />
+          <img src={`/icons/${icon}.svg`} alt="" className="w-7 h-7" />
           <span
             className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg`}
           >
@@ -41,9 +43,9 @@ export const SubMenuCollapse = ({
           src="/icons/Arrow.svg"
           alt="arrow icon"
           className={clsx(
-            "w-4 h-4 rotate-180 transition-[rotate] duration-200",
+            "w-4 h-4 rotate-180 transition-[rotate, opacity] duration-200 ease-in-out opacity-100",
             {
-              "rotate-0!": subMenuOpen && menuOpen,
+              "rotate-0! opacity-0": subMenuOpen && menuOpen,
             },
           )}
         />

@@ -7,6 +7,7 @@ body {
 :root {
   --main-color: #9a56ff;
   --main-text: #9a56ff;
+  --body-color: #8080801c;
 }
 /* ANIMATIONS */
 .loader {
@@ -156,6 +157,15 @@ body {
   background: var(--main-color) !important;
   border-color: var(--main-color) !important;
 }
+.p-button .p-button-label {
+  color: white !important;
+}
+.p-dialog .p-dialog-footer {
+  display: flex;
+}
+.p-dialog.p-confirm-dialog .p-confirm-dialog-message {
+  margin-left: 0 !important;
+}
 /* .p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:hover) .p-radiobutton-box{
   border-color: var(--main-color) !important;
 } */
@@ -174,4 +184,61 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #b889ff;
+}
+
+.p-datatable-emptymessage > * {
+  text-align: center;
+}
+/* BINARY TREE STYLES */
+.svg-chart-container {
+  width: 100%;
+  /* height: 70vh; */
+}
+
+.svg-chart-container .link {
+  stroke: var(--main-color);
+}
+
+.addUser {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  /* margin-left: 13px; */
+}
+
+.addUserImg {
+  /* width: 50px; */
+  /* height: 50px; */
+  display: flex;
+  align-items: center;
+}
+
+.addUserImg img {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.load_more_node_btn {
+  font-size: 30px;
+  font-weight: bold;
+  /* position: relative; */
+  /* position: absolute; */
+  /* bottom: 0; */
+  margin-top: -8px;
+  width: 100%;
+  color: black;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+/* MEDIA */
+@media screen and (max-width: 700px) {
+  .p-inputtext{
+    /* height: 40px !important; */
+    /* padding-top: 0; */
+    /* padding-bottom: 0; */
+  }
 }

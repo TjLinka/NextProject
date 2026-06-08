@@ -1,4 +1,4 @@
-import { Product } from "@/app/(shop)/catalog/types";
+import { Product } from "@/app/(protected)/(shop)/catalog/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -8,6 +8,7 @@ interface CartState {
   removeFromCart: (p: string | number) => void;
   incrCount: (id: number) => void;
   decrCount: (id: number) => void;
+  clearCart: () => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -45,6 +46,10 @@ export const useCartStore = create<CartState>()(
               ? { ...product, count: product.count - 1 }
               : product,
           ),
+        })),
+      clearCart: () =>
+        set(() => ({
+          cart: [],
         })),
     }),
     {

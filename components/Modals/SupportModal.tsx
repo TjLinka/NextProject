@@ -1,54 +1,128 @@
 import { useEffect, useState } from "react";
 import { Button } from "../UI/Button";
+import * as motion from "motion/react-client";
 import { Dropdown } from "primereact/dropdown";
-import { createDialog } from "@/lib/actions";
 import { Skeleton } from "primereact/skeleton";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createDialog,
+  createMessage,
+  getDialogMessages,
+  getDialogs,
+} from "@/dbQuery/dbQuerys";
+import clsx from "clsx";
+import { useAgentStore } from "@/store/agentStore";
+import Image from "next/image";
 
-type Chat = {
-    id: number | string
-    title: string
-}
+export type Chat = {
+  id: number | string | null;
+  title: string;
+};
 
 export const SupportModal = () => {
-  const [chatTitles, setChatTitles] = useState([]);
   const [selectedTitleName, setSelectedTitleNames] = useState<string | null>(
     null,
   );
-  const [dialogsList, setDialogsList] = useState<Chat[]>([]);
   const [isChatAddOpen, setIsChatAddOpen] = useState<boolean>(false);
+  const [selectedDialog, setselectedDialog] = useState<number | string | null>(
+    null,
+  );
+  const [newMessage, setNewMessage] = useState<string>("");
+  const user = useAgentStore((state) => state.id);
 
-  useEffect(() => {
-    async function getTtitle() {
+  const qc = useQueryClient();
+
+  const { data: titles = [] } = useQuery({
+    queryKey: ["dialog_titles"],
+    queryFn: async () => {
       const res = await fetch("/api/support/titles");
       const data = await res.json();
-      setChatTitles(data.title_id);
-    }
-    async function getDialogs() {
-      const res = await fetch("/api/support/dialogs", {
-        method: "POST",
-      });
-      const data = await res.json();
-      console.log(data);
+      return data.title_id;
+    },
+  });
+  const { data: dialogs = [], isLoading: loadingDialogs } = useQuery<Chat[]>({
+    queryKey: ["dialogs_list"],
+    queryFn: async () => {
+      const res = await getDialogs();
+      console.log(res);
 
-      setDialogsList(data);
-    }
-    getTtitle();
-    getDialogs();
-  }, []);
+      return res as Chat[];
+    },
+  });
+  const { data: dialogMessages = [] } = useQuery({
+    queryKey: ["dialog_messages", selectedDialog],
+    queryFn: async () => {
+      const res = await getDialogMessages(selectedDialog);
+      console.log(res);
 
-  const handleCreateDialog = async () => {
-    await createDialog({
-      name: selectedTitleName,
-      title: selectedTitleName,
-      sender: 105,
-      reciever: 0,
-    });
-    const res = await fetch("/api/support/titles");
-    const data = await res.json();
-    setChatTitles(data.title_id);
-    setIsChatAddOpen(false);
-  };
-  <Skeleton width="50%" className="mb-2 w-1/2"></Skeleton>;
+      return res as { message_id: number; text: string; sender_name: string }[];
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await createDialog(selectedTitleName, selectedTitleName, 0);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["dialogs_list"] });
+      setIsChatAddOpen(false);
+    },
+  });
+  const mutation2 = useMutation({
+    mutationFn: async () => {
+      await createMessage(newMessage, 9);
+    },
+    onSuccess: () => {
+      setNewMessage("");
+      qc.invalidateQueries({ queryKey: ["dialog_messages"] });
+    },
+    onError: (error) => {
+      const errors = JSON.parse(error.message);
+    },
+  });
+
+  if (selectedDialog) {
+    return (
+      <div className="text-black">
+        <Button onClick={() => setselectedDialog(null)}>Назад</Button>
+        <p className="text-2xl border-b-2 border-(--main-color) w-fit mt-4">
+          Диалог {selectedDialog}
+        </p>
+        <div className="flex flex-col gap-5 mt-5 bg-[#8080801c] rounded-lg p-4 overflow-y-auto h-[30vh] shadow">
+          {dialogMessages.map((m) => {
+            return (
+              <p
+                key={m.message_id}
+                className={clsx("p-4 max-w-1/2 bg-white rounded-lg shadow", {
+                  "self-end": m.sender_id !== user,
+                  "self-start": m.sender_id === user,
+                })}
+              >
+                {m.sender_name}
+              </p>
+            );
+          })}
+        </div>
+        <div className="flex gap-2 items-center mt-5">
+          <textarea
+            value={newMessage}
+            className="w-full resize-none rounded-lg h-30 bg-[#8080801c] p-2  outline-none shadow"
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setNewMessage(e.currentTarget.value)
+            }
+          ></textarea>
+          <Image
+            alt="Send Message Icon"
+            src={`/icons/SendMessage.svg`}
+            width={200}
+            height={200}
+            onClick={() => mutation2.mutate()}
+            className="w-20 h-10 cursor-pointer"
+          />
+        </div>
+      </div>
+    );
+  }
   if (!isChatAddOpen) {
     return (
       <div className="text-black">
@@ -56,25 +130,28 @@ export const SupportModal = () => {
           Список диалогов
         </p>
         <div className="flex flex-col gap-2 mt-5">
-          {dialogsList.length <= 0 ? (
+          {loadingDialogs ? (
             <div className="flex flex-col gap-5 ">
               <Skeleton width="100%" className="h-10!"></Skeleton>
               <Skeleton width="100%" className="h-10!"></Skeleton>
               <Skeleton width="100%" className="h-10!"></Skeleton>
             </div>
           ) : (
-            <>
-              {dialogsList.map((t) => {
+            <div className="max-h-[30vh] overflow-y-auto flex flex-col gap-5 p-5">
+              {dialogs.map((t) => {
                 return (
-                  <div
+                  <motion.div
                     key={t.id}
-                    className="p-4 bg-[#8080801c] rounded-lg shadow"
+                    onClick={() => setselectedDialog(t.id)}
+                    whileHover={{ scale: 1.015 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="p-4 bg-[#8080801c] rounded-lg shadow cursor-pointer"
                   >
                     <span className="text-lg font-semibold">{t.title}</span>
-                  </div>
+                  </motion.div>
                 );
               })}
-            </>
+            </div>
           )}
         </div>
         <div className="flex justify-end mt-5">
@@ -92,12 +169,12 @@ export const SupportModal = () => {
           optionValue="text"
           virtualScrollerOptions={{ itemSize: 38 }}
           onChange={(e) => setSelectedTitleNames(e.value)}
-          options={chatTitles}
+          options={titles}
           optionLabel="text"
           placeholder="Выберите тему диалога"
           className="w-2/3 md:w-14rem"
         />
-        <Button className="w-1/3 h-10" onClick={handleCreateDialog}>
+        <Button className="w-1/3 h-10" onClick={() => mutation.mutate()}>
           Создать диалог
         </Button>
       </div>

@@ -8,7 +8,7 @@ export const Card = ({
   title,
   fit = false,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   contentClass?: string
   titleClass?: string
@@ -18,13 +18,13 @@ export const Card = ({
   return (
     <div
       className={clsx(
-        "bg-white p-4 rounded-md shadow",
+        "bg-white md:p-4 p-3 rounded-md shadow",
         fit && "w-fit",
         className,
       )}
     >
       {title && (
-        <p className={clsx(`mb-1 font-semibold ${titleClass}`)}>{title}</p>
+        <p className={clsx(`mb-1 font-semibold text-lg`)}>{title}</p>
       )}
       <div
         className={clsx(`${contentClass}`, {

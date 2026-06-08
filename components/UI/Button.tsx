@@ -1,16 +1,19 @@
 "use client";
+import clsx from "clsx";
 import * as motion from "motion/react-client";
 interface Button {
   children: React.ReactNode;
   loading?: boolean;
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
 export const Button = ({
   children,
   onClick,
   className,
+  disabled,
   loading = false,
 }: Button) => {
   let childrenContent;
@@ -22,8 +25,14 @@ export const Button = ({
 
   return (
     <motion.button
+      disabled={disabled}
       whileTap={{ scale: 0.95 }}
-      className={`${className} bg-(--main-color) text-white text-[16px] h-12 px-4 rounded-md cursor-pointer flex justify-center items-center`}
+      className={clsx(
+        `${className} bg-(--main-color) text-white md:text-[16px] text-sm md:h-10 h-8 md:px-4 px-2 rounded-md cursor-pointer flex justify-center items-center`,
+        {
+          "bg-gray-400! cursor-not-allowed!": disabled,
+        },
+      )}
       onClick={() => {
         if (onClick) onClick();
       }}

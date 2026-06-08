@@ -7,7 +7,6 @@ import "animate.css";
 
 import { Providers, ProvidersTanStack } from "./providers";
 import { Header } from "@/components/Navigations/Header";
-import { Dialog } from "primereact/dialog";
 import { ClientWrapper } from "@/components/clientProvider";
 import { Raleway } from "next/font/google";
 
@@ -16,7 +15,7 @@ const inter = Raleway({
   display: "swap",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -27,14 +26,14 @@ export default function RootLayout({
         className={`${inter.className} min-h-screen flex`}
         style={{ fontVariantNumeric: "lining-nums" }}
       >
-        <SideMenu />
+        <SideMenu/>
         <div className="grow flex flex-col min-w-0">
           <Header />
-          <div className="px-7 pt-7 grow container mx-auto">
+          <div className="md:px-7 px-3 py-7 md:pl-22! grow container mx-auto">
             <ProvidersTanStack>
               <Providers>
                 <ClientWrapper>
-                  <div>{children}</div>
+                  <div className="h-full">{children}</div>
                 </ClientWrapper>
               </Providers>
             </ProvidersTanStack>
