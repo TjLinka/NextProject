@@ -20,8 +20,8 @@ export default async function OrderPage({ params }: PageProps) {
   const { sale, cart = [], delivery } = await getOrderInfo(id);
   return (
     <>
-      <Link href={"/order-history"}>
-        <Button>Назад</Button>
+      <Link href={"/order-history"} className="w-fit block">
+        <Button>Вернуться к заказам</Button>
       </Link>
       <p className="text-3xl font-semibold border-b-2 border-(--main-color) inline-block mt-5">
         Заказ № {id}

@@ -14,10 +14,6 @@ export default async function ShopCatalog({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { find } = await searchParams; // например ?q=nike
-  // const dataBD = await getCatalog()
-  // console.log(dataBD);
-
-  // const data: Product[] = await getShopCatalog();
   const catagoryes = await getShopCategoryes();
 
   const qc = new QueryClient();

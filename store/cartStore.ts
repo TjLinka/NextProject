@@ -4,6 +4,8 @@ import { persist } from "zustand/middleware";
 
 interface CartState {
   cart: Product[];
+  hasHydrated: boolean;
+  setHasHydrated: (value: boolean) => void;
   addToCart: (p: Product) => void;
   removeFromCart: (p: string | number) => void;
   incrCount: (id: number) => void;
@@ -15,17 +17,15 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cart: [],
+      hasHydrated: false,
+      setHasHydrated: (value) => set({ hasHydrated: value }),
 
       addToCart: (p) =>
         set((state) => {
           if (state.cart.find((prod) => prod.id === p.id))
-            return {
-              cart: state.cart,
-            };
+            return { cart: state.cart };
           p.count = 1;
-          return {
-            cart: [...state.cart, p],
-          };
+          return { cart: [...state.cart, p] };
         }),
       removeFromCart: (id) =>
         set((state) => ({
@@ -34,7 +34,7 @@ export const useCartStore = create<CartState>()(
       incrCount: (id) =>
         set((state) => ({
           cart: state.cart.map((product) =>
-            product.id === id
+            product.id === id && !(product.count + 1 > product.webreg)
               ? { ...product, count: product.count + 1 }
               : product,
           ),
@@ -47,13 +47,14 @@ export const useCartStore = create<CartState>()(
               : product,
           ),
         })),
-      clearCart: () =>
-        set(() => ({
-          cart: [],
-        })),
+      clearCart: () => set(() => ({ cart: [] })),
     }),
     {
       name: "cart-storage",
+      partialize: (state) => ({ cart: state.cart }), // ← hasHydrated не пишем в localStorage
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true); // ← после загрузки из localStorage ставим флаг
+      },
     },
   ),
 );

@@ -28,7 +28,7 @@ export const Button = ({
       disabled={disabled}
       whileTap={{ scale: 0.95 }}
       className={clsx(
-        `${className} bg-(--main-color) text-white md:text-[16px] text-sm md:h-10 h-8 md:px-4 px-2 rounded-md cursor-pointer flex justify-center items-center`,
+        `${className} bg-(--main-color) text-white md:text-[16px] text-sm md:h-10 h-8 md:px-4 px-1 rounded-md cursor-pointer flex justify-center items-center`,
         {
           "bg-gray-400! cursor-not-allowed!": disabled,
         },

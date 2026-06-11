@@ -28,7 +28,7 @@ export const SubMenuLink = ({
     <Link
       href={`${url}`}
       onClick={() => {
-        setSideMenuStore();
+        if (width < 700 || menuOpen) setSideMenuStore();
       }}
       className={`whitespace-nowrap flex items-center gap-4 hover:bg-[#bf94ff59] py-1 px-2 rounded ${className}`}
     >

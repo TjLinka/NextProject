@@ -51,7 +51,7 @@ export const Caption = ({
         "flex gap-2": inline,
       })}
     >
-      <p className="text-gray-500 md:text-[16px] text-sm">{title}:</p>
+      <p className="text-gray-500 md:text-[16px] text-sm">{title}</p>
       {captionContent}
     </div>
   );

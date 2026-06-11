@@ -5,10 +5,11 @@ import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const setUserInfo = useAgentStore((state) => state.setAgentInfo);
+  const logout = useAgentStore((state) => state.logout);
   const isAuth = useAgentStore((state) => state.access_token);
   const router = useRouter();
 
@@ -33,6 +34,9 @@ export default function LoginPage() {
     }, 500);
   };
 
+  useEffect(() => {
+    logout();
+  }, []);
   return (
     <div
       className={clsx(

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Image from "next/image";
 
 interface Counter {
@@ -5,11 +6,19 @@ interface Counter {
   decr: (id: number) => void;
   count: string | number;
   id: number;
+  small?: boolean;
 }
-export const Counter = ({ incr, decr, count, id }: Counter) => {
+export const Counter = ({ incr, decr, count, id, small }: Counter) => {
   return (
     <>
-      <div className="flex max-w-34 w-full h-8 rounded-lg border-gray-400 overflow-hidden">
+      <div
+        className={clsx(
+          "flex max-w-34 w-full h-8 rounded-lg border-gray-400 overflow-hidden",
+          {
+            "h-5! max-w-24!": small,
+          },
+        )}
+      >
         <div
           className="grow cursor-pointer flex justify-center items-center bg-(--main-color)"
           onClick={() => {
@@ -24,7 +33,13 @@ export const Counter = ({ incr, decr, count, id }: Counter) => {
             className="w-4 h-4"
           />
         </div>
-        <div className="grow flex min-w-20 justify-center items-center font-semibold text">
+        <div
+          className={clsx(
+            "grow flex min-w-20 justify-center items-center font-semibold text",{
+              'min-w-9!' :small
+            }
+          )}
+        >
           {count} шт.
         </div>
         <div

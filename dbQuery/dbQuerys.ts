@@ -33,7 +33,6 @@ export const getDashboard = async () => {
       },
     };
   });
-  // console.log({...data});
 
   return data;
 };
@@ -42,7 +41,6 @@ export const getBalance = async () => {
   const res = await withDatabase((db) =>
     query(db, "SELECT * FROM SP_GET_AGENT_ACCOUNTS(?)", [agentId]),
   );
-  console.log(res);
 
   return res;
 };
@@ -51,6 +49,7 @@ export const getProfileData = async <T>() => {
   const res = await withDatabase((db) =>
     queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
   );
+  res.avatar = `${process.env.IMG_URL}/Avatars/${agentId}.jpg?salt=${Math.random(0, 999999)}`;
   return res;
 };
 
@@ -97,14 +96,17 @@ export const getCatalog = async (
 export const getPersonalAccountInfo = async (
   from: Date | null = null,
   to: Date | null = null,
+  acc: number | null = 0
 ) => {
+  console.log(acc);
+  
   const agentId = await getIdFromToken();
   const res = await withDatabase((db) =>
     query(db, "SELECT * FROM SP_AGENTPERSACCOUNTFILTERGET(?,?,?,?)", [
       agentId,
       from,
       to,
-      0,
+      acc,
     ]),
   );
   return res;
@@ -118,7 +120,7 @@ export const getSponsorInfo = async <T>() => {
     const res2 = await withDatabase((db) =>
       queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [res1.id_parent]),
     );
-
+    res2.avatar = `${process.env.IMG_URL}/Avatars/${res1.id_parent}.jpg?salt=${Math.random(0, 999999)}`;
     return res2;
   }
 };
@@ -234,7 +236,6 @@ export const createMessage = async (
 // Заказы
 export const getOrdersList = async (from: unknown, to: unknown) => {
   const agentId = await getIdFromToken();
-  console.log(from, to);
 
   return await makeReq("SP_WEBSHOPGETBYAGENTFILTER", [agentId, from, to, null]);
 };
@@ -285,7 +286,6 @@ export const getStructureData = async (
       i_fio: null,
     }),
   ]);
-  console.log(res);
 
   return res;
 };
@@ -310,8 +310,6 @@ export const getWithdrawList = async (
   to = null,
   status: string | number | null = null,
 ) => {
-  console.log(doc_id);
-
   const agentId = await getIdFromToken();
   const res = await makeReq("ACCOUNT_WITHDRAW_GET", [
     agentId,
@@ -321,7 +319,6 @@ export const getWithdrawList = async (
     status,
     0,
   ]);
-  console.log(res);
   return res;
 };
 

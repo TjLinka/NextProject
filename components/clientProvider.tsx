@@ -9,9 +9,9 @@ import { SubMenuLink } from "./Navigations/SideMenuLink";
 import { SubMenuCollapse } from "./Navigations/SubMenuCollapse";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef } from "react";
+import { getFavouritesProducts } from "@/app/(protected)/(shop)/favorite/action";
 
 export function ClientWrapper({ children }: { children: React.ReactNode }) {
-
   const toast = useRef<Toast>(null);
 
   const regToast = useModalAndNotify((state) => state.regToast);
@@ -30,59 +30,11 @@ export function ClientWrapper({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    regToast(toast)
-  })
+    regToast(toast);
+  });
 
   return (
     <>
-      {/* <Sidebar
-        visible={isSideModalMobileOpen}
-        position="left"
-        onHide={closeSideModalMobile}
-      >
-        <ul className="flex flex-col gap-5">
-          <li>
-            <SubMenuLink url="/" icon_name="Home" title="Профиль" />
-          </li>
-          <li>
-            <SubMenuCollapse title="Маркетинг">
-              <SubMenuLink
-                url="/marketing/structure"
-                icon_name="MultipleUsers"
-                title="Маркетинг"
-              />
-            </SubMenuCollapse>
-          </li>
-          <li>
-            <SubMenuCollapse title="Магазин">
-              <SubMenuLink
-                url="/catalog"
-                icon_name="ShoppingCatalog"
-                title="Каталог"
-              />
-              <SubMenuLink
-                url="/order-history"
-                icon_name="BaselineHistory"
-                title="История заказов"
-              />
-              <SubMenuLink
-                url="/favorite"
-                icon_name="Favorite"
-                title="Избранное"
-              />
-            </SubMenuCollapse>
-          </li>
-          <li>
-            <SubMenuCollapse title="Финансы">
-              <SubMenuLink
-                url="/finance/personal-account"
-                icon_name="FinanceManager"
-                title="Лицевой счет"
-              />
-            </SubMenuCollapse>
-          </li>
-        </ul>
-      </Sidebar> */}
       <div className="h-full">{children}</div>
       <Dialog
         header="Поддержка"

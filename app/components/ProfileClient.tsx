@@ -8,6 +8,7 @@ import { User } from "@/types/user/types";
 import { useCopyToClipboard } from "@reactuses/core";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 type socialsInfo = {
   nickname: string;
@@ -21,6 +22,7 @@ type balanceInfo = {
   readonly summ: number;
 };
 
+
 export default function ProfileClient({
   agentInfo,
   sponsorInfo,
@@ -32,17 +34,24 @@ export default function ProfileClient({
   agentBalance: balanceInfo[];
   socialsInfo?: socialsInfo[];
 }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [text, copy] = useCopyToClipboard();
   return (
     <div>
       <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
         <div className="flex items-center md:justify-between gap-5">
+          {!imageLoaded && (
+            <div className="w-20 h-20 rounded-full bg-gray-200 animate-pulse space-x-4 flex justify-center items-center">
+              <span className="loader"></span>
+            </div>
+          )}
           <Image
             alt="User Avatar"
             width={500}
             height={500}
             src={agentInfo?.avatar}
             className="w-20 rounded-full"
+            onLoad={() => setImageLoaded(true)}
           />
           <p className="md:text-2xl text-xl font-semibold">
             {agentInfo.fullname}

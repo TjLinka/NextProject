@@ -6,20 +6,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SubMenuCollapse } from "./SubMenuCollapse";
 import { SubMenuLink } from "./SideMenuLink";
-import { Button } from "primereact/button";
 import Image from "next/image";
 import { useAgentStore } from "@/store/agentStore";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 export const SideMenu = ({ className }: { className?: string }) => {
+  const router = useRouter();
   const logout = useAgentStore((state) => state.logout);
   const [mounted, setMounted] = useState(false);
   const setSideMenuStore = useSideMenu((state) => state.setMenuOpen);
   const closeMenu = useSideMenu((state) => state.closeMenu);
   const sideMenuStatus = useSideMenu((state) => state.menuOpen);
   const isAuth = useAgentStore((state) => state.isAuth);
-  // const [sideMenuStatus, setMenuOpen] = useState<boolean>(sideMenuStatus);
-  const cartLength = useCartStore((state) => state.cart.length);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -112,6 +111,11 @@ export const SideMenu = ({ className }: { className?: string }) => {
               title="Лицевой счет"
             />
             <SubMenuLink
+              url="/finance/bonus-account"
+              icon_name="PiggyBank"
+              title="Товарный счет"
+            />
+            <SubMenuLink
               url="/finance/withdraw"
               icon_name="LowIncomeLevelOutline24px"
               title="История вывода"
@@ -121,11 +125,19 @@ export const SideMenu = ({ className }: { className?: string }) => {
         <li>
           <SubMenuLink url="/news" icon_name="News" title="Новости" />
         </li>
+        <li>
+          <SubMenuLink
+            url="/activity"
+            icon_name="Activity"
+            title="Активность"
+          />
+        </li>
       </ul>
       <div
         onClick={() => {
-          closeMenu()
-          logout()
+          closeMenu();
+          logout();
+          router.push("/login");
         }}
         className={`whitespace-nowrap flex items-center gap-4 hover:bg-[#bf94ff59] py-1 px-2 rounded cursor-pointer`}
       >

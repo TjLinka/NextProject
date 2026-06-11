@@ -6,8 +6,10 @@ import { Button } from "@/components/UI/Button";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import * as motion from "motion/react-client";
+import { Counter } from "@/components/UI/Counter";
+import { useState } from "react";
 
 export const HeaderProductCard = ({
   product,
@@ -16,6 +18,10 @@ export const HeaderProductCard = ({
   product: Product;
   className?: string;
 }) => {
+  const incr = useCartStore((state) => state.incrCount);
+  const decr = useCartStore((state) => state.decrCount);
+
+  const pathname = usePathname()
   const addToCart = useCartStore((state) => state.addToCart);
 
   const removeFromCart = useCartStore((state) => state.removeFromCart);
@@ -31,19 +37,27 @@ export const HeaderProductCard = ({
     else router.push("/cart");
   };
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   return (
-    <div className="flex items-center gap-5  p-4">
+    <div className="flex items-center gap-5 p-4">
       <div className={clsx(`bg-white rounded-xl flex gap-2 ${className}`)}>
         <div className="">
+          {!imageLoaded && (
+            <div className="w-full h-full bg-gray-200 rounded-lg animate-pulse space-x-4 flex justify-center items-center">
+              <span className="loader"></span>
+            </div>
+          )}
           <Image
             src={product.image_url}
             alt="Product Image"
-            width={500}
-            height={550}
-            className="w-40 rounded-xl object-contain"
+            width={300}
+            height={350}
+            className={`w-40 rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+            onLoad={() => setImageLoaded(true)}
           />
         </div>
-        <div className="flex flex-col justify-center gap-5">
+        <div className="flex flex-col justify-center gap-3">
           <Link
             href={`/catalog/product/${product.id}`}
             className="hover:text-(--main-text) leading-[100%]"
@@ -63,6 +77,24 @@ export const HeaderProductCard = ({
               </span>
             </div>
           </div>
+          {!(pathname === "/cart/checkout") ? (
+            <div className="flex flex-col">
+              <Counter
+                small
+                count={product.count}
+                incr={incr}
+                decr={decr}
+                id={Number(product.id)}
+              />
+              {product.count === product.webreg && (
+                <span className="text-red-500 font-medium text-sm">
+                  Макс. количество
+                </span>
+              )}
+            </div>
+          ) : (
+            <span className="font-semibold text-lg">{product.count} шт.</span>
+          )}
         </div>
       </div>
       <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.95 }}>

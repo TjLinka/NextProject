@@ -60,9 +60,6 @@ export async function serverFetch(
     cache: "no-store",
   });
   
-  console.log(res);
-  
-
   if (res.status !== 401) return res;
   
   const newToken = await refreshAccessToken();

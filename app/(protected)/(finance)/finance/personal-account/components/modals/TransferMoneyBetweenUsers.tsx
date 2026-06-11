@@ -32,8 +32,6 @@ export const TransferMoneyBetweenUsersModal = () => {
     },
   });
 
-  console.log(data);
-
   const mutation = useMutation({
     mutationFn: transferMoneyBetweenUser,
     onSuccess: async () => {

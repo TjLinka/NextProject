@@ -44,7 +44,6 @@ export const useAgentStore = create<AgentState>()(
           agentInfo: initialState,
           isAuth: false,
         });
-        redirect("/login");
       },
     }),
     {

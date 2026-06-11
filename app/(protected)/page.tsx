@@ -14,7 +14,6 @@ export default async function Home() {
   const sponsorInfo = await getSponsorInfo<User>();
   const agentBalance = await getBalance();
   const socialsInfo = await getSocials();
-  // console.log(data);
   if (agentInfo && sponsorInfo && agentBalance && socialsInfo) {
     return (
       <div>

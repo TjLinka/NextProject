@@ -16,8 +16,6 @@ export default async function Dashboard() {
   const orderList = (await getOrdersList(null, null)).splice(0, 2);
   const news = (await getNewsList()).splice(0, 2);
 
-  console.log(orderList);
-
   return (
     <div className="grid lg:grid-cols-4 gap-3">
       <Card title="Персональный счет">

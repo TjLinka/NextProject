@@ -32,31 +32,35 @@ export const SupportModal = () => {
 
   const qc = useQueryClient();
 
-  const { data: titles = [] } = useQuery({
-    queryKey: ["dialog_titles"],
-    queryFn: async () => {
-      const res = await fetch("/api/support/titles");
-      const data = await res.json();
-      return data.title_id;
-    },
-  });
+  // const { data: titles = [] } = useQuery({
+  //   queryKey: ["dialog_titles"],
+  //   queryFn: async () => {
+  //     const res = await fetch("/api/support/titles");
+  //     const data = await res.json();
+  //     return data.title_id;
+  //   },
+  //   staleTime: 0,
+  // });
   const { data: dialogs = [], isLoading: loadingDialogs } = useQuery<Chat[]>({
     queryKey: ["dialogs_list"],
     queryFn: async () => {
       const res = await getDialogs();
-      console.log(res);
 
       return res as Chat[];
     },
+    staleTime: 0,
   });
   const { data: dialogMessages = [] } = useQuery({
     queryKey: ["dialog_messages", selectedDialog],
     queryFn: async () => {
-      const res = await getDialogMessages(selectedDialog);
-      console.log(res);
+      const res = await fetch(
+        `/api/dialogs/messages?dialog_id=${selectedDialog}&recieverId=0`,
+      );
+      console.log(await res.json());
 
-      return res as { message_id: number; text: string; sender_name: string }[];
+      // return res as { message_id: number; text: string; sender_name: string }[];
     },
+    staleTime: 0,
   });
 
   const mutation = useMutation({
@@ -129,7 +133,7 @@ export const SupportModal = () => {
         <p className="text-2xl border-b-2 border-(--main-color) w-fit">
           Список диалогов
         </p>
-        <div className="flex flex-col gap-2 mt-5">
+        <div className="flex flex-col gap-2 mt-5 p-2 shadow bg-(--body-color) rounded">
           {loadingDialogs ? (
             <div className="flex flex-col gap-5 ">
               <Skeleton width="100%" className="h-10!"></Skeleton>
@@ -137,17 +141,28 @@ export const SupportModal = () => {
               <Skeleton width="100%" className="h-10!"></Skeleton>
             </div>
           ) : (
-            <div className="max-h-[30vh] overflow-y-auto flex flex-col gap-5 p-5">
+            <div className="max-h-[30vh] overflow-y-auto flex flex-col gap-3 pr-2 py-1">
               {dialogs.map((t) => {
                 return (
                   <motion.div
-                    key={t.id}
                     onClick={() => setselectedDialog(t.id)}
-                    whileHover={{ scale: 1.015 }}
                     whileTap={{ scale: 0.99 }}
-                    className="p-4 bg-[#8080801c] rounded-lg shadow cursor-pointer"
+                    key={t.id}
+                    className="flex justify-between items-center p-3 bg-white rounded-lg shadow cursor-pointer"
                   >
-                    <span className="text-lg font-semibold">{t.title}</span>
+                    <div className="">
+                      <span className="text-lg">{t.title}</span>
+                    </div>
+                    <Image
+                      onClick={(e) => {
+                        e.stopPropagation()
+                      }}
+                      alt="Delete Icon"
+                      src={"/icons/Delete.svg"}
+                      width={200}
+                      height={200}
+                      className="w-7 h-7"
+                    />
                   </motion.div>
                 );
               })}

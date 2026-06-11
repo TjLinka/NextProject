@@ -12,6 +12,9 @@ import { getCatalog } from "@/dbQuery/dbQuerys";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Collapse } from "@/components/UI/Collapse";
+import { Dialog } from "primereact/dialog";
+import { useWindowSize } from "@reactuses/core";
+import { getFavouritesProducts } from "../../favorite/action";
 
 export const ShopCatalogClient = ({
   catagoryes,
@@ -21,36 +24,54 @@ export const ShopCatalogClient = ({
 }) => {
   const searchParams = useSearchParams();
   const search = searchParams.get("find") ?? "";
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchInput, setSearchInput] = useState(search);
   const [showFilter, setShowFilters] = useState<boolean>(false);
+  const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
   const router = useRouter();
+  const [selectedCategories, setSelectedCategories] = useState([catagoryes[1]]);
+
+  const { width, height } = useWindowSize();
 
   const { data } = useQuery<Product[]>({
     queryKey: ["catalog", search, selectedCategory],
-    queryFn: () => getCatalog(search, selectedCategory),
+    queryFn: async () => {
+      return await getCatalog(search, selectedCategory);
+    },
   });
-
-  console.log(catagoryes);
-  
 
   const handleSearch = () => {
     if (searchInput) router.push(`/catalog/?find=${searchInput}`);
     else router.push(`/catalog`);
   };
 
+  const onCategoryChange = (e) => {
+    let _selectedCategories = [...selectedCategories];
+
+    if (e.checked) _selectedCategories.push(e.value);
+    else
+      _selectedCategories = _selectedCategories.filter(
+        (category) => category.key !== e.value.key,
+      );
+
+    setSelectedCategories(_selectedCategories);
+  };
+
   const resetFilters = () => {
     router.push(`/catalog`);
-    setSelectedCategory(null)
-    setSearchInput('')
-  }
+    setSelectedCategory(null);
+    setSearchInput("");
+  };
 
   return (
     <div>
       <div className="grid grid-cols-5 md:gap-5 gap-2 items-stretch">
         <div
           className="flex shrink-0 justify-center items-center text-white gap-2 px-4 rounded-lg cursor-pointer bg-(--main-color)"
-          onClick={() => setShowFilters(!showFilter)}
+          onClick={() => {
+            if (width > 700) setShowFilters(!showFilter);
+            else setShowMobileFilter(true);
+          }}
         >
           <Image
             src="/icons/Filters.svg"
@@ -113,7 +134,9 @@ export const ShopCatalogClient = ({
                 </p>
               </div>
             </Collapse>
-            <Button onClick={resetFilters} className="mt-5 w-full">Сбросить</Button>
+            <Button onClick={resetFilters} className="mt-5 w-full">
+              Сбросить
+            </Button>
           </div>
         )}
         <div
@@ -123,10 +146,56 @@ export const ShopCatalogClient = ({
           )}
         >
           {data?.map((p) => (
-            <ProductCard key={p.id} product={p}/>
+            <ProductCard key={p.id} product={p} />
           ))}
         </div>
       </div>
+      <Dialog
+        draggable={false}
+        style={{ width: "50vw" }}
+        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        header="Фильтры"
+        visible={showMobileFilter}
+        onHide={() => setShowMobileFilter(false)}
+      >
+        <div className="bg-white max-w-70 w-full shrink-0 rounded-lg sticky top-23">
+          {/* <p className="text-lg font-semibold">Фильтры</p> */}
+          <Collapse title="Категории" className="">
+            <div className="flex flex-col gap-2">
+              {catagoryes.map((c) => {
+                return (
+                  <p
+                    key={c.id}
+                    onClick={() => setSelectedCategory(c.id)}
+                    className="p-2 bg-(--main-color) text-white text-sm rounded-lg shadow cursor-pointer lowercase"
+                  >
+                    {c.name}
+                  </p>
+                );
+              })}
+            </div>
+          </Collapse>
+          <Collapse title="Тип товара" className="mt-2">
+            <div className="flex flex-col gap-2">
+              <p className="p-2 bg-(--body-color) rounded-lg shadow">Товар</p>
+              <p className="p-2 bg-(--body-color) rounded-lg shadow">
+                Комплект
+              </p>
+            </div>
+          </Collapse>
+          <Collapse title="Рейтинг" className="mt-2">
+            <div className="flex flex-col gap-2">
+              <p className="p-2 bg-(--body-color) rounded-lg shadow">Товар</p>
+              <p className="p-2 bg-(--body-color) rounded-lg shadow">
+                Комплект
+              </p>
+            </div>
+          </Collapse>
+          <Button onClick={resetFilters} className="mt-5 w-full">
+            Сбросить
+          </Button>
+        </div>
+      </Dialog>
     </div>
   );
 };

@@ -8,24 +8,31 @@ import { useEffect, useState } from "react";
 import { Product } from "../../../types";
 import { ProductCard } from "../../../components/ProductCard";
 import { useCartStore } from "@/store/cartStore";
+import { useQuery } from "@tanstack/react-query";
+import { getCatalog } from "@/dbQuery/dbQuerys";
+import { getFavouritesProducts } from "@/app/(protected)/(shop)/favorite/action";
 export const MayNeddProducts = () => {
   const cart = useCartStore((state) => state.cart);
+  const hasHydrated = useCartStore((state) => state.hasHydrated);
   const [productList, setProductList] = useState<Product[]>([]);
-  useEffect(() => {
-    async function getProducts() {
-      const res = await fetch("/api/catalog/products");
-      const data: Product[] = await res.json();
+
+  const { data = [] } = useQuery({
+    queryKey: ["need_more"],
+    queryFn: async () => {
+      const res1 = await getCatalog();
       const excludePrducts = new Set(cart.map((product) => product.id));
-      const productsForSwiper = data.filter(
+      const productsForSwiper = res1.filter(
         (product) => !excludePrducts.has(product.id),
       );
-      setProductList(productsForSwiper);
-    }
-    getProducts();
-  }, [cart]);
+      return productsForSwiper;
+    },
+    enabled: hasHydrated,
+  });
+
+
   return (
     <Swiper spaceBetween={30} slidesPerView={"auto"}>
-      {productList.map((p) => {
+      {data.map((p) => {
         return (
           <SwiperSlide key={p.id} className="w-100 ">
             <ProductCard product={p} />

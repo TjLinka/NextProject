@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export const BackButton = () => {
     const router = useRouter();
     const handleBack = () => {
-        router.replace('/catalog')
+        router.back()
     };
     return <Button onClick={handleBack}>Вернуться в каталог</Button>;
 };

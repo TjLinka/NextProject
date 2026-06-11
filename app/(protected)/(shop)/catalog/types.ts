@@ -7,5 +7,7 @@ export interface Product {
   adv_desc: string;
   image_urls: string[];
   name: string;
-  count: number
+  count: number;
+  inFavor?: boolean
+  webreg: number
 }

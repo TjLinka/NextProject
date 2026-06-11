@@ -13,7 +13,6 @@ interface newsProps {
 export default async function NewsPage({ params }: { params: { id: string } }) {
   const { id } = await params;
   const newsData: newsProps = await getNews(Number(id));
-  console.log(newsData);
 
   return (
     <div>

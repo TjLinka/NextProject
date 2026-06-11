@@ -3,6 +3,7 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #8080801c;
+  box-sizing: border-box;
 }
 :root {
   --main-color: #9a56ff;
@@ -135,6 +136,20 @@ body {
 .cart_icon:hover > .cart_header {
   display: block;
 }
+.cart_icon2::before {
+  content: "";
+  width: 100px;
+  height: 20px !important;
+  position: absolute;
+  /* background: red; */
+  left: 0;
+  top: 10;
+  cursor: pointer;
+  z-index: 2;
+}
+.cart_icon2:hover > .cart_header {
+  display: block;
+}
 .cart_header {
   display: none;
 }
@@ -166,6 +181,25 @@ body {
 .p-dialog.p-confirm-dialog .p-confirm-dialog-message {
   margin-left: 0 !important;
 }
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link{
+  color: var(--main-text);
+  border-color: var(--main-color);
+}
+.p-inputswitch.p-highlight .p-inputswitch-slider{
+  background: var(--main-color);
+}
+.p-inputtext:enabled:focus{
+  border-color: var(--main-color);
+}
+/* .p-dialog .p-dialog-content {
+  background: #eeeeee !important;
+}
+.p-dialog .p-dialog-header {
+  background: #eeeeee !important;
+} */
+/* .p-dialog-mask.p-component-overlay{
+  background: rgba(255, 255, 255, 0.726) !important;
+} */
 /* .p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:hover) .p-radiobutton-box{
   border-color: var(--main-color) !important;
 } */
@@ -233,10 +267,9 @@ body {
   cursor: pointer;
 }
 
-
 /* MEDIA */
 @media screen and (max-width: 700px) {
-  .p-inputtext{
+  .p-inputtext {
     /* height: 40px !important; */
     /* padding-top: 0; */
     /* padding-bottom: 0; */

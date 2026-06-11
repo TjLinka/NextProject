@@ -18,11 +18,12 @@ export const AddToCartButton = ({ product }: { product: Product }) => {
     );
   return (
     <Button
+      disabled={product.webreg <= 0}
       onClick={() => {
         addToCart({...product, image_url: product.image_urls[0] });
       }}
     >
-      Добавить в корзину
+      { product.webreg > 0 ? 'Добавить в корзину' : 'Ожидаем поступление'}
     </Button>
   );
 };

@@ -14,6 +14,8 @@ import { useWindowSize } from "@reactuses/core";
 import { InputText } from "primereact/inputtext";
 import { usePathname } from "next/navigation";
 import { useSideMenu } from "@/store/sideMenuStore";
+import { Caption } from "../UI/Caption";
+import { localInt } from "@/lib/utils";
 
 export const Header = () => {
   const openSuppModal = useModalAndNotify(
@@ -27,7 +29,11 @@ export const Header = () => {
   const [headerSearch, setheaderSearch] = useState<string>("");
   const user = useAgentStore((state) => state.agentInfo);
   const cartLength = useCartStore((state) => state.cart.length);
+  const clearCart = useCartStore((state) => state.clearCart);
   const cart = useCartStore((state) => state.cart);
+  const totalPrice = useCartStore((state) => {
+    return localInt(state.cart.reduce((acc, p) => acc + p.price * p.count, 0));
+  });
   const isAuth = useAgentStore((state) => state.isAuth);
   const logout = useAgentStore((state) => state.logout);
 
@@ -58,7 +64,7 @@ export const Header = () => {
       className={clsx(
         "h-0 bg-white shadow flex opacity-0 transition-[height, opacity] duration-500 justify-end items-center px-0 sticky top-0 z-20",
         {
-          "h-20! md:px-7! px-3 md:pl-30! opacity-100!": isAuth && mounted,
+          "h-20! md:px-7! px-3 opacity-100!": isAuth && mounted,
         },
       )}
     >
@@ -92,7 +98,7 @@ export const Header = () => {
         {!(pathname === "/catalog") && (
           <InputText
             value={headerSearch}
-            className="w-1/3 md:block hidden"
+            className="max-w-80 w-full md:block hidden"
             placeholder="Поиск в каталоге"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setheaderSearch(e.target.value)
@@ -135,12 +141,37 @@ export const Header = () => {
           </div>
           <div
             className={clsx(
-              `bg-white w-100 max-h-100 h-fit top-7 -left-90 shadow-md rounded-xl border overflow-y-auto border-gray-300 absolute ${width > 700 && cartLength ? "hidden" : "hidden!"} cart_header z-20`,
+              `bg-white w-100 max-h-130 h-fit top-7 -left-90 shadow-md rounded-xl border overflow-y-auto border-gray-300 absolute ${width > 700 && cartLength ? "hidden" : "hidden!"} cart_header z-20`,
             )}
           >
+            <div className="sticky px-4 py-2 rounded shadow bg-white top-0 flex justify-between items-center">
+              <span className="font-semibold">
+                Всего позиций: {cart.length}
+              </span>
+              <span
+                className="text-(--main-color) cursor-pointer font-semibold hover:underline"
+                onClick={clearCart}
+              >
+                Очистить
+              </span>
+            </div>
             {cart.map((p) => {
               return <HeaderProductCard product={p} key={p.id} />;
             })}
+            <div className="sticky bottom-0 bg-white shadow-md px-4">
+              <hr className="border-1 border-(--main-color)" />
+              <div className="flex py-3 justify-between items-center">
+                <div>
+                  <p className="leading-[100%] text">Итого:</p>
+                  <p className="leading-[100%] font-semibold text-lg mt-1">
+                    {totalPrice} ₽
+                  </p>
+                </div>
+                <Link href={'/cart'}>
+                  <Button>В корзину</Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
         <Button className="mb:block hidden">Пригласить партнёра</Button>

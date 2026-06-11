@@ -1,5 +1,6 @@
 import { SideMenu } from "@/components/Navigations/SideMenu";
 import "../globals.css";
+import "leaflet/dist/leaflet.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
@@ -13,6 +14,7 @@ import { validateOrRefreshToken } from "@/lib/auth2";
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { ClientLayout } from "./client-layout";
 
 const inter = Raleway({
   subsets: ["latin"],
@@ -29,5 +31,5 @@ export default async function RootLayout({
   if (!token) {
     redirect("/login");
   }
-  return children
+  return <ClientLayout>{children}</ClientLayout>;
 }

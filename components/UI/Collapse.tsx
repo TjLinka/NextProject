@@ -24,7 +24,7 @@ export const Collapse = ({
         className={clsx(
           `max-h-0 ease-in-out pr-2 overflow-y-auto`,
           {
-            "max-h-100  mt-2 py-2": open,
+            "md:max-h-100 max-h-50  mt-2 py-2": open,
           },
         )}
       >

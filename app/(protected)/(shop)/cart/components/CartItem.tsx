@@ -8,6 +8,8 @@ import { InputNumber } from "primereact/inputnumber";
 import { Counter } from "@/components/UI/Counter";
 import * as motion from "motion/react-client";
 import { addToFavourites } from "../../favorite/action";
+import { useIsFavourite, useToggleFavourite } from "@/hooks/useFavorites";
+import { useState } from "react";
 
 export const CartItem = ({ product }: { product: Product }) => {
   const removeFromCart = useCartStore((state) => state.removeFromCart);
@@ -19,22 +21,31 @@ export const CartItem = ({ product }: { product: Product }) => {
     removeFromCart(product.id);
   };
 
+  const isFavourite = useIsFavourite(product.id);
+  const { mutate: toggleFavourite } = useToggleFavourite();
+
   const handleFavouritesAction = async () => {
     // api/partner/Favourites/delete/{id}
-    await addToFavourites(product.id)
-  }
-
+    toggleFavourite({ id: product.id, isFavourite });
+  };
+  // const [imageLoaded, setImageLoaded] = useState(false);
   return (
     <div className="bg-white shadow md:p-4 p-3 rounded-md grid grid-cols-[minmax(50px,200px)_minmax(200px,400px)_1fr_25px] items-center w-full md:gap-5 gap-1 relative">
-      <div className="flex items-center gap-5 col-span-2">
+      <div className="flex items-center md:gap-5 gap-2 col-span-2">
+        {/* {!imageLoaded && (
+          <div className="md:w-40 w-30 md:h-40 h-30 rounded bg-gray-200  animate-pulse space-x-4 flex justify-center items-center">
+            <span className="loader"></span>
+          </div>
+        )} */}
         <Image
           src={product.image_url}
           alt="Cart Prod Image"
           width={700}
           height={700}
-          className="md:w-40 w-30 md:h-40 h-30 rounded"
+          className={`md:w-40 w-30 md:h-40 h-30 rounded`}
+          // onLoad={() => setImageLoaded(true)}
         />
-        <div className="flex flex-col justify-center gap-5">
+        <div className="flex flex-col justify-center md:gap-5 gap-2 md:grow">
           <Link
             href={`/catalog/product/${product.id}`}
             className="text-(--main-text) leading-[100%] hover:underline"
@@ -46,12 +57,15 @@ export const CartItem = ({ product }: { product: Product }) => {
           <p className="md:text-[16px] text-sm font-semibold">
             Цена за штуку: {localInt(product.price)} ₽
           </p>
-          <Counter
-            count={product.count}
-            incr={incr}
-            decr={decr}
-            id={Number(product.id)}
-          />
+          <div className="flex md:flex-row flex-col gap-2 md:items-center">
+            <Counter
+              count={product.count}
+              incr={incr}
+              decr={decr}
+              id={Number(product.id)}
+            />
+            {product.count === product.webreg && <span className="text-red-500 font-medium">Макс. количество</span>}
+          </div>
         </div>
       </div>
       <div className="min-w-1 max-w-1 w-2"></div>
@@ -62,7 +76,7 @@ export const CartItem = ({ product }: { product: Product }) => {
           className="w-fit"
         >
           <Image
-            src={`/icons/Heart.svg`}
+            src={`/icons/Heart${isFavourite ? "Fill" : ""}.svg`}
             width={100}
             height={100}
             alt="Favor Icon"

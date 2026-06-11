@@ -58,9 +58,26 @@ export const getPersonalAccountHistory = async ({
   from: Date | null | string;
   to: Date | null | string;
 }) => {
-  console.log(from, to);
 
   const res = await serverFetch("/api/partner/Account/get-operations/0", {
+    method: "POST",
+    body: JSON.stringify({
+      from: from ? moment(from).format("YYYY-MM-DD") : null,
+      to: to ? moment(to).format("YYYY-MM-DD") : null,
+    }),
+  });
+  const data = await res.json();
+  return data;
+};
+export const getBonusAccountHistory = async ({
+  from,
+  to,
+}: {
+  from: Date | null | string;
+  to: Date | null | string;
+}) => {
+
+  const res = await serverFetch("/api/partner/Account/get-operations/1", {
     method: "POST",
     body: JSON.stringify({
       from: from ? moment(from).format("YYYY-MM-DD") : null,
@@ -93,8 +110,10 @@ export const getPersonalAccountHistory = async ({
 //   });
 // };
 
-export const getBinarId = async () => {
-  const res = await serverFetch("/api/partner/Binar/get-binar-id");
+export const getBinarId = async ({ rootId }: { rootId: number | null }) => {
+  const res = await serverFetch(
+    `/api/partner/Binar/get-binar-id${rootId ? `?rootId=${rootId}` : ""}`,
+  );
   return await res.json();
 };
 export const getBinarInfo = async (id: string | number) => {
