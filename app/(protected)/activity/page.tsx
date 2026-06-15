@@ -69,8 +69,8 @@ export default function ActivityPage() {
           >
             <Image
               alt="Pay System Image"
-              width={200}
-              height={200}
+              width={500}
+              height={500}
               src={"/imgs/SberPay.svg"}
               className="w-full h-full"
             />
@@ -87,8 +87,8 @@ export default function ActivityPage() {
           >
             <Image
               alt="Pay System Image"
-              width={200}
-              height={200}
+              width={500}
+              height={500}
               src={"/imgs/um.svg"}
               className="w-full h-full"
             />
@@ -105,8 +105,8 @@ export default function ActivityPage() {
           >
             <Image
               alt="Pay System Image"
-              width={200}
-              height={200}
+              width={500}
+              height={500}
               src={"/imgs/yap.svg"}
               className="w-full h-full"
             />
@@ -123,8 +123,8 @@ export default function ActivityPage() {
           >
             <Image
               alt="Pay System Image"
-              width={200}
-              height={200}
+              width={500}
+              height={500}
               src={"/imgs/split.svg"}
               className="w-full h-full"
             />
@@ -141,8 +141,8 @@ export default function ActivityPage() {
           >
             <Image
               alt="Pay System Image"
-              width={200}
-              height={200}
+              width={500}
+              height={500}
               src={"/imgs/sbp.svg"}
               className="w-full h-full"
             />

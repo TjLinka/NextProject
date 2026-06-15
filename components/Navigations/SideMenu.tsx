@@ -73,6 +73,11 @@ export const SideMenu = ({ className }: { className?: string }) => {
         <li>
           <SubMenuCollapse title="Маркетинг" icon="MultipleUsers">
             <SubMenuLink
+              url="/marketing/bonus-history"
+              icon_name="BonusHistory"
+              title="История бонусов"
+            />
+            <SubMenuLink
               url="/marketing/structure"
               icon_name="TreeList"
               title="Структура"
@@ -123,13 +128,24 @@ export const SideMenu = ({ className }: { className?: string }) => {
           </SubMenuCollapse>
         </li>
         <li>
-          <SubMenuLink url="/news" icon_name="News" title="Новости" />
-        </li>
-        <li>
           <SubMenuLink
             url="/activity"
             icon_name="Activity"
             title="Активность"
+          />
+        </li>
+        <li>
+          <SubMenuLink url="/news" icon_name="News" title="Новости" />
+        </li>
+
+        <li>
+          <SubMenuLink url="/webinars" icon_name="Webinar" title="Вебинары" />
+        </li>
+        <li>
+          <SubMenuLink
+            url="/refs-link"
+            icon_name="InviteUser"
+            title="Пригласить"
           />
         </li>
       </ul>
@@ -145,7 +161,7 @@ export const SideMenu = ({ className }: { className?: string }) => {
           <img src={`/icons/Logout.svg`} alt="" className="w-7 h-7 shrink-0" />
         </div>
         <span
-          className={`transition-opacity duration-200 ${sideMenuStatus ? "opacity-100" : "opacity-0"} text-lg`}
+          className={`transition-opacity duration-200 ${sideMenuStatus ? "opacity-100" : "opacity-0"} text-lg font-medium`}
         >
           Выйти
         </span>

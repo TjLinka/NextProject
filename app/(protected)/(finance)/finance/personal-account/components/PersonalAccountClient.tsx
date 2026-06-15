@@ -190,8 +190,8 @@ export const PersonalAccoutClient = () => {
         header="Перевод средств между партнёрами"
         visible={visible}
         draggable={false}
-        style={{ width: "50vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        style={{ width: "40vw" }}
+        breakpoints={{ "1024px": "65vw", "641px": "90vw" }}
         onHide={() => {
           if (!visible) return;
           setVisible(false);

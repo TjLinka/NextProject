@@ -1,7 +1,7 @@
 "use client";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-
+import { Virtual } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import { useEffect, useState } from "react";
@@ -29,12 +29,16 @@ export const MayNeddProducts = () => {
     enabled: hasHydrated,
   });
 
-
   return (
-    <Swiper spaceBetween={30} slidesPerView={"auto"}>
+    <Swiper
+      spaceBetween={30}
+      slidesPerView={"auto"}
+      modules={[Virtual]}
+      virtual
+    >
       {data.map((p) => {
         return (
-          <SwiperSlide key={p.id} className="w-100 ">
+          <SwiperSlide key={p.id} className="w-100">
             <ProductCard product={p} />
           </SwiperSlide>
         );

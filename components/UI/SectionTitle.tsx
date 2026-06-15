@@ -12,7 +12,7 @@ export const SectionTitle = ({
   return (
     <p
       className={clsx(
-        `md:text-xl text-lg font-semibold inline-block border-b-2 border-(--main-color) ${className}`, {
+        `md:text-xl text-lg font-semibold inline-block border-b-2 border-(--main-color) leading-[120%] ${className}`, {
           'md:text-2xl!' : big
         }
       )}

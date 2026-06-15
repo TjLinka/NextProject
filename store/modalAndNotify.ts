@@ -4,14 +4,14 @@ import { Toast } from "primereact/toast";
 
 export const useModalAndNotify = create()((set, get) => ({
   isSupportModalOpen: false,
-  isSideModalMobileOpen: false,
+  isRefsModalOpen: false,
   toastBlock: null,
   openSupportModal: () => set(() => ({ isSupportModalOpen: true })),
   closeSupportModal: () => set(() => ({ isSupportModalOpen: false })),
-  openSideModalMobile: () => set(() => ({ isSideModalMobileOpen: true })),
-  closeSideModalMobile: () => set(() => ({ isSideModalMobileOpen: false })),
+  openRefsModal: () => set(() => ({ isRefsModalOpen: true })),
+  closeRefsModal: () => set(() => ({ isRefsModalOpen: false })),
   regToast: (elem: any) => set({ toastBlock: elem }),
-  showNotification: (severity = "success", detail = "2222", summary = '') => {
+  showNotification: (severity = "success", detail = "2222", summary = "") => {
     const { toastBlock } = get(); // ← берём toastBlock из стейта
     toastBlock?.current?.show({
       severity: severity,

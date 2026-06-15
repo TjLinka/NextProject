@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useSideMenu } from "@/store/sideMenuStore";
 import { Product } from "../types";
 import { ProductCard } from "./ProductCard";
 import clsx from "clsx";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/UI/Button";
 import { useQuery } from "@tanstack/react-query";
 import { getCatalog } from "@/dbQuery/dbQuerys";
@@ -14,7 +13,6 @@ import Image from "next/image";
 import { Collapse } from "@/components/UI/Collapse";
 import { Dialog } from "primereact/dialog";
 import { useWindowSize } from "@reactuses/core";
-import { getFavouritesProducts } from "../../favorite/action";
 
 export const ShopCatalogClient = ({
   catagoryes,
@@ -30,8 +28,11 @@ export const ShopCatalogClient = ({
   const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState([catagoryes[1]]);
+  const { width } = useWindowSize();
 
-  const { width, height } = useWindowSize();
+  const PAGE_SIZE = 12;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const { data } = useQuery<Product[]>({
     queryKey: ["catalog", search, selectedCategory],
@@ -40,20 +41,42 @@ export const ShopCatalogClient = ({
     },
   });
 
+  // сбрасываем visibleCount при смене фильтров/поиска
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [search, selectedCategory]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && data && visibleCount < data.length) {
+          setVisibleCount((prev) => prev + PAGE_SIZE);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [data, visibleCount]);
+
+  const visibleData = data?.slice(0, visibleCount);
+
   const handleSearch = () => {
     if (searchInput) router.push(`/catalog/?find=${searchInput}`);
     else router.push(`/catalog`);
   };
 
-  const onCategoryChange = (e) => {
+  const onCategoryChange = (e: any) => {
     let _selectedCategories = [...selectedCategories];
-
     if (e.checked) _selectedCategories.push(e.value);
     else
       _selectedCategories = _selectedCategories.filter(
-        (category) => category.key !== e.value.key,
+        (category: any) => category.key !== e.value.key,
       );
-
     setSelectedCategories(_selectedCategories);
   };
 
@@ -69,7 +92,7 @@ export const ShopCatalogClient = ({
         <div
           className="flex shrink-0 justify-center items-center text-white gap-2 px-4 rounded-lg cursor-pointer bg-(--main-color)"
           onClick={() => {
-            if (width > 700) setShowFilters(!showFilter);
+            if (width > 800) setShowFilters(!showFilter);
             else setShowMobileFilter(true);
           }}
         >
@@ -80,7 +103,7 @@ export const ShopCatalogClient = ({
             height={200}
             className="w-7"
           />
-          <span className="text-lg md:inline hidden">Фильтры</span>
+          <span className="text-lg lg:inline hidden">Фильтры</span>
         </div>
         <div className="w-full flex justify-center items-center gap-2 col-span-4">
           <InputText
@@ -94,28 +117,23 @@ export const ShopCatalogClient = ({
               if (e.key === "Enter") handleSearch();
             }}
           />
-          {/* <Button className="h-full" onClick={handleSearch}>
-            Найти
-          </Button> */}
         </div>
       </div>
+
       <div className="flex gap-5 items-start mt-5">
         {showFilter && (
           <div className="bg-white p-4 shadow max-w-70 w-full shrink-0 rounded-lg sticky top-23">
-            {/* <p className="text-lg font-semibold">Фильтры</p> */}
             <Collapse title="Категории" className="">
               <div className="flex flex-col gap-2">
-                {catagoryes.map((c) => {
-                  return (
-                    <p
-                      key={c.id}
-                      onClick={() => setSelectedCategory(c.id)}
-                      className="p-2 bg-(--main-color) text-white text-sm rounded-lg shadow cursor-pointer lowercase"
-                    >
-                      {c.name}
-                    </p>
-                  );
-                })}
+                {catagoryes.map((c: any) => (
+                  <p
+                    key={c.id}
+                    onClick={() => setSelectedCategory(c.id)}
+                    className="p-2 bg-(--main-color) text-white text-sm rounded-lg shadow cursor-pointer lowercase"
+                  >
+                    {c.name}
+                  </p>
+                ))}
               </div>
             </Collapse>
             <Collapse title="Тип товара" className="mt-5">
@@ -139,40 +157,41 @@ export const ShopCatalogClient = ({
             </Button>
           </div>
         )}
+
         <div
           className={clsx(
             "grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 w-full",
             { "grid-cols-3!": showFilter },
           )}
         >
-          {data?.map((p) => (
+          {visibleData?.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
+          {/* sentinel внутри грида */}
+          <div ref={sentinelRef} className="col-span-full h-1" />
         </div>
       </div>
+
       <Dialog
         draggable={false}
         style={{ width: "50vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        breakpoints={{ "1024px": "65vw", "641px": "90vw" }}
         header="Фильтры"
         visible={showMobileFilter}
         onHide={() => setShowMobileFilter(false)}
       >
         <div className="bg-white max-w-70 w-full shrink-0 rounded-lg sticky top-23">
-          {/* <p className="text-lg font-semibold">Фильтры</p> */}
           <Collapse title="Категории" className="">
             <div className="flex flex-col gap-2">
-              {catagoryes.map((c) => {
-                return (
-                  <p
-                    key={c.id}
-                    onClick={() => setSelectedCategory(c.id)}
-                    className="p-2 bg-(--main-color) text-white text-sm rounded-lg shadow cursor-pointer lowercase"
-                  >
-                    {c.name}
-                  </p>
-                );
-              })}
+              {catagoryes.map((c: any) => (
+                <p
+                  key={c.id}
+                  onClick={() => setSelectedCategory(c.id)}
+                  className="p-2 bg-(--main-color) text-white text-sm rounded-lg shadow cursor-pointer lowercase"
+                >
+                  {c.name}
+                </p>
+              ))}
             </div>
           </Collapse>
           <Collapse title="Тип товара" className="mt-2">

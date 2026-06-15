@@ -34,7 +34,7 @@ export const SubMenuCollapse = ({
         <div className="flex gap-4">
           <img src={`/icons/${icon}.svg`} alt="" className="w-7 h-7" />
           <span
-            className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg`}
+            className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg font-medium`}
           >
             {title}
           </span>

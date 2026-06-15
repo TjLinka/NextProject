@@ -20,9 +20,6 @@ export const SubMenuLink = ({
   const setSideMenuStore = useSideMenu((state) => state.setMenuOpen);
   const menuOpen = useSideMenu((state) => state.menuOpen);
   const {width, height} = useWindowSize()
-  const closeSideMobileMenu = useModalAndNotify(
-    (state :any) => state.closeSideModalMobile,
-  );
 
   return (
     <Link
@@ -40,7 +37,7 @@ export const SubMenuLink = ({
         />
       </div>
       <span
-        className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg`}
+        className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg font-medium`}
       >
         {title}
       </span>

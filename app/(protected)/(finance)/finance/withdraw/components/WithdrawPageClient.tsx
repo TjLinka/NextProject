@@ -161,8 +161,8 @@ export const WithdrawPageClient = () => {
       </Card>
       <Dialog
         draggable={false}
-        style={{ width: "35vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        style={{ width: "30vw" }}
+        breakpoints={{ "1024px": "65vw", "641px": "90vw" }}
         header="Создание заявки на вывод средств"
         visible={openNewWithdrawModal}
         onHide={() => setopenNewWithdrawModal(false)}

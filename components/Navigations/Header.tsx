@@ -41,12 +41,7 @@ export const Header = () => {
 
   const router = useRouter();
 
-  // const isSideModalMobileOpen = useModalAndNotify(
-  //   (state: any) => state.isSideModalMobileOpen,
-  // );
-  const openSideModalMobile = useModalAndNotify(
-    (state: any) => state.openSideModalMobile,
-  );
+  const openRefsModal = useModalAndNotify((state: any) => state.openRefsModal);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -98,7 +93,7 @@ export const Header = () => {
         {!(pathname === "/catalog") && (
           <InputText
             value={headerSearch}
-            className="max-w-80 w-full md:block hidden"
+            className="max-w-80 w-full lg:block hidden"
             placeholder="Поиск в каталоге"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setheaderSearch(e.target.value)
@@ -108,9 +103,9 @@ export const Header = () => {
             }}
           />
         )}
-        <Link href={"/refs-link"} className="mb:block hidden">
-          <Button>Пригласить партнёра</Button>
-        </Link>
+        {/* <Link href={"/refs-link"} className="xl:block hidden"> */}
+        <Button onClick={openRefsModal}>Пригласить партнёра</Button>
+        {/* </Link> */}
         <Image
           alt="Support Icon"
           src={`/icons/Support.svg`}
@@ -121,7 +116,7 @@ export const Header = () => {
         />
         <div className="relative cart_icon">
           <div
-            className="relative"
+            className="relative shrink-0 w-7 h-7"
             onClick={() => {
               router.push("/cart");
             }}
@@ -131,7 +126,7 @@ export const Header = () => {
               width={200}
               height={200}
               alt="Cart Icon"
-              className="w-7 h-7 cursor-pointer"
+              className="w-7 h-7 cursor-pointer shrink-0"
             />
             {cartLength > 0 && (
               <span className=" absolute top-0 -right-1 w-4 h-4 text-xs bg-(--main-color) text-white rounded-full flex justify-center items-center">
@@ -167,17 +162,16 @@ export const Header = () => {
                     {totalPrice} ₽
                   </p>
                 </div>
-                <Link href={'/cart'}>
+                <Link href={"/cart"}>
                   <Button>В корзину</Button>
                 </Link>
               </div>
             </div>
           </div>
         </div>
-        <Button className="mb:block hidden">Пригласить партнёра</Button>
         <Link href={"/"}>
           <div className="flex gap-2 items-center">
-            <div className="w-10 h-10 rounded-full overflow-hidden">
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
               {user.avatar && (
                 <Image
                   src={user?.avatar}

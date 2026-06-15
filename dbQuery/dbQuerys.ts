@@ -93,6 +93,8 @@ export const getCatalog = async (
 
 // ПОЛЬЗОВАТЕЛЬ
 
+
+
 export const getPersonalAccountInfo = async (
   from: Date | null = null,
   to: Date | null = null,
@@ -102,12 +104,11 @@ export const getPersonalAccountInfo = async (
   
   const agentId = await getIdFromToken();
   const res = await withDatabase((db) =>
-    query(db, "SELECT * FROM SP_AGENTPERSACCOUNTFILTERGET(?,?,?,?)", [
-      agentId,
-      from,
-      to,
-      acc,
-    ]),
+    query<{ income: number, outcome: number }>(
+      db,
+      "SELECT * FROM SP_AGENTPERSACCOUNTFILTERGET(?,?,?,?)",
+      [agentId, from, to, acc],
+    ),
   );
   return res;
 };

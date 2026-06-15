@@ -191,6 +191,15 @@ body {
 .p-inputtext:enabled:focus{
   border-color: var(--main-color);
 }
+.p-dialog .p-dialog-header .p-dialog-header-icon:focus-visible{
+  box-shadow: 0 0 0 .2rem var(--main-color) !important;
+}
+.p-dialog .p-dialog-content{
+  color: black;
+}
+.p-dialog .p-dialog-header{
+  color: black;
+}
 /* .p-dialog .p-dialog-content {
   background: #eeeeee !important;
 }

@@ -5,6 +5,8 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "animate.css";
+import moment from "moment";
+import "moment/locale/ru";
 
 import { Providers, ProvidersTanStack } from "./providers";
 import { Header } from "@/components/Navigations/Header";
@@ -22,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
+  moment.locale("ru");
   const isAuth = useAgentStore((state) => state.isAuth)
 
   return (
