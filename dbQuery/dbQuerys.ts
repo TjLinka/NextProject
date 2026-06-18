@@ -17,6 +17,7 @@ import {
 } from "./dbReuestSchemas";
 import { createMessageSchema } from "./zodValidators";
 import moment from "moment";
+import { serverFetch } from "@/lib/auth";
 
 export const getDashboard = async () => {
   const agentId = await getIdFromToken();
@@ -45,11 +46,13 @@ export const getBalance = async () => {
   return res;
 };
 export const getProfileData = async <T>() => {
-  const agentId = await getIdFromToken();
-  const res = await withDatabase((db) =>
-    queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
-  );
-  res.avatar = `${process.env.IMG_URL}/Avatars/${agentId}.jpg?salt=${Math.random(0, 999999)}`;
+  // const agentId = await getIdFromToken();
+  // const res = await withDatabase((db) =>
+  //   queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
+  // );
+  const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
+  const data = await res.json()
+  data.avatar = `${process.env.IMG_URL}/Avatars/${data.id}.jpg?salt=${Math.random(0, 999999)}`;
   return res;
 };
 
@@ -65,30 +68,33 @@ export const getCatalog = async (
   i_show_lk = null,
   i_frontend_id = null,
 ) => {
-  const agent_id = await getIdFromToken();
-  const res = await withDatabase((db) => {
-    return query(
-      db,
-      "SELECT * FROM SP_GET_CATALOG_IN_SECTIONS(?,?,?,?,?,?,?,?,?,?,?)",
-      buildParams(getCatalogSchema, {
-        find_str,
-        section_id,
-        i_name,
-        agent_id,
-        i_articul,
-        catalog_id,
-        isadmin,
-        i_stock_id,
-        i_creator_id,
-        i_show_lk,
-        i_frontend_id,
-      }),
-    );
-  });
-  res.forEach((p) => {
-    p.image_url = `${process.env.IMG_URL}/GoodsPics/${p.id}_0.jpg?salt=${Math.random(0, 999999)}`;
-  });
-  return res;
+  // const agent_id = await getIdFromToken();
+  // const res = await withDatabase((db) => {
+  //   return query(
+  //     db,
+  //     "SELECT * FROM SP_GET_CATALOG_IN_SECTIONS(?,?,?,?,?,?,?,?,?,?,?)",
+  //     buildParams(getCatalogSchema, {
+  //       find_str,
+  //       section_id,
+  //       i_name,
+  //       agent_id,
+  //       i_articul,
+  //       catalog_id,
+  //       isadmin,
+  //       i_stock_id,
+  //       i_creator_id,
+  //       i_show_lk,
+  //       i_frontend_id,
+  //     }),
+  //   );
+  // });
+  // res.forEach((p) => {
+  //   p.image_url = `${process.env.IMG_URL}/GoodsPics/${p.id}_0.jpg?salt=${Math.random(0, 999999)}`;
+  // });
+  // return res;
+  const res = serverFetch("/api/partner/Catalog/get-catalog");
+  const data = (await res).json()
+  return data
 };
 
 // ПОЛЬЗОВАТЕЛЬ
@@ -236,9 +242,11 @@ export const createMessage = async (
 
 // Заказы
 export const getOrdersList = async (from: unknown, to: unknown) => {
-  const agentId = await getIdFromToken();
+  // const agentId = await getIdFromToken();
 
-  return await makeReq("SP_WEBSHOPGETBYAGENTFILTER", [agentId, from, to, null]);
+  // return await makeReq("SP_WEBSHOPGETBYAGENTFILTER", [agentId, from, to, null]);
+  const res = await serverFetch("/api/partner/Webshop/get-list");
+  return await res.json()
 };
 
 export const getOrderInfo = async (doc_id: string | number) => {

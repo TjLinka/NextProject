@@ -1,11 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "image.radargp.com",
+        hostname: "img.antlercosmetic.ru",
+        // hostname: "image.radargp.com",
         // hostname: "image.grandchef.info",
       },
     ],

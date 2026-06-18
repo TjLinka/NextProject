@@ -74,20 +74,20 @@ export const Header = () => {
         />
       </div>
       <Link
-        href={"/dashboard"}
+        href={"/"}
         className={` text-2xl md:flex hidden gap-2 items-center cursor-pointer  uppercase text-center transition-opacity duration-400 ${!sideMenuStatus ? "opacity-100" : "opacity-0"}`}
       >
         <Image
-          src={`/imgs/logo_hippo_menu.svg`}
+          src={`/imgs/AnterlLogo.png`}
           alt="side menu logo"
           width={200}
           height={200}
-          className={`w-10 h-10 ${!sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
+          className={`w-45 ${!sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
         />
-        <div>
+        {/* <div>
           <span className="font-semibold">GLEB.</span>
           <span className="font-light">TEAM</span>
-        </div>
+        </div> */}
       </Link>
       <div className="flex items-center justify-end gap-5 grow">
         {!(pathname === "/catalog") && (

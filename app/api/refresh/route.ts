@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   }
 
   const res = await fetch(
-    "https://back.radargp.com/api/partner/Agent/refresh-token",
+    "https://back.antlercosmetic.ru/api/partner/Agent/refresh-token",
     {
       method: "GET",
       headers: {

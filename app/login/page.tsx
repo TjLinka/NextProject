@@ -30,7 +30,7 @@ export default function LoginPage() {
 
     setTimeout(() => {
       setUserInfo(data);
-      router.push("/dashboard");
+      router.push("/");
     }, 500);
   };
 
@@ -49,15 +49,15 @@ export default function LoginPage() {
       <div className="flex gap-4 text-4xl items-center animate__animated animate__fadeIn">
         <Image
           alt="Login Logo"
-          src={`/imgs/logo_hippo_menu.svg`}
-          width={500}
-          height={500}
-          className="md:w-30 w-25"
+          src={`/imgs/AnterlLogo.png`}
+          width={1000}
+          height={1000}
+          className="w-60"
         />
-        <div>
+        {/* <div>
           <span className="font-semibold ">GLEB.</span>
           <span className="">TEAM</span>
-        </div>
+        </div> */}
       </div>
       <div className="bg-white p-7 rounded-md shadow max-w-125 w-full mt-10 animate__animated animate__fadeIn">
         <div>

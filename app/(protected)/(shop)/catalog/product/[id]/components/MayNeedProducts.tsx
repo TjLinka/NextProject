@@ -38,7 +38,7 @@ export const MayNeddProducts = () => {
     >
       {data.map((p) => {
         return (
-          <SwiperSlide key={p.id} className="w-100">
+          <SwiperSlide key={p.id} className="w-100!" >
             <ProductCard product={p} />
           </SwiperSlide>
         );

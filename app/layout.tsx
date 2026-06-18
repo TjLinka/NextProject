@@ -11,14 +11,19 @@ import "moment/locale/ru";
 import { Providers, ProvidersTanStack } from "./providers";
 import { Header } from "@/components/Navigations/Header";
 import { ClientWrapper } from "@/components/clientProvider";
-import { Raleway } from "next/font/google";
+import { Cormorant_Garamond, Manrope, Raleway } from "next/font/google";
 import { useAgentStore } from "@/store/agentStore";
 
-const inter = Raleway({
+const inter = Manrope({
   subsets: ["latin"],
   display: "swap",
 });
 
+const playfair = Cormorant_Garamond({
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+  variable: "--font-h", // 👈 своя переменная
+});
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,13 +35,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full antialiased`}>
       <body
-        className={`${inter.className} min-h-screen flex`}
+        className={`${inter.className} ${playfair.variable} min-h-screen flex`}
         style={{ fontVariantNumeric: "lining-nums" }}
       >
         <SideMenu />
 
         {/* эта обёртка уже есть у тебя — она правильно растягивается рядом с сайдбаром */}
-        <div className={`grow flex flex-col min-w-0 ${isAuth ? 'md:ml-21' : ''}`}>
+        <div
+          className={`grow flex flex-col min-w-0 ${isAuth ? "md:ml-21" : ""}`}
+        >
           <Header />
 
           {/* вот тут убираем pl-22 и mx-auto, добавляем flex + justify-center */}

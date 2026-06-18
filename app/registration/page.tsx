@@ -10,9 +10,15 @@ import { SectionTitle } from "@/components/UI/SectionTitle";
 import Link from "next/link";
 import { getSponsorForRegistration } from "@/dbQuery/dbQuerys";
 import { InputMask } from "primereact/inputmask";
+import { Calendar } from "primereact/calendar";
+import { Nullable } from "primereact/ts-helpers";
+import { useWindowSize } from "@reactuses/core";
 
 export default function RegistrationPage() {
   const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [middlename, setMiddlename] = useState("");
+  const [bth_dte, setDate] = useState<Nullable<Date>>(null);
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +27,9 @@ export default function RegistrationPage() {
   const [phone, setPhone] = useState("");
 
   const isDisabled = !name || !email || !password || password !== passwordAgain;
+
+
+  const {width, height} = useWindowSize()
 
   const [step, setStep] = useState<number>(0);
   const [inAction, setInAction] = useState(false);
@@ -44,27 +53,51 @@ export default function RegistrationPage() {
       <div className="flex gap-4 text-4xl items-center animate__animated animate__fadeIn">
         <Image
           alt="Login Logo"
-          src={`/imgs/logo_hippo_menu.svg`}
-          width={500}
-          height={500}
-          className="md:w-30 w-25"
+          src={`/imgs/AnterlLogo.png`}
+          width={1000}
+          height={1000}
+          className="w-55"
         />
-        <div>
-          <span className="font-semibold ">GLEB.</span>
-          <span className="">TEAM</span>
-        </div>
       </div>
       <div className="bg-white md:p-7 p-3 rounded-md shadow max-w-125 w-full mt-10 animate__animated animate__fadeIn">
         {step === 0 && (
           <div>
             <SectionTitle>Регистрация</SectionTitle>
             <div className="mt-5">
-              <p className="font-semibold md:text-lg text-sm">ФИО</p>
+              <p className="font-semibold md:text-lg text-sm">Фамилия</p>
+              <InputText
+                autoComplete="new-password"
+                value={lastname}
+                className="w-full"
+                onChange={(e) => setLastname(e.target.value)}
+              />
+            </div>
+            <div className="mt-2">
+              <p className="font-semibold md:text-lg text-sm">Имя</p>
               <InputText
                 autoComplete="new-password"
                 value={name}
                 className="w-full"
                 onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="mt-2">
+              <p className="font-semibold md:text-lg text-sm">Отчество</p>
+              <InputText
+                autoComplete="new-password"
+                value={middlename}
+                className="w-full"
+                onChange={(e) => setMiddlename(e.target.value)}
+              />
+            </div>
+            <div className="mt-2">
+              <p className="font-semibold md:text-lg text-sm">Дата рождения</p>
+              <Calendar
+                touchUI={width < 800}
+                locale="ru"
+                className="w-full"
+                value={bth_dte}
+                onChange={(e) => setDate(e.value)}
               />
             </div>
             <div className="md:mt-4 mt-2">
@@ -79,12 +112,11 @@ export default function RegistrationPage() {
             <div className="md:mt-4 mt-2">
               <p className="font-semibold md:text-lg text-sm">Телефон</p>
               <input type="phone" style={{ display: "none" }} />
-              <InputMask
+              <InputText
                 className="w-full"
                 value={phone}
                 autoComplete="new-password"
                 onChange={(e) => setPhone(e.target.value)}
-                mask="9 (999) 999-99-99"
                 placeholder="7 (999) 999-99-99"
               />
             </div>
@@ -94,6 +126,7 @@ export default function RegistrationPage() {
                 value={password}
                 feedback={false}
                 className="w-full"
+                autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
                 inputClassName="w-full"
               />
@@ -104,6 +137,7 @@ export default function RegistrationPage() {
                 value={passwordAgain}
                 feedback={false}
                 className="w-full"
+                autoComplete="new-password"
                 onChange={(e) => setPasswordAgain(e.target.value)}
                 inputClassName="w-full"
               />
@@ -134,8 +168,16 @@ export default function RegistrationPage() {
               &nbsp;свои данные.
             </p>
             <p className="md:text-lg  text-sm md:mt-5 mt-2">
-              <span className=" font-semibold">ФИО:</span>
+              <span className=" font-semibold">Фамилия:</span>
+              <span className="ml-2">{lastname}</span>
+            </p>
+            <p className="md:text-lg  text-sm mt-2">
+              <span className=" font-semibold">Имя:</span>
               <span className="ml-2">{name}</span>
+            </p>
+            <p className="md:text-lg  text-sm mt-2">
+              <span className=" font-semibold">Отчество:</span>
+              <span className="ml-2">{middlename}</span>
             </p>
             <p className="mt-2 md:text-lg text-sm ">
               <span className="font-semibold">E-mail:</span>

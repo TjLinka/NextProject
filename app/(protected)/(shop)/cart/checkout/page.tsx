@@ -54,7 +54,7 @@ export default function CartCheckoutPage() {
   const [paySystems, setPaySystems] = useState<[]>([]);
   const [selectedDeliverySystem, setSelectedDeliverySystem] = useState<
     number | null
-  >(0);
+  >(1);
   const [value, setValue] = useState<string | null>("");
   const [items, setItems] = useState([]);
 
@@ -75,8 +75,8 @@ export default function CartCheckoutPage() {
     async function getDelSystems() {
       const res = await fetch("/api/cart/del-systems");
       const data = await res.json();
-      data.shift();
-      setDeliverySystems(data);
+      // data.filter((d) => d.id === 1)
+      setDeliverySystems(data.filter((d) => d.id === 1));
     }
     async function getPaySystems() {
       const res = await fetch("/api/cart/pay-systems", {
@@ -243,7 +243,7 @@ export default function CartCheckoutPage() {
             </SectionTitle>
             <Card title="Выберите способ доставки" className="mt-5">
               <div className="md:flex grid grid-cols-2 md:gap-5 gap-2">
-                <div
+                {/* <div
                   onClick={() => setSelectedDeliverySystem(0)}
                   className={clsx(
                     "md:w-1/4 md:h-20 h-15 py-1 px-2 capitalize transition-[background, opacity, box-shadow] outline-0 bg-gray-300 duration-250 opacity-60 grayscale-100 ease-in-out rounded-md text-center text-2xl font-semibold flex justify-center items-center  cursor-pointer",
@@ -254,7 +254,7 @@ export default function CartCheckoutPage() {
                   )}
                 >
                   Самовывоз
-                </div>
+                </div> */}
                 {deliverySystems.map((d) => {
                   return (
                     <div

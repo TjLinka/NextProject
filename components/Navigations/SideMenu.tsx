@@ -41,22 +41,22 @@ export const SideMenu = ({ className }: { className?: string }) => {
         },
       )}
     >
-      <div className={`py-5 flex justify-between items-center`}>
+      <div className={`py-4 flex justify-between items-center`}>
         <Link
-          href={"/dashboard"}
+          href={"/"}
           className={`flex text-2xl gap-2 items-center cursor-pointer  uppercase text-center transition-opacity duration-400 ${sideMenuStatus ? "opacity-100" : "opacity-0 pointer-events-none cursor-auto"}`}
         >
           <Image
-            src={`/imgs/logo_hippo_menu.svg`}
+            src={`/imgs/AnterlLogo.png`}
             alt="side menu logo"
             width={200}
             height={200}
-            className={`w-10 h-10 ${sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
+            className={`w-40 h-12 ${sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
           />
-          <div>
+          {/* <div>
             <span className="font-semibold">GLEB.</span>
             <span className="font-light">TEAM</span>
-          </div>
+          </div> */}
         </Link>
         <div
           className={`w-6 h-6 ${sideMenuStatus ? "rotate-0" : "rotate-180"} cursor-pointer absolute right-7 transition-[rotate] duration-300`}
@@ -81,11 +81,6 @@ export const SideMenu = ({ className }: { className?: string }) => {
               url="/marketing/structure"
               icon_name="TreeList"
               title="Структура"
-            />
-            <SubMenuLink
-              url="/marketing/binar"
-              icon_name="BinaryTree"
-              title="Бинар"
             />
           </SubMenuCollapse>
         </li>
@@ -116,11 +111,6 @@ export const SideMenu = ({ className }: { className?: string }) => {
               title="Лицевой счет"
             />
             <SubMenuLink
-              url="/finance/bonus-account"
-              icon_name="PiggyBank"
-              title="Товарный счет"
-            />
-            <SubMenuLink
               url="/finance/withdraw"
               icon_name="LowIncomeLevelOutline24px"
               title="История вывода"
@@ -128,18 +118,7 @@ export const SideMenu = ({ className }: { className?: string }) => {
           </SubMenuCollapse>
         </li>
         <li>
-          <SubMenuLink
-            url="/activity"
-            icon_name="Activity"
-            title="Активность"
-          />
-        </li>
-        <li>
           <SubMenuLink url="/news" icon_name="News" title="Новости" />
-        </li>
-
-        <li>
-          <SubMenuLink url="/webinars" icon_name="Webinar" title="Вебинары" />
         </li>
         <li>
           <SubMenuLink
@@ -155,7 +134,7 @@ export const SideMenu = ({ className }: { className?: string }) => {
           logout();
           router.push("/login");
         }}
-        className={`whitespace-nowrap flex items-center gap-4 hover:bg-[#bf94ff59] py-1 px-2 rounded cursor-pointer`}
+        className={`whitespace-nowrap flex items-center gap-4 hover:bg-(--body-color) py-1 px-2 rounded cursor-pointer`}
       >
         <div className="w-7 h-7 shrink-0">
           <img src={`/icons/Logout.svg`} alt="" className="w-7 h-7 shrink-0" />

@@ -26,7 +26,7 @@ export const Caption = ({
     captionContent = (
       <a
         href={`${linkUrl}${text}`}
-        className="hover:underline text-(--main-text) md:text-[16px] text-sm"
+        className="hover:underline md:text-[16px] text-sm"
       >
         {text}
       </a>
@@ -35,7 +35,7 @@ export const Caption = ({
     captionContent = (
       <Link
         href={linkUrl}
-        className="hover:underline text-(--main-text) md:text-[16px] text-sm"
+        className="hover:underline md:text-[16px] text-sm"
       >
         {text}
       </Link>

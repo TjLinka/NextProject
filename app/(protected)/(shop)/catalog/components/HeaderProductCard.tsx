@@ -42,7 +42,7 @@ export const HeaderProductCard = ({
   return (
     <div className="flex items-center gap-5 p-4">
       <div className={clsx(`bg-white rounded-xl flex gap-2 ${className}`)}>
-        <div className="">
+        <div className="shrink-0">
           {!imageLoaded && (
             <div className="w-full h-full bg-gray-200 rounded-lg animate-pulse space-x-4 flex justify-center items-center">
               <span className="loader"></span>
@@ -53,7 +53,7 @@ export const HeaderProductCard = ({
             alt="Product Image"
             width={300}
             height={350}
-            className={`w-40 rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+            className={`w-30 rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"} shrink-0`}
             onLoad={() => setImageLoaded(true)}
           />
         </div>

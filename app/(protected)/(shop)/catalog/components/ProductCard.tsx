@@ -76,7 +76,7 @@ export const ProductCard = React.memo(
           `bg-white md:p-4 p-3 rounded-xl shadow-md flex flex-col ${className}`,
         )}
       >
-        <div className="md:h-70 h-35">
+        <div className="md:h-70 h-35 bg-(--body-color) rounded py-2">
           {!imageLoaded && (
             <div className="w-full h-full bg-gray-200 rounded-lg animate-pulse space-x-4 flex justify-center items-center">
               <span className="loader"></span>
