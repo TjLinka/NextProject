@@ -94,7 +94,7 @@ export const ProductCard = React.memo(
         {!noCatalog ? (
           <Link
             href={`/catalog/product/${product.id}`}
-            className="grow hover:text-(--main-text) leading-[100%]"
+            className="grow hover:underline leading-[100%]"
           >
             <p className="mt-4 font-semibold md:text-lg text-xs leading-[100%]">
               {product.name}
@@ -108,11 +108,11 @@ export const ProductCard = React.memo(
         <div className="flex justify-between items-end md:mt-2 mt-1">
           <div className="md:text-xl text-sm font-semibold">Цена</div>
           <div className="flex md:flex-row flex-col md:gap-2 items-end">
-            {!noCatalog && (
+            {/* {!noCatalog && (
               <span className="text-red-400 line-through md:text-[16px] text-xs">
                 {localInt(product.pricex)} ₽
               </span>
-            )}
+            )} */}
             <span className="md:text-2xl font-semibold text-lg leading-[100%]">
               {localInt(product.price)} ₽
             </span>

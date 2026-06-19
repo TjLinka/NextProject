@@ -122,11 +122,18 @@ export const SideMenu = ({ className }: { className?: string }) => {
         </li>
         <li>
           <SubMenuLink
+            url="/news"
+            icon_name="HelpQuestionmark"
+            title="Информация"
+          />
+        </li>
+        {/* <li>
+          <SubMenuLink
             url="/refs-link"
             icon_name="InviteUser"
             title="Пригласить"
           />
-        </li>
+        </li> */}
       </ul>
       <div
         onClick={() => {

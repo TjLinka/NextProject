@@ -48,7 +48,7 @@ export const CartItem = ({ product }: { product: Product }) => {
         <div className="flex flex-col justify-center md:gap-5 gap-2 md:grow">
           <Link
             href={`/catalog/product/${product.id}`}
-            className="text-(--main-text) leading-[100%] hover:underline"
+            className=" leading-[100%] hover:underline"
           >
             <p className="font-semibold md:text-lg text-sm leading-[100%]">
               {product.name}

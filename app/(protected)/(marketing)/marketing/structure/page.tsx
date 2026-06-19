@@ -14,10 +14,14 @@ import { classNames } from "primereact/utils";
 import Image from "next/image";
 import { InputSwitch } from "primereact/inputswitch";
 import { InputText } from "primereact/inputtext";
+import { useAgentStore } from "@/store/agentStore";
 // import { useQuery } from "@tanstack/react-query";
 // import { getStructureData } from "@/dbQuery/dbQuerys";
 
 export default function LazyLoadDemo() {
+
+  const userId = JSON.parse(localStorage.getItem("agent-storage")).state.agentInfo.id;
+
   const [nodes, setNodes] = useState<TreeNode[]>([]);
   const [first, setFirst] = useState<number>(0);
   const [checked, setChecked] = useState<boolean>(false);
@@ -27,7 +31,7 @@ export default function LazyLoadDemo() {
 
   const loadNodes = async () => {
     const res = await fetch(
-      "/api/marketing/structure?root_agent=105&agent_id=105&level_agent=105",
+      `/api/marketing/structure?root_agent=${userId}&agent_id=${userId}&level_agent=${userId}`,
     );
 
     const data = await res.json();
@@ -59,7 +63,7 @@ export default function LazyLoadDemo() {
         const lazyNode = { ...event.node };
 
         const res = await fetch(
-          `/api/marketing/structure?root_agent=${event.node.key}&agent_id=105&level_agent=${event.node.key}`,
+          `/api/marketing/structure?root_agent=${event.node.key}&agent_id=${userId}&level_agent=${event.node.key}`,
         );
 
         const data = await res.json();
@@ -149,7 +153,7 @@ export default function LazyLoadDemo() {
         <span className="text-lg font-semibold">Список</span>
       </div>
       {checked && (
-        <div className="grid grid-cols-4 gap-5 mt-5">
+        <div className="grid lg:grid-cols-4 lg:gap-5 gap-2 mt-5">
           <Card title="Поиск по ID">
             <InputText className="w-full" />
           </Card>

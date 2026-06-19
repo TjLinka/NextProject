@@ -89,13 +89,16 @@ export default function LoginPage() {
         >
           Войти
         </Button>
-        <p className="font-semibold flex md:flex-row flex-col items-center justify-center gap-2 mt-5">
+        <p className="font-semibold flex md:flex-row flex-col items-center  gap-2 mt-5">
           Вы ещё не с нами?{" "}
-          <Link
-            href={"/registration"}
-            className="text-(--main-text) hover:underline"
-          >
+          <Link href={"/registration"} className="underline">
             Станьте частью нашей команды!
+          </Link>
+        </p>
+        <p className="font-semibold flex md:flex-row flex-col items-center gap-2 mt-2">
+          Забыли пароль?{" "}
+          <Link href={"/remindpass"} className="underline">
+            Восстановить
           </Link>
         </p>
       </div>

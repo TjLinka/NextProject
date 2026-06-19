@@ -1,6 +1,8 @@
 export type User = {
   readonly id: string | number;
   fullname: string;
+  surname: string;
+  lastname: string;
   email: string;
   avatar: string;
   mobile_phone: string;
@@ -8,5 +10,5 @@ export type User = {
   birth_date: string;
   country: string;
   address: string;
-  male: number
+  male: number;
 };

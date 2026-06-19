@@ -16,7 +16,7 @@ export const ProdDesc = ({ data }: { data: Product }) => {
   }, [data.adv_desc]);
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 grow">
       <p className="text-xl inline-block font-semibold border-b-2 border-(--main-color)">
         Описание товара
       </p>

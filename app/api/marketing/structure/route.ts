@@ -8,7 +8,7 @@ export async function GET(Req: NextRequest) {
   const agent_id = searchParams.get("agent_id");
   const level_agent = searchParams.get("level_agent");
   const res = await serverFetch(
-    `/api/partner/Structure/get-agent-structure?root_agent=${root_agent}&agentid=105&level_agent=${level_agent}`,
+    `/api/partner/Structure/get-agent-structure?root_agent=${root_agent}&agentid=${agent_id}&level_agent=${level_agent}`,
   );
   return res;
 }

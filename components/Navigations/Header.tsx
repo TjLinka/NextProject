@@ -90,7 +90,7 @@ export const Header = () => {
         </div> */}
       </Link>
       <div className="flex items-center justify-end gap-5 grow">
-        {!(pathname === "/catalog") && (
+        {/* {!(pathname === "/catalog") && (
           <InputText
             value={headerSearch}
             className="max-w-80 w-full lg:block hidden"
@@ -102,18 +102,18 @@ export const Header = () => {
               if (e.key === "Enter") handleSearchInCatalog();
             }}
           />
-        )}
+        )} */}
         {/* <Link href={"/refs-link"} className="xl:block hidden"> */}
         <Button onClick={openRefsModal}>Пригласить партнёра</Button>
         {/* </Link> */}
-        <Image
+        {/* <Image
           alt="Support Icon"
           src={`/icons/Support.svg`}
           width={200}
           height={200}
           className="w-7 h-7 cursor-pointer"
           onClick={openSuppModal}
-        />
+        /> */}
         <div className="relative cart_icon">
           <div
             className="relative shrink-0 w-7 h-7"

@@ -53,25 +53,25 @@ export const HeaderProductCard = ({
             alt="Product Image"
             width={300}
             height={350}
-            className={`w-30 rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"} shrink-0`}
+            className={`w-25 h-25 rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"} shrink-0`}
             onLoad={() => setImageLoaded(true)}
           />
         </div>
         <div className="flex flex-col justify-center gap-3">
           <Link
             href={`/catalog/product/${product.id}`}
-            className="hover:text-(--main-text) leading-[100%]"
+            className="max-w-50 hover:text-(--main-text) leading-[100%]"
           >
-            <p className="font-semibold text-sm leading-[100%]">
+            <p className="font-semibold text-sm leading-[100%] truncate">
               {product.name}
             </p>
           </Link>
           <div className="flex justify-between items-end">
             <div className="text font-semibold leading-[100%]">Цена</div>
             <div className="flex gap-2 items-end">
-              <span className="text-red-400 line-through text-xs leading-[100%]">
+              {/* <span className="text-red-400 line-through text-xs leading-[100%]">
                 {localInt(product.pricex)} ₽
-              </span>
+              </span> */}
               <span className="text leading-[100%] font-semibold">
                 {localInt(product.price)} ₽
               </span>
@@ -106,7 +106,7 @@ export const HeaderProductCard = ({
           alt="Delete Icon"
           width={200}
           height={200}
-          className="w-6 h-6 cursor-pointer"
+          className="w-6! h-6! cursor-pointer shrink-0"
         />
       </motion.div>
     </div>

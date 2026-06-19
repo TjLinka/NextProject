@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { serverFetch } from "@/lib/auth";
 import { transferMoneyBetweenUserRequest } from "@/requsetModel/types";
@@ -58,7 +59,6 @@ export const getPersonalAccountHistory = async ({
   from: Date | null | string;
   to: Date | null | string;
 }) => {
-
   const res = await serverFetch("/api/partner/Account/get-operations/0", {
     method: "POST",
     body: JSON.stringify({
@@ -76,7 +76,6 @@ export const getBonusAccountHistory = async ({
   from: Date | null | string;
   to: Date | null | string;
 }) => {
-
   const res = await serverFetch("/api/partner/Account/get-operations/1", {
     method: "POST",
     body: JSON.stringify({
@@ -127,4 +126,57 @@ export const getBinar = async (id_ins: string | number) => {
   });
 
   return await res.json();
+};
+
+export const createAgent = async ({
+  sponsor_id,
+  surname,
+  mobile_phone,
+  birth_date,
+  email,
+  password,
+}: {
+  sponsor_id: number | string;
+  password: string;
+  surname: string;
+  mobile_phone: string;
+  email: string;
+  birth_date: Date | string | null | Nullable;
+}) => {
+  const res = await serverFetch("/api/partner/SignUp/create-agent", {
+    method: "POST",
+    body: JSON.stringify({
+      sponsor_id,
+      name: "",
+      surname,
+      mobile_phone,
+      birth_date,
+      email,
+      password,
+      country_id: 0,
+      ms_type: 10,
+    }),
+  });
+  console.log(res);
+  
+  return {
+    status: res.status,
+    data: await res.json()
+  }
+};
+
+export const editAgentInfo = async (data: any) => {
+  data.surname = data.lastname;
+  const res = await serverFetch("/api/partner/Agent/edit-agent-profile-info", {
+    method: "POST",
+    body: JSON.stringify({
+      ...data,
+    }),
+  });
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
+
+  return result;
 };

@@ -8,6 +8,7 @@ import { User } from "@/types/user/types";
 import { useCopyToClipboard } from "@reactuses/core";
 import Image from "next/image";
 import Link from "next/link";
+import { Dialog } from "primereact/dialog";
 import { useState } from "react";
 
 type socialsInfo = {
@@ -22,7 +23,6 @@ type balanceInfo = {
   readonly summ: number;
 };
 
-
 export default function ProfileClient({
   agentInfo,
   sponsorInfo,
@@ -36,6 +36,8 @@ export default function ProfileClient({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [text, copy] = useCopyToClipboard();
+  console.log(sponsorInfo);
+
   return (
     <div>
       <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
@@ -54,7 +56,7 @@ export default function ProfileClient({
             onLoad={() => setImageLoaded(true)}
           />
           <p className="md:text-2xl text-xl font-semibold">
-            {agentInfo.fullname}
+            {agentInfo.lastname}
           </p>
         </div>
         <Link href={`/edit-profile`} className="col-span-2">
@@ -66,55 +68,9 @@ export default function ProfileClient({
           <Card title="Личные данные" titleClass="md:text-xl">
             <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
               <Caption title="ID" text={agentInfo.id} />
-              <Caption title="ФИО" text={agentInfo.fullname} />
+              <Caption title="ФИО" text={agentInfo.lastname} />
               <Caption title="Почта" text={agentInfo.email} />
               <Caption title="Телефон" text={agentInfo.mobile_phone} />
-            </div>
-          </Card>
-          <Card
-            title="Адресс"
-            titleClass="text-xl"
-            className="row-start-2 mt-5"
-          >
-            <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
-              <Caption title="Адресс" text={agentInfo.address} />
-              <Caption title="Страна" text={agentInfo.country} />
-              <Caption title="Город" text={agentInfo.city} />
-            </div>
-          </Card>
-          <Card title="Данные спонсора" titleClass="text-xl" className="mt-5">
-            <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
-              <div className="rounded-full md:col-span-2 shadow-md mb-4 w-20 overflow-hidden border border-gray-300">
-                <Image
-                  alt="Sponsor Avatar"
-                  width={500}
-                  height={500}
-                  className="w-20"
-                  src={sponsorInfo.avatar}
-                />
-              </div>
-              <Caption title="ID" text={sponsorInfo.id} />
-              <Caption title="ФИО" text={sponsorInfo.fullname} />
-              <Caption title="Почта" text={sponsorInfo.email} />
-              <Caption title="Телефон" text={sponsorInfo.mobile_phone} />
-            </div>
-          </Card>
-        </div>
-        <div>
-          <Card title="Мои соц. сети" titleClass="text-xl">
-            <div className="grid grid-cols-2 gap-x-5 gap-y-2">
-              {socialsInfo.map((s) => {
-                return (
-                  <Caption
-                    socials={true}
-                    title={s.social_media_name}
-                    text={s.nickname || "-"}
-                    key={s.social_media_id}
-                    link={!!s.nickname}
-                    linkUrl={s.short_link}
-                  />
-                );
-              })}
             </div>
           </Card>
           <Card
@@ -130,13 +86,13 @@ export default function ProfileClient({
                 linkUrl="/finance/personal-account"
                 text={localInt(agentBalance[0]?.summ)}
               />
-              <Caption
+              {/* <Caption
                 inline={true}
                 link={true}
                 linkUrl="/finance/personal-account"
                 title={agentBalance[1]?.name}
                 text={localInt(agentBalance[1]?.summ)}
-              />
+              /> */}
             </div>
           </Card>
           <Card
@@ -146,7 +102,7 @@ export default function ProfileClient({
           >
             <div className="flex md:gap-5 gap-2 items-center w-fit">
               <p className=" leading-[100%] text-gray-500 truncate text-sm">
-                http://localhost:3000/registration/000068
+                {`http://localhost:3000/registration?id=${agentInfo.id}`}
               </p>
               <Image
                 onClick={() =>
@@ -159,6 +115,60 @@ export default function ProfileClient({
                 className="md:w-5.5 w-5 md:h-5.5 h-5 cursor-pointer"
               />
             </div>
+          </Card>
+          {/* <Card
+            title="Адресс"
+            titleClass="text-xl"
+            className="row-start-2 mt-5"
+          >
+            <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
+              <Caption title="Адресс" text={agentInfo.address} />
+              <Caption title="Страна" text={agentInfo.country} />
+              <Caption title="Город" text={agentInfo.city} />
+            </div>
+          </Card> */}
+          {/* <Card title="Данные спонсора" titleClass="text-xl" className="mt-5">
+            <div className="grid md:grid-cols-2 gap-x-5 gap-y-2">
+              <div className="rounded-full md:col-span-2 shadow-md mb-4 w-20 overflow-hidden border border-gray-300">
+                <Image
+                  alt="Sponsor Avatar"
+                  width={500}
+                  height={500}
+                  className="w-20"
+                  src={sponsorInfo.avatar}
+                />
+              </div>
+              <Caption title="ID" text={sponsorInfo.id} />
+              <Caption title="ФИО" text={sponsorInfo.fullname} />
+              <Caption title="Почта" text={sponsorInfo.email} />
+              <Caption title="Телефон" text={sponsorInfo.mobile_phone} />
+            </div>
+          </Card> */}
+        </div>
+        <div>
+          {/* <Card title="Мои соц. сети" titleClass="text-xl">
+            <div className="grid grid-cols-2 gap-x-5 gap-y-2">
+              {socialsInfo.map((s) => {
+                return (
+                  <Caption
+                    socials={true}
+                    title={s.social_media_name}
+                    text={s.nickname || "-"}
+                    key={s.social_media_id}
+                    link={!!s.nickname}
+                    linkUrl={s.short_link}
+                  />
+                );
+              })}
+            </div>
+          </Card> */}
+          <Card title="Хочешь заработать?" titleClass="text-xl" className="">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque
+            maiores iusto voluptatibus doloremque cumque minima, corrupti fugit
+            dolorem impedit ullam quasi autem at debitis iste beatae maxime qui
+            suscipit perspiciatis omnis reiciendis consequuntur pariatur
+            accusamus! Id eius nisi minus obcaecati.
+            {/* <Image alt="11" width={500} height={500} src={"/imgs/281297.jpg"} className="mt-5 rounded-lg shadow-md"/> */}
           </Card>
         </div>
       </div>

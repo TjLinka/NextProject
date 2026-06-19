@@ -50,7 +50,7 @@ export const getProfileData = async <T>() => {
   const res = await withDatabase((db) =>
     queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
   );
-  res.avatar = `${process.env.IMG_URL}/Avatars/${agentId}.jpg?salt=${Math.random(0, 999999)}`;
+  res.avatar = `${process.env.IMG_URL}/Avatars/1.jpg?salt=${Math.random(0, 999999)}`;
   
   // const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
   // const data = await res.json()
@@ -128,7 +128,7 @@ export const getSponsorInfo = async <T>() => {
     const res2 = await withDatabase((db) =>
       queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [res1.id_parent]),
     );
-    res2.avatar = `${process.env.IMG_URL}/Avatars/${res1.id_parent}.jpg?salt=${Math.random(0, 999999)}`;
+    res2.avatar = `${process.env.IMG_URL}/Avatars/1.jpg`;
     return res2;
   }
 };
@@ -302,14 +302,14 @@ export const getStructureData = async (
 
 // Новости
 export const getNewsList = async () => {
-  const res = await makeReq("SP_NEWSGET", [null, 0, 0]);
+  const res = await makeReq("SP_NEWSGET", [null, 0]);
   res.forEach((n) => {
     n.image_url = `${process.env.IMG_URL}/NewsPics/${n.id}.jpg?salt=${Math.random(0, 999999)}`;
   });
   return res;
 };
 export const getNews = async (id: number) => {
-  return await makeReqSingle("SP_NEWSGET", [id, 0, 0]);
+  return await makeReqSingle("SP_NEWSGET", [id, 0]);
 };
 
 // Вывод средств

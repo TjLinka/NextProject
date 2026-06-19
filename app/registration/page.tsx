@@ -13,10 +13,15 @@ import { InputMask } from "primereact/inputmask";
 import { Calendar } from "primereact/calendar";
 import { Nullable } from "primereact/ts-helpers";
 import { useWindowSize } from "@reactuses/core";
+import { createAgent } from "@/lib/actions";
+import { useAgentStore } from "@/store/agentStore";
+import { useRouter } from "next/navigation";
 
 export default function RegistrationPage() {
+  const router = useRouter();
+  const [regErrorText, setregErrorText] = useState("");
   const [name, setName] = useState("");
-  const [lastname, setLastname] = useState("");
+  const [surname, setLastname] = useState("");
   const [middlename, setMiddlename] = useState("");
   const [bth_dte, setDate] = useState<Nullable<Date>>(null);
   const [password, setPassword] = useState("");
@@ -25,11 +30,13 @@ export default function RegistrationPage() {
   const [sponsor_id, setSponsorId] = useState("");
   const [sponsor_name, setSponsorName] = useState("");
   const [phone, setPhone] = useState("");
+  const [isLoginSuccess, setisLoginSuccess] = useState(false);
+  const setUserInfo = useAgentStore((state) => state.setAgentInfo);
 
-  const isDisabled = !name || !email || !password || password !== passwordAgain;
+  const isDisabled =
+    !surname || !email || !password || !phone || password !== passwordAgain;
 
-
-  const {width, height} = useWindowSize()
+  const { width, height } = useWindowSize();
 
   const [step, setStep] = useState<number>(0);
   const [inAction, setInAction] = useState(false);
@@ -44,10 +51,51 @@ export default function RegistrationPage() {
     foo();
   }, []);
 
+  const handleRegistration = async () => {
+    setInAction(true);
+    const res = await createAgent({
+      sponsor_id: 2,
+      surname: surname,
+      mobile_phone: phone,
+      birth_date: bth_dte,
+      email: email,
+      password: password,
+    });
+    console.log(res);
+    
+    if (res.status !== 400 && res.status !== 500) {
+      const res2 = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          login: String(res.data.login),
+          password: res.data.password,
+        }),
+        credentials: "include",
+      });
+      const data = await res2.json();
+      setisLoginSuccess(true);
+
+      setTimeout(() => {
+        setUserInfo(data);
+        router.push("/");
+      }, 500);
+    } else {
+      setInAction(false);
+      if (res.status === 400) {
+        setregErrorText(res.data);
+      } else {
+        setregErrorText(res.data.Message);
+      }
+    }
+  };
+
   return (
     <div
       className={clsx(
         "flex flex-col justify-center items-center h-full opacity-100 transition-opacity duration-500 ease-in-out",
+        {
+          "opacity-0!": isLoginSuccess,
+        },
       )}
     >
       <div className="flex gap-4 text-4xl items-center animate__animated animate__fadeIn">
@@ -64,30 +112,12 @@ export default function RegistrationPage() {
           <div>
             <SectionTitle>Регистрация</SectionTitle>
             <div className="mt-5">
-              <p className="font-semibold md:text-lg text-sm">Фамилия</p>
+              <p className="font-semibold md:text-lg text-sm">ФИО</p>
               <InputText
                 autoComplete="new-password"
-                value={lastname}
+                value={surname}
                 className="w-full"
                 onChange={(e) => setLastname(e.target.value)}
-              />
-            </div>
-            <div className="mt-2">
-              <p className="font-semibold md:text-lg text-sm">Имя</p>
-              <InputText
-                autoComplete="new-password"
-                value={name}
-                className="w-full"
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="mt-2">
-              <p className="font-semibold md:text-lg text-sm">Отчество</p>
-              <InputText
-                autoComplete="new-password"
-                value={middlename}
-                className="w-full"
-                onChange={(e) => setMiddlename(e.target.value)}
               />
             </div>
             <div className="mt-2">
@@ -161,23 +191,15 @@ export default function RegistrationPage() {
               зарегестрировать <br /> или &nbsp;
               <span
                 onClick={() => setStep(0)}
-                className="text-(--main-text) md:text-[16px] text-sm mt-5 cursor-pointer underline"
+                className=" md:text-[16px] text-sm mt-5 cursor-pointer underline"
               >
                 отредактируйте
               </span>
               &nbsp;свои данные.
             </p>
             <p className="md:text-lg  text-sm md:mt-5 mt-2">
-              <span className=" font-semibold">Фамилия:</span>
-              <span className="ml-2">{lastname}</span>
-            </p>
-            <p className="md:text-lg  text-sm mt-2">
-              <span className=" font-semibold">Имя:</span>
-              <span className="ml-2">{name}</span>
-            </p>
-            <p className="md:text-lg  text-sm mt-2">
-              <span className=" font-semibold">Отчество:</span>
-              <span className="ml-2">{middlename}</span>
+              <span className=" font-semibold">ФИО:</span>
+              <span className="ml-2">{surname}</span>
             </p>
             <p className="mt-2 md:text-lg text-sm ">
               <span className="font-semibold">E-mail:</span>
@@ -187,18 +209,21 @@ export default function RegistrationPage() {
               <span className="font-semibold">Телефон:</span>
               <span className="ml-2">{phone}</span>
             </p>
-            <p className="mt-2 md:text-lg text-sm ">
+            {/* <p className="mt-2 md:text-lg text-sm ">
               <span className="font-semibold">Пригласитель:</span>
               <span className="ml-2">
                 {sponsor_id} - {sponsor_name}
               </span>
-            </p>
+            </p> */}
+
             <Button
-              className="text-center w-full text-white rounded-sm md:mt-10 mt-5"
+              onClick={handleRegistration}
+              className="text-center w-full rounded-sm md:mt-10 mt-5"
               loading={inAction}
             >
               Зарегестрировать
             </Button>
+            {regErrorText && <p className="text-red-500 font-semibold mt-1">{regErrorText}</p>}
           </div>
         )}
         <hr className="my-5 border-0 h-0.5 bg-(--main-color)" />

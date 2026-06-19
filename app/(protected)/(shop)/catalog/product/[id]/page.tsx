@@ -29,17 +29,17 @@ export default async function ProductPage({
         </div>
         <div></div>
       </div>
-      <div className="flex md:flex-row flex-col items-start gap-5 mt-2">
-        <div className="max-w-145.5 md:w-auto w-full">
+      <div className="flex md:flex-row flex-col items-stretch gap-5 mt-5">
+        <div className="max-w-145.5 md:w-auto w-full shrink-0">
           <Image
             alt="Product Image"
             src={data.image_urls[0]}
             width={500}
             height={500}
-            className="max-w-145.5 md:w-auto w-full"
+            className="max-w-145.5 max-h-90.5 md:w-auto w-full shrink-0"
           />
         </div>
-        <Card className="grow">
+        <Card className="grow" contentClass="h-full flex flex-col">
           <div className="md:text-xl font-semibold flex md:flex-row flex-col justify-between md:items-center">
             <span className="inline-block border-b-2 border-(--main-color)">
               {data.name}
@@ -55,7 +55,7 @@ export default async function ProductPage({
             </p>
             <div className="flex gap-2 items-center">
               <AddToCartButton product={data} />
-              <AddToFavor product={data}/>
+              <AddToFavor product={data} />
             </div>
           </div>
         </Card>

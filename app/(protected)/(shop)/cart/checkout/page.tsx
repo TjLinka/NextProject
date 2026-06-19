@@ -41,7 +41,7 @@ export default function CartCheckoutPage() {
   const [bonusSumm, setbonusSumm] = useState<Nullable<number | null>>(0);
   const cart = useCartStore((state) => state.cart);
   const totalPrice = useCartStore((state) => {
-    return localInt(state.cart.reduce((acc, p) => acc + p.price * p.count, 0));
+    return state.cart.reduce((acc, p) => acc + p.price * p.count, 0);
   });
   const [delAddress, setDelAddress] = useState<string | null>("");
   const [delPriceModal, setDelPriceModal] = useState(false);
@@ -92,6 +92,10 @@ export default function CartCheckoutPage() {
     getPaySystems();
   }, []);
 
+
+  const totalPayPrice = Number(totalPrice) - Number(bonusSumm)
+  const maxForWithdraw = Math.min(balance[0]?.summ, (totalCartPrice * 0.9) );
+
   const handleSelectDeliverySystem = (id: number) => {
     setSelectedDeliverySystem(id);
   };
@@ -116,7 +120,7 @@ export default function CartCheckoutPage() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result.suggestions.map((address: any) => address.value));
-        
+
         setItems(result.suggestions.map((address: any) => address.value));
       })
       .catch((error) => console.log("error", error));
@@ -182,6 +186,8 @@ export default function CartCheckoutPage() {
     setDelPriceModal(false);
   };
 
+  const handleCreateOrder = () => {};
+
   return (
     <>
       <div className="flex flex-col justify-center md:max-w-[80%] mx-auto">
@@ -227,7 +233,7 @@ export default function CartCheckoutPage() {
         </div>
         <div className="grid md:grid-cols-2 md:gap-5 gap-2 mt-5">
           <Card title="ФИО">
-            <InputText value={userInfo?.fullname} className="w-full" />
+            <InputText value={userInfo?.lastname} className="w-full" />
           </Card>
           <Card title="Телефон">
             <InputText value={userInfo?.mobile_phone} className="w-full" />
@@ -241,7 +247,7 @@ export default function CartCheckoutPage() {
             <SectionTitle className="md:mt-5 mt-2">
               Способ доставки
             </SectionTitle>
-            <Card title="Выберите способ доставки" className="mt-5">
+            <Card className="mt-5" fit>
               <div className="md:flex grid grid-cols-2 md:gap-5 gap-2">
                 {/* <div
                   onClick={() => setSelectedDeliverySystem(0)}
@@ -261,7 +267,7 @@ export default function CartCheckoutPage() {
                       key={d.id}
                       onClick={() => setSelectedDeliverySystem(d.id)}
                       className={clsx(
-                        "md:w-1/4 md:h-20 h-15 py-1 px-2 capitalize transition-[background, opacity, box-shadow] outline-0 bg-gray-300 duration-250 opacity-60 grayscale-100 ease-in-out rounded-md text-center text-xl font-semibold flex justify-center items-center  cursor-pointer",
+                        " md:h-20 h-15 py-1 px-2 capitalize transition-[background, opacity, box-shadow] outline-0 bg-gray-300 duration-250 opacity-60 grayscale-100 ease-in-out rounded-md text-center text-xl font-semibold flex justify-center items-center  cursor-pointer",
                         {
                           "grayscale-0! bg-gray-100! opacity-100! ring-(--main-color) ring-2":
                             selectedDeliverySystem === d.id,
@@ -414,33 +420,51 @@ export default function CartCheckoutPage() {
                 </div>
               </div>
             </Card>
-            <Card title="Списать баллы" className="mt-5 w-1/2">
-              <div>
-                <p>
-                  Баланс на лицевом счете:{" "}
-                  <span className="font-semibold">
-                    {localInt(balance[0]?.summ)} ₽
+            <div className="grid grid-cols-2 md:gap-5 gap-2 mt-5">
+              <Card title="Списать баллы">
+                <div>
+                  <p>
+                    Баланс на лицевом счете: &nbsp;
+                    <span className="font-semibold">
+                      {localInt(balance[0]?.summ)} ₽
+                    </span>
+                  </p>
+                  <span className="text-red-500 text-sm">
+                    Макс. для списания: {maxForWithdraw} ₽
                   </span>
-                </p>
-                <InputNumber
-                  inputId="currency-us"
-                  value={bonusSumm}
-                  className="w-1/2 mt-2"
-                  onValueChange={(e) => setbonusSumm(e.value)}
-                  mode="currency"
-                  currency="RUB"
-                  suffix=""
-                  locale="ru"
-                />
-              </div>
+                  <InputNumber
+                    inputId="currency-us"
+                    value={bonusSumm}
+                    max={maxForWithdraw}
+                    className="w-full mt-2"
+                    onValueChange={(e) => setbonusSumm(e.value)}
+                    mode="currency"
+                    currency="RUB"
+                    suffix=""
+                    locale="ru"
+                  />
+                </div>
+              </Card>
+              <Card title="Комментарий к заказу" className="md:mt-0 mt-2">
+                <textarea
+                  className="w-full h-22 border border-gray-300 rounded-lg resize-none p-2"
+                  placeholder=""
+                ></textarea>
+              </Card>
+            </div>
+            <SectionTitle className="mt-5">Итог</SectionTitle>
+            <Card className="mt-5">
+              <p>
+                <span>Итого к оплате: </span>
+                <span>{localInt(totalPayPrice)} ₽</span>
+              </p>
             </Card>
-            <Card title="Комментарий к заказу" className="md:mt-5 mt-2">
-              <textarea
-                className="w-full h-22 border border-gray-300 rounded-lg resize-none p-2"
-                placeholder="Комментарий"
-              ></textarea>
-            </Card>
-            <Button className=" w-full md:mt-10 mt-5">Оформить заказ</Button>
+            <Button
+              className=" w-full md:mt-10 mt-5"
+              onClick={handleCreateOrder}
+            >
+              Оформить заказ
+            </Button>
           </div>
         </div>
       </div>

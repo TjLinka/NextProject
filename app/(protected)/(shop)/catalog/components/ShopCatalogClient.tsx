@@ -88,8 +88,8 @@ export const ShopCatalogClient = ({
 
   return (
     <div>
-      <div className="grid grid-cols-5 md:gap-5 gap-2 items-stretch">
-        <div
+      <div className=" md:gap-5 gap-2 items-stretch">
+        {/* <div
           className="flex shrink-0 justify-center items-center text-white gap-2 px-4 rounded-lg cursor-pointer bg-(--main-color)"
           onClick={() => {
             if (width > 800) setShowFilters(!showFilter);
@@ -104,8 +104,8 @@ export const ShopCatalogClient = ({
             className="w-7"
           />
           <span className="text-lg lg:inline hidden">Фильтры</span>
-        </div>
-        <div className="w-full flex justify-center items-center gap-2 col-span-4">
+        </div> */}
+        {/* <div className="w-full flex justify-center items-center gap-2 col-span-4">
           <InputText
             value={searchInput}
             className="w-full"
@@ -117,51 +117,29 @@ export const ShopCatalogClient = ({
               if (e.key === "Enter") handleSearch();
             }}
           />
-        </div>
+        </div> */}
       </div>
 
-      <div className="flex gap-5 items-start mt-5">
-        {showFilter && (
-          <div className="bg-white p-4 shadow max-w-70 w-full shrink-0 rounded-lg sticky top-23">
-            <Collapse title="Категории" className="">
-              <div className="flex flex-col gap-2">
-                {catagoryes.map((c: any) => (
-                  <p
-                    key={c.id}
-                    onClick={() => setSelectedCategory(c.id)}
-                    className="p-2 bg-(--main-color) text-white text-sm rounded-lg shadow cursor-pointer lowercase"
-                  >
-                    {c.name}
-                  </p>
-                ))}
-              </div>
-            </Collapse>
-            <Collapse title="Тип товара" className="mt-5">
-              <div className="flex flex-col gap-2">
-                <p className="p-2 bg-(--body-color) rounded-lg shadow">Товар</p>
-                <p className="p-2 bg-(--body-color) rounded-lg shadow">
-                  Комплект
-                </p>
-              </div>
-            </Collapse>
-            <Collapse title="Рейтинг" className="mt-5">
-              <div className="flex flex-col gap-2">
-                <p className="p-2 bg-(--body-color) rounded-lg shadow">Товар</p>
-                <p className="p-2 bg-(--body-color) rounded-lg shadow">
-                  Комплект
-                </p>
-              </div>
-            </Collapse>
-            <Button onClick={resetFilters} className="mt-5 w-full">
-              Сбросить
-            </Button>
-          </div>
-        )}
-
+      <div className="mt-5">
+        <div className="flex flex-wrap gap-2">
+          {catagoryes.map((c: any) => (
+            <p
+              key={c.id}
+              onClick={() => setSelectedCategory(c.id)}
+              className={clsx(
+                "p-2  text-black bg-white text-sm font-semibold rounded-lg border border-(--main-color) shadow cursor-pointer lowercase",
+                {
+                  "bg-(--main-color)!  capitalize": selectedCategory === c.id,
+                },
+              )}
+            >
+              {c.name}
+            </p>
+          ))}
+        </div>
         <div
           className={clsx(
-            "grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 w-full",
-            { "grid-cols-3!": showFilter },
+            "grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 w-full mt-5",
           )}
         >
           {visibleData?.map((p) => (
@@ -187,7 +165,12 @@ export const ShopCatalogClient = ({
                 <p
                   key={c.id}
                   onClick={() => setSelectedCategory(c.id)}
-                  className="p-2 bg-(--main-color) text-white text-sm rounded-lg shadow cursor-pointer lowercase"
+                  className={clsx(
+                    "p-2  text-white text-sm rounded-lg shadow cursor-pointer lowercase",
+                    {
+                      "bg-(--main-color)": selectedCategory === c.id,
+                    },
+                  )}
                 >
                   {c.name}
                 </p>
