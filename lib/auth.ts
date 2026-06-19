@@ -47,7 +47,7 @@ export async function serverFetch(
   const accessToken = cookieStore.get("access_token")?.value;
 
 
-  const res = await fetch(`${process.env.BACKEND_URL}${url}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
     ...options,
     headers: {
       ...options.headers,
@@ -64,7 +64,7 @@ export async function serverFetch(
   
   const newToken = await refreshAccessToken();
 
-  const retryRes = await fetch(`${process.env.BACKEND_URL}${url}`, {
+  const retryRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
     ...options,
     headers: {
       ...options.headers,
