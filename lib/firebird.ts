@@ -2,11 +2,11 @@
 import Firebird from "node-firebird";
 
 const options: Firebird.Options = {
-  host: "127.0.0.1",
+  host: "188.127.250.123",
   port: 3050,
-  database: "C:/DBS/PRODUCTION_COPY.FDB",
+  database: "C:/FIREBIRD/antler/PRODUCTION.FDB",
   user: "SYSDBA",
-  password: "masterkey",
+  password: "YD3gQheA",
 };
 
 export function readBlob(blobFn: Function): Promise<string> {
