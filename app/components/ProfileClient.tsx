@@ -11,12 +11,6 @@ import Link from "next/link";
 import { Dialog } from "primereact/dialog";
 import { useState } from "react";
 
-type socialsInfo = {
-  nickname: string;
-  short_link: string;
-  social_media_id: number;
-  readonly social_media_name: string;
-};
 type balanceInfo = {
   name: string;
   readonly id: number;
@@ -26,13 +20,11 @@ type balanceInfo = {
 export default function ProfileClient({
   agentInfo,
   sponsorInfo,
-  socialsInfo,
   agentBalance,
 }: {
   agentInfo: User;
   sponsorInfo: User;
   agentBalance: balanceInfo[];
-  socialsInfo?: socialsInfo[];
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [text, copy] = useCopyToClipboard();
