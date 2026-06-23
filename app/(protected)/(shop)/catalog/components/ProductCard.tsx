@@ -96,7 +96,7 @@ export const ProductCard = React.memo(
             href={`/catalog/product/${product.id}`}
             className="grow hover:underline leading-[100%]"
           >
-            <p className="mt-4 font-semibold md:text-lg text-xs leading-[100%]">
+            <p className="mt-4 font-semibold md:text-lg text-xs truncate leading-[100%]">
               {product.name}
             </p>
           </Link>

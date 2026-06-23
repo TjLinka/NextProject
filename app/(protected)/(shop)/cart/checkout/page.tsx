@@ -24,6 +24,13 @@ import { HeaderProductCard } from "../../catalog/components/HeaderProductCard";
 import { localInt } from "@/lib/utils";
 import { InputNumber } from "primereact/inputnumber";
 import { Nullable } from "primereact/ts-helpers";
+import {
+  createOrderFinalStep,
+  createOrderStep1,
+  createOrderStep2,
+  withdrawPoints,
+} from "@/lib/actions";
+import _ from "lodash";
 
 export default function CartCheckoutPage() {
   const { data } = useQuery({
@@ -57,6 +64,8 @@ export default function CartCheckoutPage() {
   >(1);
   const [value, setValue] = useState<string | null>("");
   const [items, setItems] = useState([]);
+  const [comm, setComm] = useState("");
+  const [inAction, setInAction] = useState(false);
 
   const { data: balance = [] } = useQuery({
     queryKey: ["balance"],
@@ -92,9 +101,8 @@ export default function CartCheckoutPage() {
     getPaySystems();
   }, []);
 
-
-  const totalPayPrice = Number(totalPrice) - Number(bonusSumm)
-  const maxForWithdraw = Math.min(balance[0]?.summ, (totalCartPrice * 0.9) );
+  const totalPayPrice = Number(totalPrice) - Number(bonusSumm);
+  const maxForWithdraw = Math.min(balance[0]?.summ, totalCartPrice * 0.9);
 
   const handleSelectDeliverySystem = (id: number) => {
     setSelectedDeliverySystem(id);
@@ -182,11 +190,70 @@ export default function CartCheckoutPage() {
     const data = await res.json();
     console.log(data);
 
-    setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
-    setDelPriceModal(false);
+    // setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
+    // setDelPriceModal(false);
   };
 
-  const handleCreateOrder = () => {};
+  const createAndPayOrder = async () => {
+    setInAction(true);
+    // const res = await checkProdStockLeft();
+    // if (res) {
+    // if (cart.length > 0) {
+    //   const result = await Promise.all(
+    //     cart
+    //       .filter((prod) => prod.id !== 37888)
+    //       .map(
+    //         async (prod) =>
+    //           await GApi.get(`api/partner/Catalog/get-single/${prod.id}`),
+    //       ),
+    //   );
+    //   store.updateProdsInfo(
+    //     result.map(({ data }) => ({
+    //       id: data.id,
+    //       price: data.price,
+    //       pricex: data.pricex,
+    //       name: data.name,
+    //       points: data.points,
+    //     })),
+    //   );
+    // }
+    const Response = await createOrderStep1({
+      stock: 0,
+      is_pickup: true,
+      comm,
+      recipient_phone: userInfo?.lastname,
+      delivery_system_id: 1,
+      delivery_address: "Москва",
+    });
+    console.log(Response);
+    
+    const mass = cart.map((prod) => {
+      return {
+        webshop_id: Response.id,
+        item_id: prod.id,
+        cnt: prod.id === 37888 ? Number(prod.price) : Number(prod.count),
+      };
+    });
+    await createOrderStep2([...mass]);
+    // if (bonusSumm) {
+    //   await withdrawPoints({
+    //     doc_id: Response.id,
+    //     amount: 0,
+    //     idacc: 1,
+    //   });
+    // }
+    const data = await createOrderFinalStep({
+      ruleId: 38,
+      // paysystem: pay_system_type.value,
+      paysystem: "YooMoney",
+      webshopId: Response.id,
+      sum: _.round(Number(totalCartPrice), 2),
+      // sum: _.round(Number(totalCartPrice - bonusSumm), 2),
+    });
+    window.location = data.confirmation.confirmation_url;
+    // }
+    setInAction(false);
+  };
 
   return (
     <>
@@ -447,6 +514,8 @@ export default function CartCheckoutPage() {
               </Card>
               <Card title="Комментарий к заказу" className="md:mt-0 mt-2">
                 <textarea
+                  value={comm}
+                  onChange={(e) => setComm(e.currentTarget.value)}
                   className="w-full h-22 border border-gray-300 rounded-lg resize-none p-2"
                   placeholder=""
                 ></textarea>
@@ -461,7 +530,7 @@ export default function CartCheckoutPage() {
             </Card>
             <Button
               className=" w-full md:mt-10 mt-5"
-              onClick={handleCreateOrder}
+              onClick={createAndPayOrder}
             >
               Оформить заказ
             </Button>

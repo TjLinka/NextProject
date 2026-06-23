@@ -2,6 +2,7 @@
 "use server";
 import { serverFetch } from "@/lib/auth";
 import { transferMoneyBetweenUserRequest } from "@/requsetModel/types";
+import { param } from "framer-motion/client";
 import moment from "moment";
 import { Nullable } from "primereact/ts-helpers";
 // import { testConnection } from "./firebird";
@@ -158,11 +159,11 @@ export const createAgent = async ({
     }),
   });
   console.log(res);
-  
+
   return {
     status: res.status,
-    data: await res.json()
-  }
+    data: await res.json(),
+  };
 };
 
 export const editAgentInfo = async (data: any) => {
@@ -179,4 +180,43 @@ export const editAgentInfo = async (data: any) => {
   console.log(result);
 
   return result;
+};
+
+export const createOrderStep1 = async (params: any) => {
+  const res = await serverFetch("/api/partner/Webshop/create", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  return await res.json();
+};
+export const createOrderStep2 = async (params: any) => {
+  const res = await serverFetch("/api/partner/Webshop/add-basket-detail", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
+
+  return result;
+};
+
+export const withdrawPoints = async (params: any) => {
+  const res = await serverFetch("/api/partner/Webshop/withdraw-gp", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  return await res.json();
+};
+export const createOrderFinalStep = async (params: any) => {
+  const res = await serverFetch("/api/partner/Payment/do", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  return await res.json();
 };

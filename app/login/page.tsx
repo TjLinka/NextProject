@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [inAction, setInAction] = useState(false);
   const [isLoginSuccess, setisLoginSuccess] = useState(false);
+  const [loginError, setLoginError] = useState('')
 
   const handleSumbit = async () => {
     setInAction(true);
@@ -26,12 +27,15 @@ export default function LoginPage() {
       credentials: "include",
     });
     const data = await res.json();
-    setisLoginSuccess(true);
-
-    setTimeout(() => {
-      setUserInfo(data);
-      router.push("/");
-    }, 500);
+    if (data.StatusCode !== 401) {
+      setisLoginSuccess(true);
+      setTimeout(() => {
+        setUserInfo(data);
+        router.push("/");
+      }, 500);
+    } else {
+      setLoginError(data.Message);
+    }
   };
 
   useEffect(() => {
@@ -89,6 +93,7 @@ export default function LoginPage() {
         >
           Войти
         </Button>
+        {loginError && <span className="text-sm text-red-500">{loginError}</span>}
         <p className="font-semibold flex md:flex-row flex-col items-center  gap-2 mt-5">
           Вы ещё не с нами?{" "}
           <Link href={"/registration"} className="underline">

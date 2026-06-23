@@ -84,7 +84,7 @@ export default function ProfileClient({
                 title={agentBalance[0]?.name}
                 link={true}
                 linkUrl="/finance/personal-account"
-                text={localInt(agentBalance[0]?.summ)}
+                text={`${localInt(agentBalance[0]?.summ)} ₽`}
               />
               {/* <Caption
                 inline={true}
@@ -102,11 +102,13 @@ export default function ProfileClient({
           >
             <div className="flex md:gap-5 gap-2 items-center w-fit">
               <p className=" leading-[100%] text-gray-500 truncate text-sm">
-                {`http://localhost:3000/registration?id=${agentInfo.id}`}
+                {`${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}`}
               </p>
               <Image
                 onClick={() =>
-                  copy("http://localhost:3000/registration/000068")
+                  copy(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration/${agentInfo.id}`,
+                  )
                 }
                 alt="Copy Icon"
                 src={"/icons/CopyIcon.svg"}

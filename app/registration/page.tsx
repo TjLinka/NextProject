@@ -15,10 +15,17 @@ import { Nullable } from "primereact/ts-helpers";
 import { useWindowSize } from "@reactuses/core";
 import { createAgent } from "@/lib/actions";
 import { useAgentStore } from "@/store/agentStore";
-import { useRouter } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
 export default function RegistrationPage() {
   const router = useRouter();
+  const userHashId = useSearchParams().get("id");
+
   const [regErrorText, setregErrorText] = useState("");
   const [name, setName] = useState("");
   const [surname, setLastname] = useState("");
@@ -43,10 +50,14 @@ export default function RegistrationPage() {
 
   useEffect(() => {
     async function foo() {
-      const { sponsor_id, sponsor_name } =
-        await getSponsorForRegistration("00000069");
-      setSponsorId(sponsor_id);
-      setSponsorName(sponsor_name);
+      if (userHashId) {
+        const { sponsor_id, sponsor_name } =
+          await getSponsorForRegistration(userHashId);
+        console.log(sponsor_id, sponsor_name);
+
+        setSponsorId(sponsor_id);
+        setSponsorName(sponsor_name);
+      }
     }
     foo();
   }, []);
@@ -54,7 +65,7 @@ export default function RegistrationPage() {
   const handleRegistration = async () => {
     setInAction(true);
     const res = await createAgent({
-      sponsor_id: 2,
+      sponsor_id,
       surname: surname,
       mobile_phone: phone,
       birth_date: bth_dte,
@@ -62,7 +73,7 @@ export default function RegistrationPage() {
       password: password,
     });
     console.log(res);
-    
+
     if (res.status !== 400 && res.status !== 500) {
       const res2 = await fetch("/api/login", {
         method: "POST",
@@ -209,12 +220,12 @@ export default function RegistrationPage() {
               <span className="font-semibold">Телефон:</span>
               <span className="ml-2">{phone}</span>
             </p>
-            {/* <p className="mt-2 md:text-lg text-sm ">
+            <p className="mt-2 md:text-lg text-sm ">
               <span className="font-semibold">Пригласитель:</span>
               <span className="ml-2">
                 {sponsor_id} - {sponsor_name}
               </span>
-            </p> */}
+            </p>
 
             <Button
               onClick={handleRegistration}
@@ -223,7 +234,9 @@ export default function RegistrationPage() {
             >
               Зарегестрировать
             </Button>
-            {regErrorText && <p className="text-red-500 font-semibold mt-1">{regErrorText}</p>}
+            {regErrorText && (
+              <p className="text-red-500 font-semibold mt-1">{regErrorText}</p>
+            )}
           </div>
         )}
         <hr className="my-5 border-0 h-0.5 bg-(--main-color)" />

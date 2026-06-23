@@ -59,8 +59,11 @@ export async function serverFetch(
     credentials: 'include',
     cache: "no-store",
   });
+
+  console.log(url);
   
-  if (res.status !== 401) return res;
+
+  if (res.status !== 401 || url === "/api/partner/Agent/login") return res;
   
   const newToken = await refreshAccessToken();
 

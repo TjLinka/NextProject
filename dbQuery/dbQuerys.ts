@@ -51,7 +51,7 @@ export const getProfileData = async <T>() => {
     queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
   );
   res.avatar = `${process.env.IMG_URL}/Avatars/1.jpg?salt=${Math.random(0, 999999)}`;
-  
+
   // const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
   // const data = await res.json()
   return res;
@@ -94,24 +94,22 @@ export const getCatalog = async (
   // });
   // return res;
   const res = serverFetch("/api/partner/Catalog/get-catalog");
-  const data = (await res).json()
-  return data
+  const data = (await res).json();
+  return data;
 };
 
 // ПОЛЬЗОВАТЕЛЬ
 
-
-
 export const getPersonalAccountInfo = async (
   from: Date | null = null,
   to: Date | null = null,
-  acc: number | null = 0
+  acc: number | null = 0,
 ) => {
   console.log(acc);
-  
+
   const agentId = await getIdFromToken();
   const res = await withDatabase((db) =>
-    query<{ income: number, outcome: number }>(
+    query<{ income: number; outcome: number }>(
       db,
       "SELECT * FROM SP_AGENTPERSACCOUNTFILTERGET(?,?,?,?)",
       [agentId, from, to, acc],
@@ -246,8 +244,12 @@ export const getOrdersList = async (from: unknown, to: unknown) => {
   // const agentId = await getIdFromToken();
 
   // return await makeReq("SP_WEBSHOPGETBYAGENTFILTER", [agentId, from, to, null]);
-  const res = await serverFetch("/api/partner/Webshop/get-list");
-  return await res.json()
+  const res = await serverFetch("/api/partner/Webshop/get-list", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+
+  return await res.json();
 };
 
 export const getOrderInfo = async (doc_id: string | number) => {
@@ -335,9 +337,9 @@ export const getWithdrawList = async (
 // MISC
 export const getSponsorForRegistration = async (hash: string) => {
   const res = await makeReqSingle("AGENTS_ID_HASH_GET ", [hash]);
-  const { id, name } = await makeReqSingle("SP_AGENTSGET", [res.id]);
+  const { id, lastname } = await makeReqSingle("SP_AGENTSGET", [res.id]);
   return {
     sponsor_id: id,
-    sponsor_name: name,
+    sponsor_name: lastname,
   };
 };
