@@ -13,15 +13,15 @@ export default async function Home() {
   const agentInfo = await getProfileData<User>();
   const sponsorInfo = await getSponsorInfo<User>();
   const agentBalance = await getBalance();
-  if (agentInfo && sponsorInfo && agentBalance) {
-    return (
-      <div>
-        <ProfileClient
-          agentInfo={agentInfo}
-          sponsorInfo={sponsorInfo}
-          agentBalance={agentBalance}
-        />
-      </div>
-    );
-  }
+  console.log(agentInfo, sponsorInfo, agentBalance);
+
+  return (
+    <div>
+      <ProfileClient
+        agentInfo={agentInfo}
+        sponsorInfo={sponsorInfo}
+        agentBalance={agentBalance}
+      />
+    </div>
+  );
 }

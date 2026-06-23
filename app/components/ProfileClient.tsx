@@ -28,7 +28,6 @@ export default function ProfileClient({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [text, copy] = useCopyToClipboard();
-  console.log(sponsorInfo);
 
   return (
     <div>
