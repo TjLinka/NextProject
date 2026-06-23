@@ -50,7 +50,7 @@ export const getProfileData = async <T>() => {
   const res = await withDatabase((db) =>
     queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
   );
-  res.avatar = `${process.env.IMG_URL}/Avatars/1.jpg?salt=${Math.random(0, 999999)}`;
+  // res.avatar = `${process.env.IMG_URL}/Avatars/1.jpg?salt=${Math.random(0, 999999)}`;
 
   // const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
   // const data = await res.json()
@@ -126,7 +126,7 @@ export const getSponsorInfo = async <T>() => {
     const res2 = await withDatabase((db) =>
       queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [res1.id_parent]),
     );
-    res2.avatar = `${process.env.IMG_URL}/Avatars/1.jpg`;
+    // res2.avatar = `${process.env.IMG_URL}/Avatars/1.jpg`;
     return res2;
   }
 };
