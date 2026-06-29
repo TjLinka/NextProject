@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { localInt } from "@/lib/utils";
+import Link from "next/link";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 export const CartComponent = (data: any) => {
+  console.log(data);
+  
   const tableColumns = [
     {
       f: "article",
@@ -16,7 +19,7 @@ export const CartComponent = (data: any) => {
       f: "name",
       h: "Название",
       formatter: (row: any) => {
-        return row.name;
+        return <Link href={`#`} className="hover:underline">{row.name}</Link>;
       },
     },
     {

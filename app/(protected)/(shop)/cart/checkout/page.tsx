@@ -178,7 +178,7 @@ export default function CartCheckoutPage() {
       from_city: String(
         await getIndexForDelivery("г. Пермь, ул. Ветлужская, 3"),
       ),
-      tariff_id: "137",
+      tariff_id: "483",
       price: String(totalCartPrice),
       to: String(selectedDeliverySystem === 1 ? val : index),
       to_city: String(index),

@@ -11,6 +11,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { MayNeddProducts } from "../catalog/product/[id]/components/MayNeedProducts";
 import { SectionTitle } from "@/components/UI/SectionTitle";
 import { useEffect, useRef, useState } from "react";
+import { useToggleFavourite } from "@/hooks/useFavorites";
 
 export default function CartPage() {
   const isFirstRender = useRef(true);
@@ -58,18 +59,27 @@ export default function CartPage() {
   //   }
   // }, [cart]);
 
+  const { mutate: toggleFavourite } = useToggleFavourite();
+
+  const handleAddProuctsInFavourites = () => {
+    cart.forEach((p) => {
+      toggleFavourite({ id: p.id, isFavourite: false });
+    })
+  };
+
+
   if (cart.length <= 0) return <EmptyCart />;
 
   return (
     <>
-      <div className="flex justify-between">
-        <h1 className="text-[56px] font-semibold inline-block border-b-2 border-(--main-color)">
+      <div className="flex items-center  justify-between">
+        <h1 className="text-[56px] font-semibold inline-block border-b-2 leading-[100%] border-(--main-color)">
           Корзина
         </h1>
         <Button onClick={handleClearCart}>Очистить коризину</Button>
       </div>
       {/* <hr className="border-gray-300 my-5" /> */}
-      <div className="flex lg:flex-row flex-col md:gap-10 gap-2 items-start mt-5">
+      <div className="flex lg:flex-row flex-col md:gap-10 gap-2 items-start mt-10">
         <div
           className="flex flex-col gap-4 lg:w-2/3 lg:h-auto md:max-h-[48vh] max-h-[34vh] overflow-y-auto pr-2  py-1"
           id="cartWrapper"
@@ -104,8 +114,14 @@ export default function CartPage() {
               </span>
             </p>
           </div>
+          <Button
+            className="w-full mt-5"
+            onClick={handleAddProuctsInFavourites}
+          >
+            Добавить все товары в избранное
+          </Button>
           <Link href="/cart/checkout">
-            <Button className="w-full mt-5">Перейт к оформлению</Button>
+            <Button className="w-full mt-5">Перейти к оформлению</Button>
           </Link>
         </div>
         <ConfirmDialog draggable={false} />

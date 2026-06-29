@@ -25,6 +25,7 @@ import {
 export default function RegistrationContent() {
   const router = useRouter();
   const userHashId = useSearchParams().get("id");
+  const userHashMsType = useSearchParams().get("t");
 
   const [regErrorText, setregErrorText] = useState("");
   const [name, setName] = useState("");
@@ -71,6 +72,7 @@ export default function RegistrationContent() {
       birth_date: bth_dte,
       email: email,
       password: password,
+      ms_type: userHashMsType,
     });
     console.log(res);
 

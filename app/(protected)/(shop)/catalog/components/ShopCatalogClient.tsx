@@ -88,8 +88,8 @@ export const ShopCatalogClient = ({
 
   return (
     <div>
-      <div className=" md:gap-5 gap-2 items-stretch">
-        {/* <div
+      <div className="gap-2 items-stretch grid grid-cols-4">
+        <div
           className="flex shrink-0 justify-center items-center text-white gap-2 px-4 rounded-lg cursor-pointer bg-(--main-color)"
           onClick={() => {
             if (width > 800) setShowFilters(!showFilter);
@@ -104,8 +104,8 @@ export const ShopCatalogClient = ({
             className="w-7"
           />
           <span className="text-lg lg:inline hidden">Фильтры</span>
-        </div> */}
-        {/* <div className="w-full flex justify-center items-center gap-2 col-span-4">
+        </div>
+        <div className="w-full flex justify-center items-center gap-2 col-span-3">
           <InputText
             value={searchInput}
             className="w-full"
@@ -117,37 +117,18 @@ export const ShopCatalogClient = ({
               if (e.key === "Enter") handleSearch();
             }}
           />
-        </div> */}
+        </div>
       </div>
-
-      <div className="mt-5">
-        <div className="flex flex-wrap gap-2">
-          {catagoryes.map((c: any) => (
-            <p
-              key={c.id}
-              onClick={() => setSelectedCategory(c.id)}
-              className={clsx(
-                "p-2  text-black bg-white text-sm font-semibold rounded-lg border border-(--main-color) shadow cursor-pointer lowercase",
-                {
-                  "bg-(--main-color)!  capitalize": selectedCategory === c.id,
-                },
-              )}
-            >
-              {c.name}
-            </p>
-          ))}
-        </div>
-        <div
-          className={clsx(
-            "grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 w-full mt-5",
-          )}
-        >
-          {visibleData?.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-          {/* sentinel внутри грида */}
-          <div ref={sentinelRef} className="col-span-full h-1" />
-        </div>
+      <div
+        className={clsx(
+          "grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 w-full mt-5",
+        )}
+      >
+        {visibleData?.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+        {/* sentinel внутри грида */}
+        <div ref={sentinelRef} className="col-span-full h-1" />
       </div>
 
       <Dialog

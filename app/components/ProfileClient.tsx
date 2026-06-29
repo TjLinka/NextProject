@@ -100,14 +100,31 @@ export default function ProfileClient({
             titleClass="text-xl"
             className="mt-5"
           >
-            <div className="flex md:gap-5 gap-2 items-center w-fit">
+            <div className="flex md:gap-5 gap-2 items-center justify-between w-full">
               <p className=" leading-[100%] text-gray-500 truncate text-sm">
-                {`${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}`}
+                {`${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}&t=0`}
               </p>
               <Image
                 onClick={() =>
                   copy(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration/${agentInfo.id}`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration/${agentInfo.id}&t=0`,
+                  )
+                }
+                alt="Copy Icon"
+                src={"/icons/CopyIcon.svg"}
+                width={100}
+                height={100}
+                className="md:w-5.5 w-5 md:h-5.5 h-5 cursor-pointer"
+              />
+            </div>
+            <div className="flex md:gap-5 gap-2 items-center justify-between w-full mt-2">
+              <p className=" leading-[100%] text-gray-500 truncate text-sm">
+                {`${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}&t=10`}
+              </p>
+              <Image
+                onClick={() =>
+                  copy(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration/${agentInfo.id}&t=10`,
                   )
                 }
                 alt="Copy Icon"

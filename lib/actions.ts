@@ -136,6 +136,7 @@ export const createAgent = async ({
   birth_date,
   email,
   password,
+  ms_type,
 }: {
   sponsor_id: number | string;
   password: string;
@@ -143,6 +144,7 @@ export const createAgent = async ({
   mobile_phone: string;
   email: string;
   birth_date: Date | string | null | Nullable;
+  ms_type: string | number | null;
 }) => {
   const res = await serverFetch("/api/partner/SignUp/create-agent", {
     method: "POST",
@@ -155,7 +157,7 @@ export const createAgent = async ({
       email,
       password,
       country_id: 0,
-      ms_type: 10,
+      ms_type,
     }),
   });
   console.log(res);
@@ -219,4 +221,26 @@ export const createOrderFinalStep = async (params: any) => {
   });
 
   return await res.json();
+};
+
+export const CancleOrder = async (id: string | number) => {
+  const res = await serverFetch(`/api/partner/Webshop/cancel/${id}`, {
+    method: "POST",
+    body: JSON.stringify({
+      doc_id: id,
+    }),
+  });
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
+
+  return result;
+};
+
+
+export const getMaterial = async (id: any) => {
+  console.log(id);
+  const res = serverFetch(`/api/partner/Materials/get/${id}`);
+  return (await res).json();
 };

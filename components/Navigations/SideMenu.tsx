@@ -120,12 +120,26 @@ export const SideMenu = ({ className }: { className?: string }) => {
         <li>
           <SubMenuLink url="/news" icon_name="News" title="Новости" />
         </li>
-        <li>
+        {/* <li>
           <SubMenuLink
             url="/news"
             icon_name="HelpQuestionmark"
             title="Информация"
           />
+        </li> */}
+        <li>
+          <SubMenuCollapse title="Информация" icon="About">
+            {/* <SubMenuLink
+              url="/about"
+              icon_name="HelpQuestionmark"
+              title="О компании"
+            /> */}
+            <SubMenuLink
+              url="/delivery"
+              icon_name="Delivery"
+              title="О доставке"
+            />
+          </SubMenuCollapse>
         </li>
         {/* <li>
           <SubMenuLink
