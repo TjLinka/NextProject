@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCatalog } from "@/dbQuery/dbQuerys";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { Dropdown } from "primereact/dropdown";
 import { Collapse } from "@/components/UI/Collapse";
 import { Dialog } from "primereact/dialog";
 import { useWindowSize } from "@reactuses/core";
@@ -89,7 +90,7 @@ export const ShopCatalogClient = ({
   return (
     <div>
       <div className="gap-2 items-stretch grid grid-cols-4">
-        <div
+        {/* <div
           className="flex shrink-0 justify-center items-center text-white gap-2 px-4 rounded-lg cursor-pointer bg-(--main-color)"
           onClick={() => {
             if (width > 800) setShowFilters(!showFilter);
@@ -104,7 +105,18 @@ export const ShopCatalogClient = ({
             className="w-7"
           />
           <span className="text-lg lg:inline hidden">Фильтры</span>
-        </div>
+        </div> */}
+        <Dropdown
+          value={selectedCategory}
+          showClear
+          optionValue="id"
+          virtualScrollerOptions={{ itemSize: 38 }}
+          onChange={(e) => setSelectedCategory(e.value)}
+          options={catagoryes}
+          optionLabel="name"
+          placeholder="Укажите категорию"
+          className="w-full md:w-14rem"
+        />
         <div className="w-full flex justify-center items-center gap-2 col-span-3">
           <InputText
             value={searchInput}

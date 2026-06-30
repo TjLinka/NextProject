@@ -178,7 +178,7 @@ export default function CartCheckoutPage() {
       from_city: String(
         await getIndexForDelivery("г. Пермь, ул. Ветлужская, 3"),
       ),
-      tariff_id: "483",
+      tariff_id: "482",
       price: String(totalCartPrice),
       to: String(selectedDeliverySystem === 1 ? val : index),
       to_city: String(index),
@@ -190,8 +190,8 @@ export default function CartCheckoutPage() {
     const data = await res.json();
     console.log(data);
 
-    // setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
-    // setDelPriceModal(false);
+    setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
+    setDelPriceModal(false);
   };
 
   const createAndPayOrder = async () => {

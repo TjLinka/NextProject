@@ -59,7 +59,7 @@ export const getProfileData = async <T>() => {
 
 export const getCatalog = async (
   find_str: string | null = null,
-  section_id: number | null = null,
+  section_id: number| null | string = null,
   i_name = null,
   i_articul = null,
   catalog_id = null,
@@ -93,7 +93,18 @@ export const getCatalog = async (
   //   p.image_url = `${process.env.IMG_URL}/GoodsPics/${p.id}_0.jpg?salt=${Math.random(0, 999999)}`;
   // });
   // return res;
-  const res = serverFetch("/api/partner/Catalog/get-catalog");
+
+
+  const params = new URLSearchParams();
+  if (find_str) {
+    params.append("find_str", find_str);
+  }
+  if (section_id) {
+    params.append("sectionId", String(section_id));
+  }
+  const queryString = params.toString();
+  
+  const res = serverFetch(`/api/partner/Catalog/get-catalog?${queryString}`);
   const data = (await res).json();
   return data;
 };
@@ -304,14 +315,17 @@ export const getStructureData = async (
 
 // Новости
 export const getNewsList = async () => {
-  const res = await makeReq("SP_NEWSGET", [null, 0]);
-  res.forEach((n) => {
-    n.image_url = `${process.env.IMG_URL}/NewsPics/${n.id}.jpg?salt=${Math.random(0, 999999)}`;
-  });
-  return res;
+  // const res = await makeReq("SP_NEWSGET", [null, 0]);
+  // res.forEach((n) => {
+  //   n.image_url = `${process.env.IMG_URL}/NewsPics/${n.id}.jpg?salt=${Math.random(0, 999999)}`;
+  // });
+  const res = await serverFetch("/api/partner/News/get-list");
+  return await res.json();
 };
 export const getNews = async (id: number) => {
-  return await makeReqSingle("SP_NEWSGET", [id, 0]);
+  // return await makeReqSingle("SP_NEWSGET", [id, 0]);
+  const res = await serverFetch(`/api/partner/News/get/${id}`);
+  return await res.json()
 };
 
 // Вывод средств

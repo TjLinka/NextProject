@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { Card } from "../UI/Card";
 import { SectionTitle } from "../UI/SectionTitle";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -9,7 +8,7 @@ export const RefLinksModal = () => {
     <div className="flex flex-col items-center">
       <SectionTitle>Реферальная ссылка</SectionTitle>
       <div className="md:mt-3 mt-1 md:text-lg font-medium">
-        https://office.antler/registration/00000069
+        https://office.antlercosmetic.ru/registration/00000069
       </div>
       <SectionTitle className="mt-4">
         Поделиться ссылкой в соц. сетях

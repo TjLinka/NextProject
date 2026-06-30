@@ -9,6 +9,8 @@ interface newsProps {
 
 export default async function NewsPage() {
   const newsList: newsProps[] = await getNewsList();
+  console.log(newsList);
+  
   return (
     <div className="grid grid-cols-2 gap-5">
       {newsList.map((n) => {

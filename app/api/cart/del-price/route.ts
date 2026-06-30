@@ -6,7 +6,6 @@ export async function GET(request: NextRequest) {
   const res = await serverFetch(
     `/api/partner/Delivery/get-delivery-prices?${searchParams.toString()}`,
   );    
-  console.log(res);
   
   return res;
 }
