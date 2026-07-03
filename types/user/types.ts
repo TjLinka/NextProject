@@ -11,4 +11,6 @@ export type User = {
   country: string;
   address: string;
   male: number;
+  ms_type: number;
+  msflag: number;
 };

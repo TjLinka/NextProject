@@ -36,8 +36,8 @@ export default function ProfileClient({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [text, copy] = useCopyToClipboard();
-  console.log(sponsorInfo);
-
+  console.log(agentInfo);
+  
   return (
     <div>
       <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
@@ -52,7 +52,7 @@ export default function ProfileClient({
             width={500}
             height={500}
             src={agentInfo?.avatar}
-            className="w-20 rounded-full"
+            className="w-20 h-20 rounded-full object-cover"
             onLoad={() => setImageLoaded(true)}
           />
           <p className="md:text-2xl text-xl font-semibold">
@@ -117,23 +117,25 @@ export default function ProfileClient({
                 className="md:w-5.5 w-5 md:h-5.5 h-5 cursor-pointer"
               />
             </div>
-            <div className="flex md:gap-5 gap-2 items-center justify-between w-full mt-2">
-              <p className=" leading-[100%] text-gray-500 truncate text-sm">
-                {`${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}&t=10`}
-              </p>
-              <Image
-                onClick={() =>
-                  copy(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration/${agentInfo.id}&t=10`,
-                  )
-                }
-                alt="Copy Icon"
-                src={"/icons/CopyIcon.svg"}
-                width={100}
-                height={100}
-                className="md:w-5.5 w-5 md:h-5.5 h-5 cursor-pointer"
-              />
-            </div>
+            {agentInfo.ms_type >= 20 && (
+              <div className="flex md:gap-5 gap-2 items-center justify-between w-full mt-2">
+                <p className=" leading-[100%] text-gray-500 truncate text-sm">
+                  {`${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}&t=10`}
+                </p>
+                <Image
+                  onClick={() =>
+                    copy(
+                      `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration/${agentInfo.id}&t=10`,
+                    )
+                  }
+                  alt="Copy Icon"
+                  src={"/icons/CopyIcon.svg"}
+                  width={100}
+                  height={100}
+                  className="md:w-5.5 w-5 md:h-5.5 h-5 cursor-pointer"
+                />
+              </div>
+            )}
           </Card>
           {/* <Card
             title="Адресс"

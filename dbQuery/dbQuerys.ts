@@ -46,15 +46,15 @@ export const getBalance = async () => {
   return res;
 };
 export const getProfileData = async <T>() => {
-  const agentId = await getIdFromToken();
-  const res = await withDatabase((db) =>
-    queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
-  );
+  // const agentId = await getIdFromToken();
+  // const res = await withDatabase((db) =>
+  //   queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
+  // );
   // res.avatar = `${process.env.IMG_URL}/Avatars/1.jpg?salt=${Math.random(0, 999999)}`;
 
-  // const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
-  // const data = await res.json()
-  return res;
+  const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
+  const data = await res.json()
+  return data;
 };
 
 export const getCatalog = async (

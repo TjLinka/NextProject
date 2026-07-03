@@ -60,7 +60,7 @@ export default async function ProductPage({
           </div>
         </Card>
       </div>
-      <TabView className="mt-5">
+      {/* <TabView className="mt-5">
         <TabPanel
           header="Отзывы"
           rightIcon="pi pi-star ml-2"
@@ -106,7 +106,7 @@ export default async function ProductPage({
             velit, sed quia non numquam eius modi.
           </p>
         </TabPanel>
-      </TabView>
+      </TabView> */}
       <p className="text-2xl font-semibold mt-10 inline-block border-b-2 border-(--main-color)">
         Может также пригодиться
       </p>

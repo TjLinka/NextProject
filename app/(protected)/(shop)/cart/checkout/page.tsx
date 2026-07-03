@@ -101,9 +101,6 @@ export default function CartCheckoutPage() {
     getPaySystems();
   }, []);
 
-  const totalPayPrice = Number(totalPrice) - Number(bonusSumm);
-  const maxForWithdraw = Math.min(balance[0]?.summ, totalCartPrice * 0.9);
-
   const handleSelectDeliverySystem = (id: number) => {
     setSelectedDeliverySystem(id);
   };
@@ -226,7 +223,7 @@ export default function CartCheckoutPage() {
       delivery_address: "Москва",
     });
     console.log(Response);
-    
+
     const mass = cart.map((prod) => {
       return {
         webshop_id: Response.id,
@@ -235,25 +232,35 @@ export default function CartCheckoutPage() {
       };
     });
     await createOrderStep2([...mass]);
-    // if (bonusSumm) {
-    //   await withdrawPoints({
-    //     doc_id: Response.id,
-    //     amount: 0,
-    //     idacc: 1,
-    //   });
-    // }
+    if (bonusSumm) {
+      const res = await withdrawPoints({
+        doc_id: Response.id,
+        amount: bonusSumm,
+        idacc: 0,
+      });
+      console.log(res);
+      
+    }
     const data = await createOrderFinalStep({
       ruleId: 38,
       // paysystem: pay_system_type.value,
       paysystem: "YooMoney",
       webshopId: Response.id,
-      sum: _.round(Number(totalCartPrice), 2),
+      sum: _.round(Number(totalPayPrice), 2),
       // sum: _.round(Number(totalCartPrice - bonusSumm), 2),
     });
+    console.log(data);
+
     window.location = data.confirmation.confirmation_url;
     // }
     setInAction(false);
   };
+
+  // Computed
+  const totalOrderPrice = Number(totalPrice) + Number(delPrice);
+
+  const totalPayPrice = Number(totalOrderPrice) - Number(bonusSumm);
+  const maxForWithdraw = Math.min(balance[0]?.summ, totalCartPrice * 0.7);
 
   return (
     <>
@@ -393,9 +400,9 @@ export default function CartCheckoutPage() {
               ) : null}
             </div>
             <SectionTitle className="md:mt-5 mt-2">Способ оплаты</SectionTitle>
-            <Card title="Выберите способ оплаты" className="md:mt-5 mt-2">
+            <Card title="Выберите способ оплаты" className="md:mt-5 mt-2" fit>
               <div className="md:flex grid grid-cols-2 md:gap-5 gap-2">
-                <div
+                {/* <div
                   onClick={() => setselectedPaySystem(1)}
                   className={clsx(
                     "bg-gray-300 grayscale-100 p-2 opacity-60 rounded-md flex justify-center items-center md:w-1/5 md:h-20 h-15 cursor-pointer transition-[background, opacity, box-shadow] duration-250",
@@ -412,11 +419,11 @@ export default function CartCheckoutPage() {
                     src={"/imgs/SberPay.svg"}
                     className="w-full h-full"
                   />
-                </div>
+                </div> */}
                 <div
                   onClick={() => setselectedPaySystem(2)}
                   className={clsx(
-                    "bg-gray-300 grayscale-100 p-2 opacity-60 rounded-md flex justify-center items-center md:w-1/5 md:h-20 h-15 cursor-pointer transition-[background, opacity, box-shadow] duration-250",
+                    "bg-gray-300 grayscale-100 p-2 opacity-60 rounded-md flex justify-center items-center  md:h-20 h-15 cursor-pointer transition-[background, opacity, box-shadow] duration-250",
                     {
                       "grayscale-0! opacity-100! bg-gray-100! ring-(--main-color) ring-2":
                         selectedPaySystem === 2,
@@ -431,7 +438,7 @@ export default function CartCheckoutPage() {
                     className="w-full h-full"
                   />
                 </div>
-                <div
+                {/* <div
                   onClick={() => setselectedPaySystem(3)}
                   className={clsx(
                     "bg-gray-300 grayscale-100 p-2 opacity-60 rounded-md flex justify-center items-center md:w-1/5 md:h-20 h-15 cursor-pointer transition-[background, opacity, box-shadow] duration-250",
@@ -484,7 +491,7 @@ export default function CartCheckoutPage() {
                     src={"/imgs/sbp.svg"}
                     className="w-full h-full"
                   />
-                </div>
+                </div> */}
               </div>
             </Card>
             <div className="grid grid-cols-2 md:gap-5 gap-2 mt-5">
@@ -497,7 +504,7 @@ export default function CartCheckoutPage() {
                     </span>
                   </p>
                   <span className="text-red-500 text-sm">
-                    Макс. для списания: {maxForWithdraw} ₽
+                    Макс. для списания: {maxForWithdraw.toFixed(2)} ₽
                   </span>
                   <InputNumber
                     inputId="currency-us"
@@ -524,6 +531,22 @@ export default function CartCheckoutPage() {
             <SectionTitle className="mt-5">Итог</SectionTitle>
             <Card className="mt-5">
               <p>
+                <span>Сумма корзины: </span>
+                <span>{localInt(totalPrice)} ₽</span>
+              </p>
+              {Number(delPrice) > 0 && (
+                <p>
+                  <span>Стоимость доставки: </span>
+                  <span>+ {localInt(Number(delPrice))} ₽</span>
+                </p>
+              )}
+              {Number(bonusSumm) > 0 && (
+                <p>
+                  <span>Сумма баллов для списания: </span>
+                  <span>- {localInt(Number(bonusSumm))} ₽</span>
+                </p>
+              )}
+              <p className="text-xl font-semibold mt-2">
                 <span>Итого к оплате: </span>
                 <span>{localInt(totalPayPrice)} ₽</span>
               </p>

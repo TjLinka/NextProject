@@ -137,6 +137,7 @@ export const createAgent = async ({
   email,
   password,
   ms_type,
+  country_id,
 }: {
   sponsor_id: number | string;
   password: string;
@@ -145,6 +146,7 @@ export const createAgent = async ({
   email: string;
   birth_date: Date | string | null | Nullable;
   ms_type: string | number | null;
+  country_id: string | number | null;
 }) => {
   const res = await serverFetch("/api/partner/SignUp/create-agent", {
     method: "POST",
@@ -156,8 +158,9 @@ export const createAgent = async ({
       birth_date,
       email,
       password,
-      country_id: 0,
+      country_id,
       ms_type,
+      
     }),
   });
   console.log(res);
@@ -207,12 +210,17 @@ export const createOrderStep2 = async (params: any) => {
 };
 
 export const withdrawPoints = async (params: any) => {
+  console.log(params);
+  
   const res = await serverFetch("/api/partner/Webshop/withdraw-gp", {
     method: "POST",
     body: JSON.stringify(params),
   });
 
-  return await res.json();
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
 };
 export const createOrderFinalStep = async (params: any) => {
   const res = await serverFetch("/api/partner/Payment/do", {
@@ -220,7 +228,10 @@ export const createOrderFinalStep = async (params: any) => {
     body: JSON.stringify(params),
   });
 
-  return await res.json();
+  console.log(res);
+  
+
+  return await res.json()
 };
 
 export const CancleOrder = async (id: string | number) => {
@@ -238,9 +249,18 @@ export const CancleOrder = async (id: string | number) => {
   return result;
 };
 
-
 export const getMaterial = async (id: any) => {
   console.log(id);
   const res = serverFetch(`/api/partner/Materials/get/${id}`);
   return (await res).json();
+};
+
+export const finishPayment = async (invId: string) => {
+  const res = await serverFetch(`/api/partner/Payment/${invId}/finish`);
+  console.log(res);
+  
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  return result;
 };

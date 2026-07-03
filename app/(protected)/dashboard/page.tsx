@@ -34,7 +34,7 @@ export default async function Dashboard() {
           </Link>
         </div>
       </Card>
-      <Card title="Бонусный счет">
+      <Card title="Персональный счет">
         <div className="flex gap-2 items-center h-full">
           <Image
             alt="Wallet Icon"

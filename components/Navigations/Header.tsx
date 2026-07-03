@@ -178,7 +178,7 @@ export const Header = () => {
                   alt=""
                   width={200}
                   height={200}
-                  className="w-full h-full"
+                  className="w-full h-full object-cover"
                 />
               )}
             </div>

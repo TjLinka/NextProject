@@ -8,6 +8,8 @@ import Link from "next/link";
 import { CartComponent } from "./components/CartComplect";
 import { getOrderInfo } from "@/dbQuery/dbQuerys";
 import { CancleOrderButton } from "./components/CancleOrderButton";
+import { RepeatOrderButton } from "./components/RepeatOrderButton";
+import { Product } from "../../../catalog/types";
 
 interface PageProps {
   params: {
@@ -20,7 +22,8 @@ export default async function OrderPage({ params }: PageProps) {
 
   const { sale, cart = [], delivery } = await getOrderInfo(id);
 
-
+  console.log(cart, 2222);
+  
 
   return (
     <>
@@ -33,9 +36,7 @@ export default async function OrderPage({ params }: PageProps) {
             Заказ № {id}
           </span>
         </div>
-        <div>
-          <Button>Повторить заказ</Button>
-        </div>
+        <RepeatOrderButton ids={[...cart.map((p) => p.catalog_id)]} />
       </div>
       <div className="grid md:grid-cols-2 gap-5 mt-5">
         <Card>

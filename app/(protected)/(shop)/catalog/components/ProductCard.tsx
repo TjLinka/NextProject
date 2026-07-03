@@ -108,11 +108,11 @@ export const ProductCard = React.memo(
         <div className="flex justify-between items-end md:mt-2 mt-1">
           <div className="md:text-xl text-sm font-semibold">Цена</div>
           <div className="flex md:flex-row flex-col md:gap-2 items-end">
-            {/* {!noCatalog && (
+            {!noCatalog && (
               <span className="text-red-400 line-through md:text-[16px] text-xs">
                 {localInt(product.pricex)} ₽
               </span>
-            )} */}
+            )}
             <span className="md:text-2xl font-semibold text-lg leading-[100%]">
               {localInt(product.price)} ₽
             </span>

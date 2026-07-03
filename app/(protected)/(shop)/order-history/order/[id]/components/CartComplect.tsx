@@ -19,7 +19,11 @@ export const CartComponent = (data: any) => {
       f: "name",
       h: "Название",
       formatter: (row: any) => {
-        return <Link href={`#`} className="hover:underline">{row.name}</Link>;
+        return (
+          <Link href={`/catalog/product/${row.catalog_id}`} className="hover:underline">
+            {row.name}
+          </Link>
+        );
       },
     },
     {

@@ -73,6 +73,7 @@ export default function RegistrationContent() {
       email: email,
       password: password,
       ms_type: userHashMsType,
+      country_id: sponsor_id ? 1 : 2,
     });
     console.log(res);
 
