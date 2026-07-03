@@ -107,7 +107,7 @@ export default function ProfileClient({
               <Image
                 onClick={() =>
                   copy(
-                    `${process.env.NEXT_PUBLIC_MAIN_URL}/registration/${agentInfo.id}&t=0`,
+                    `${process.env.NEXT_PUBLIC_MAIN_URL}/registration?id=${agentInfo.id}&t=0`,
                   )
                 }
                 alt="Copy Icon"
@@ -125,7 +125,7 @@ export default function ProfileClient({
                 <Image
                   onClick={() =>
                     copy(
-                      `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration/${agentInfo.id}&t=10`,
+                      `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}&t=10`,
                     )
                   }
                   alt="Copy Icon"
