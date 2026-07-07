@@ -12,6 +12,7 @@ import { MayNeddProducts } from "../catalog/product/[id]/components/MayNeedProdu
 import { SectionTitle } from "@/components/UI/SectionTitle";
 import { useEffect, useRef, useState } from "react";
 import { useToggleFavourite } from "@/hooks/useFavorites";
+import clsx from "clsx";
 
 export default function CartPage() {
   const isFirstRender = useRef(true);
@@ -21,6 +22,8 @@ export default function CartPage() {
   const totalCartPrice = useCartStore((state) => {
     return state.cart.reduce((acc, p) => acc + p.price * p.count, 0);
   });
+  const [isDeliveryFree, setIsDeliveryFree] = useState(false)
+  const [deliveryFreeMessage, setDeliveryFreeMessage] = useState('')
   const totlaCartProdutsUnic = useCartStore((state) => state.cart.length);
   const totlaCartProduts = useCartStore((state) => {
     return state.cart.reduce((acc, p) => acc + p.count, 0);
@@ -45,19 +48,19 @@ export default function CartPage() {
     });
   };
 
-  // useEffect(() => {
-  //   if (isFirstRender.current) {
-  //     isFirstRender.current = false;
-  //     return; // пропускаем первый вызов
-  //   }
-  //   const block = document.getElementById("cartWrapper");
-  //   if (block) {
-  //     block.scrollTo({
-  //       top: block.scrollHeight,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // }, [cart]);
+  useEffect(() => {
+    async function checkFreeDelivery() {
+      const res = await fetch("/api/cart/check-free-del", {
+        method: "POST",
+        body: JSON.stringify({ volume: totalCartPrice }),
+      });
+      const data = await res.json()
+      setDeliveryFreeMessage(data.control_resume);
+      if (data.upgrade_enabled) setIsDeliveryFree(true)
+      else setIsDeliveryFree(false);
+    }
+    checkFreeDelivery();
+  }, [totalCartPrice]);
 
   const { mutate: toggleFavourite } = useToggleFavourite();
 
@@ -113,6 +116,11 @@ export default function CartPage() {
                 {localInt(totlaCartProduts)} шт.
               </span>
             </p>
+            <span className={clsx('', {
+              'text-green-600 font-semibold' : isDeliveryFree
+            })}>
+              {deliveryFreeMessage}
+            </span>
           </div>
           <Button
             className="w-full mt-5"

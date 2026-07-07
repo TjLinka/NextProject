@@ -108,7 +108,7 @@ export const ProductCard = React.memo(
         <div className="flex justify-between items-end md:mt-2 mt-1">
           <div className="md:text-xl text-sm font-semibold">Цена</div>
           <div className="flex md:flex-row flex-col md:gap-2 items-end">
-            {!noCatalog && (
+            {((product.pricex !== product.price)) && (
               <span className="text-red-400 line-through md:text-[16px] text-xs">
                 {localInt(product.pricex)} ₽
               </span>
@@ -118,7 +118,7 @@ export const ProductCard = React.memo(
             </span>
           </div>
         </div>
-        {!noCatalog && (
+        {/* {!noCatalog && ( */}
           <div className="flex md:gap-5 gap-2 items-center  md:mt-4 mt-1">
             <Button
               disabled={product.webreg <= 0}
@@ -140,7 +140,7 @@ export const ProductCard = React.memo(
               className="md:w-7 w-4 md:h-7 h-4 cursor-pointer md:block hidden"
             />
           </div>
-        )}
+        {/* // )} */}
         <Toast ref={toast} />
       </div>
     );

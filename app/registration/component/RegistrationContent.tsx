@@ -21,6 +21,8 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+import { Dialog } from "primereact/dialog";
+import { InputOtp } from "primereact/inputotp";
 
 export default function RegistrationContent() {
   const router = useRouter();
@@ -35,10 +37,13 @@ export default function RegistrationContent() {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [email, setEmail] = useState("");
+  const [newUserLogin, setNewUserLogin] = useState("");
   const [sponsor_id, setSponsorId] = useState("");
   const [sponsor_name, setSponsorName] = useState("");
   const [phone, setPhone] = useState("");
+  const [smsCode, setSmsCode] = useState<string>();
   const [isLoginSuccess, setisLoginSuccess] = useState(false);
+  const [isSmsCodeModalOpen, setIsSmsCodeModalOpen] = useState(false);
   const setUserInfo = useAgentStore((state) => state.setAgentInfo);
 
   const isDisabled =
@@ -75,24 +80,10 @@ export default function RegistrationContent() {
       ms_type: userHashMsType,
       country_id: sponsor_id ? 1 : 2,
     });
-    console.log(res);
 
     if (res.status !== 400 && res.status !== 500) {
-      const res2 = await fetch("/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-          login: String(res.data.login),
-          password: res.data.password,
-        }),
-        credentials: "include",
-      });
-      const data = await res2.json();
-      setisLoginSuccess(true);
-
-      setTimeout(() => {
-        setUserInfo(data);
-        router.push("/");
-      }, 500);
+      setIsSmsCodeModalOpen(true);
+      setNewUserLogin(res.data.login);
     } else {
       setInAction(false);
       if (res.status === 400) {
@@ -101,6 +92,24 @@ export default function RegistrationContent() {
         setregErrorText(res.data.Message);
       }
     }
+  };
+
+  const endReg = async () => {
+    const res2 = await fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({
+        login: String(newUserLogin),
+        password: password,
+      }),
+      credentials: "include",
+    });
+    const data = await res2.json();
+    setisLoginSuccess(true);
+
+    setTimeout(() => {
+      setUserInfo(data);
+      router.push("/");
+    }, 500);
   };
 
   return (
@@ -248,6 +257,32 @@ export default function RegistrationContent() {
           <Button className="w-full">Авторизироваться</Button>
         </Link>
       </div>
+      <Dialog
+        header=""
+        visible={isSmsCodeModalOpen}
+        draggable={false}
+        closeOnEscape={false}
+        showCloseIcon={false}
+        style={{ width: "40vw" }}
+        breakpoints={{ "1024px": "65vw", "641px": "90vw" }}
+        onHide={() => setIsSmsCodeModalOpen(false)}
+      >
+        <div className="flex flex-col justify-center items-center gap-5">
+          <p>Введите код подтверждения из SMS</p>
+          <InputOtp
+            value={smsCode}
+            onChange={(e) => setSmsCode(e.value)}
+            integerOnly
+          />
+          <Button
+            className="w-full"
+            disabled={smsCode?.length < 4}
+            onClick={endReg}
+          >
+            Войти
+          </Button>
+        </div>
+      </Dialog>
     </div>
   );
 }

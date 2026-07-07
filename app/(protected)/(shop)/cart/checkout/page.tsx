@@ -50,6 +50,7 @@ export default function CartCheckoutPage() {
   const totalPrice = useCartStore((state) => {
     return state.cart.reduce((acc, p) => acc + p.price * p.count, 0);
   });
+  const [isDeliveryFree, setIsDeliveryFree] = useState(false);
   const [delAddress, setDelAddress] = useState<string | null>("");
   const [delPriceModal, setDelPriceModal] = useState(false);
   const [userInfo, setUserInfo] = useState<User>(data);
@@ -100,6 +101,19 @@ export default function CartCheckoutPage() {
     getDelSystems();
     getPaySystems();
   }, []);
+
+  useEffect(() => {
+    async function checkFreeDelivery() {
+      const res = await fetch("/api/cart/check-free-del", {
+        method: "POST",
+        body: JSON.stringify({ volume: totalPrice }),
+      });
+      const data = await res.json();
+      if (data.upgrade_enabled) setIsDeliveryFree(true);
+      else setIsDeliveryFree(false);
+    }
+    checkFreeDelivery();
+  }, [totalCartPrice]);
 
   const handleSelectDeliverySystem = (id: number) => {
     setSelectedDeliverySystem(id);
@@ -187,7 +201,11 @@ export default function CartCheckoutPage() {
     const data = await res.json();
     console.log(data);
 
-    setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
+    if (isDeliveryFree) {
+      setDelPrice("0");
+    } else {
+      setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
+    }
     setDelPriceModal(false);
   };
 
@@ -392,9 +410,11 @@ export default function CartCheckoutPage() {
                     <span className="font-semibold">{delAddress}</span>
                   </div>
                   <p className="">
-                    Доставка по данному адресу составит:&nbsp;
+                    Стоимость доставки по указанному адресу составит:&nbsp;
                     <br className="block" />
-                    <span className="font-semibold">{delPrice} ₽</span>
+                    <span className="font-semibold">
+                      {isDeliveryFree ? 0 : delPrice} ₽
+                    </span>
                   </p>
                 </Card>
               ) : null}
