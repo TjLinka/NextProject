@@ -160,7 +160,6 @@ export const createAgent = async ({
       password,
       country_id,
       ms_type,
-      
     }),
   });
   console.log(res);
@@ -211,7 +210,7 @@ export const createOrderStep2 = async (params: any) => {
 
 export const withdrawPoints = async (params: any) => {
   console.log(params);
-  
+
   const res = await serverFetch("/api/partner/Webshop/withdraw-gp", {
     method: "POST",
     body: JSON.stringify(params),
@@ -229,9 +228,8 @@ export const createOrderFinalStep = async (params: any) => {
   });
 
   console.log(res);
-  
 
-  return await res.json()
+  return await res.json();
 };
 
 export const CancleOrder = async (id: string | number) => {
@@ -258,9 +256,22 @@ export const getMaterial = async (id: any) => {
 export const finishPayment = async (invId: string) => {
   const res = await serverFetch(`/api/partner/Payment/${invId}/finish`);
   console.log(res);
-  
+
   const text = await res.text();
   const result = text ? JSON.parse(text) : null;
 
   return result;
+};
+
+export const checkSmsCode = async (agent_id: number | string, code: any) => {
+  const res = await serverFetch("/api/partner/SignUp/email-approve-by-code", {
+    method: "POST",
+    body: JSON.stringify({ agent_id: Number(agent_id), code }),
+  });
+  // console.log(res.status);
+
+  // const text = await res.text();
+  // const result = text ? JSON.parse(text) : null;
+
+  return res.status;
 };

@@ -13,7 +13,7 @@ import { InputMask } from "primereact/inputmask";
 import { Calendar } from "primereact/calendar";
 import { Nullable } from "primereact/ts-helpers";
 import { useWindowSize } from "@reactuses/core";
-import { createAgent } from "@/lib/actions";
+import { checkSmsCode, createAgent } from "@/lib/actions";
 import { useAgentStore } from "@/store/agentStore";
 import {
   useParams,
@@ -95,21 +95,25 @@ export default function RegistrationContent() {
   };
 
   const endReg = async () => {
-    const res2 = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({
-        login: String(newUserLogin),
-        password: password,
-      }),
-      credentials: "include",
-    });
-    const data = await res2.json();
-    setisLoginSuccess(true);
+    const res = await checkSmsCode(newUserLogin, smsCode);
+    if (res === 200) {
+      setIsSmsCodeModalOpen(false)
+      const res2 = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          login: String(newUserLogin),
+          password: password,
+        }),
+        credentials: "include",
+      });
+      const data = await res2.json();
+      setisLoginSuccess(true);
 
-    setTimeout(() => {
-      setUserInfo(data);
-      router.push("/");
-    }, 500);
+      setTimeout(() => {
+        setUserInfo(data);
+        router.push("/");
+      }, 500);
+    }
   };
 
   return (
