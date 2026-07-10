@@ -34,33 +34,33 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={`h-full antialiased`}>
-      <body
-        className={`${inter.className} ${playfair.variable} min-h-screen flex`}
-        style={{ fontVariantNumeric: "lining-nums" }}
-      >
-        <SideMenu />
-
-        {/* эта обёртка уже есть у тебя — она правильно растягивается рядом с сайдбаром */}
-        <div
-          className={`grow flex flex-col min-w-0 ${isAuth ? "md:ml-21" : ""}`}
+      <ProvidersTanStack>
+        <body
+          className={`${inter.className} ${playfair.variable} min-h-screen flex`}
+          style={{ fontVariantNumeric: "lining-nums" }}
         >
-          <Header />
+          <SideMenu />
 
-          {/* вот тут убираем pl-22 и mx-auto, добавляем flex + justify-center */}
-          <div className="md:px-7 px-3 py-7 grow flex justify-center">
-            {/* а max-width ставим на внутренний блок */}
-            <div className="w-full max-w-360">
-              <ProvidersTanStack>
+          {/* эта обёртка уже есть у тебя — она правильно растягивается рядом с сайдбаром */}
+          <div
+            className={`grow flex flex-col min-w-0 ${isAuth ? "md:ml-21" : ""}`}
+          >
+            <Header />
+
+            {/* вот тут убираем pl-22 и mx-auto, добавляем flex + justify-center */}
+            <div className="md:px-7 px-3 py-7 grow flex justify-center">
+              {/* а max-width ставим на внутренний блок */}
+              <div className="w-full max-w-360">
                 <Providers>
                   <ClientWrapper>
                     <div className="h-full">{children}</div>
                   </ClientWrapper>
                 </Providers>
-              </ProvidersTanStack>
+              </div>
             </div>
           </div>
-        </div>
-      </body>
+        </body>
+      </ProvidersTanStack>
     </html>
   );
 }

@@ -23,7 +23,10 @@ export const ShopCatalogClient = ({
 }) => {
   const searchParams = useSearchParams();
   const search = searchParams.get("find") ?? "";
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const searchCat = searchParams.get("cat") ?? "";
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(
+    Number(searchCat),
+  );
   const [searchInput, setSearchInput] = useState(search);
   const [showFilter, setShowFilters] = useState<boolean>(false);
   const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
@@ -35,12 +38,21 @@ export const ShopCatalogClient = ({
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
+  const catName = catagoryes.find((c) => c.id === Number(searchCat))?.name;
+
   const { data } = useQuery<Product[]>({
-    queryKey: ["catalog", search, selectedCategory],
+    queryKey: ["catalog", search, searchParams, searchCat],
     queryFn: async () => {
-      return await getCatalog(search, selectedCategory);
+      return await getCatalog(search, searchCat);
     },
   });
+
+  useEffect(() => {
+    async function getCatalogA() {
+      const data = await getCatalog(search, searchCat);
+    }
+    getCatalogA();
+  }, [searchParams]);
 
   // сбрасываем visibleCount при смене фильтров/поиска
   useEffect(() => {
@@ -89,7 +101,8 @@ export const ShopCatalogClient = ({
 
   return (
     <div>
-      <div className="gap-2 items-stretch grid grid-cols-4">
+      <p className="text-3xl font-semibold">{catName}</p>
+      <div className="gap-2 items-stretch grid grid-cols-5 mt-5">
         {/* <div
           className="flex shrink-0 justify-center items-center text-white gap-2 px-4 rounded-lg cursor-pointer bg-(--main-color)"
           onClick={() => {
@@ -106,7 +119,7 @@ export const ShopCatalogClient = ({
           />
           <span className="text-lg lg:inline hidden">Фильтры</span>
         </div> */}
-        <Dropdown
+        {/* <Dropdown
           value={selectedCategory}
           showClear
           optionValue="id"
@@ -116,8 +129,8 @@ export const ShopCatalogClient = ({
           optionLabel="name"
           placeholder="Укажите категорию"
           className="w-full md:w-14rem"
-        />
-        <div className="w-full flex justify-center items-center gap-2 col-span-3">
+        /> */}
+        <div className="w-full flex justify-center items-center gap-2 col-span-5">
           <InputText
             value={searchInput}
             className="w-full"

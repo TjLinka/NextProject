@@ -10,6 +10,8 @@ import Image from "next/image";
 import { useAgentStore } from "@/store/agentStore";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getShopCategoryes } from "@/app/(protected)/(shop)/catalog/actions";
 
 export const SideMenu = ({ className }: { className?: string }) => {
   const router = useRouter();
@@ -19,8 +21,14 @@ export const SideMenu = ({ className }: { className?: string }) => {
   const closeMenu = useSideMenu((state) => state.closeMenu);
   const sideMenuStatus = useSideMenu((state) => state.menuOpen);
   const isAuth = useAgentStore((state) => state.isAuth);
+  const [c, setC] = useState([]);
 
   useEffect(() => {
+    async function getCate() {
+      const res = await getShopCategoryes();
+      setC(res);
+    }
+    getCate();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
@@ -86,11 +94,25 @@ export const SideMenu = ({ className }: { className?: string }) => {
         </li>
         <li>
           <SubMenuCollapse title="Магазин" icon="BagShopping">
-            <SubMenuLink
+            <SubMenuCollapse title="Каталог" icon="ShoppingCatalog" scroll>
+              {c.map((c) => {
+                return (
+                  <SubMenuLink
+                    lvl="1"
+                    className="text-sm"
+                    key={c.id}
+                    url={`/catalog?cat=${c.id}`}
+                    icon_name=""
+                    title={c.name}
+                  />
+                );
+              })}
+            </SubMenuCollapse>
+            {/* <SubMenuLink
               url="/catalog"
               icon_name="ShoppingCatalog"
               title="Каталог"
-            />
+            /> */}
             <SubMenuLink
               url="/order-history"
               icon_name="BaselineHistory"

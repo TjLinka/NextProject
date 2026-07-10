@@ -215,7 +215,7 @@ export default function RegistrationContent() {
             <br />
             <p className="mt-2 md:text-[16px] text-sm">
               Проверьте ваши данные ниже. <br /> Если всё правильно то нажмите
-              зарегестрировать <br /> или &nbsp;
+              зарегистрироваться <br /> или &nbsp;
               <span
                 onClick={() => setStep(0)}
                 className=" md:text-[16px] text-sm mt-5 cursor-pointer underline"
@@ -236,19 +236,19 @@ export default function RegistrationContent() {
               <span className="font-semibold">Телефон:</span>
               <span className="ml-2">{phone}</span>
             </p>
-            <p className="mt-2 md:text-lg text-sm ">
+            {/* <p className="mt-2 md:text-lg text-sm ">
               <span className="font-semibold">Пригласитель:</span>
               <span className="ml-2">
                 {sponsor_id} - {sponsor_name}
               </span>
-            </p>
+            </p> */}
 
             <Button
               onClick={handleRegistration}
               className="text-center w-full rounded-sm md:mt-10 mt-5"
               loading={inAction}
             >
-              Зарегестрировать
+              Зарегистрироваться
             </Button>
             {regErrorText && (
               <p className="text-red-500 font-semibold mt-1">{regErrorText}</p>

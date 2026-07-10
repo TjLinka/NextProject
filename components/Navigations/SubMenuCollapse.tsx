@@ -8,11 +8,13 @@ import { useState } from "react";
 export const SubMenuCollapse = ({
   children,
   title,
-  icon
+  icon,
+  scroll
 }: {
   icon: string
   children: React.ReactNode;
   title: string;
+  scroll?: boolean
 }) => {
   const menuOpen = useSideMenu((state) => state.menuOpen);
   const menuOpenHandler = useSideMenu((state) => state.setMenuOpen)
@@ -51,7 +53,12 @@ export const SubMenuCollapse = ({
         />
       </div>
       <div
-        className={` ${subMenuOpen && menuOpen ? "max-h-50 mt-5 opacity-100" : "max-h-0 mt-0 opacity-0"} overflow-hidden transition-all duration-200 ease-in-out ml-5 flex flex-col justify-around gap-5`}
+        className={clsx(
+          ` ${subMenuOpen && menuOpen ? "max-h-120 mt-5 opacity-100" : "max-h-0 mt-0 opacity-0"} overflow-hidden transition-all duration-200 ease-in-out ml-5 flex flex-col justify-around gap-1`,
+          {
+            "overflow-y-scroll": scroll
+          },
+        )}
       >
         {children}
       </div>
