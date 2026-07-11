@@ -11,6 +11,7 @@ import { localInt } from "@/lib/utils";
 import * as motion from "motion/react-client";
 import { TabPanel, TabView } from "primereact/tabview";
 import { AddToFavor } from "./components/AddToFavor";
+import MyGal from "@/components/UI/MyGal";
 
 export default async function ProductPage({
   params,
@@ -19,7 +20,11 @@ export default async function ProductPage({
 }) {
   const { id } = await params;
   const res = await serverFetch(`/api/partner/Catalog/get-single/${id}`);
+  console.log(res);
+  
   const data: Product = await res.json();
+  console.log(data);
+  
 
   return (
     <div>
@@ -30,14 +35,15 @@ export default async function ProductPage({
         <div></div>
       </div>
       <div className="flex md:flex-row flex-col items-stretch gap-5 mt-5">
-        <div className="max-w-145.5 md:w-auto w-full shrink-0">
-          <Image
+        <div className="max-w-100 md:w-auto w-full shrink-0">
+          {/* <Image
             alt="Product Image"
             src={data.image_urls[0]}
             width={500}
             height={500}
             className="max-w-145.5 max-h-90.5 md:w-auto w-full shrink-0"
-          />
+          /> */}
+          <MyGal imgs={[...data.image_urls]} />
         </div>
         <Card className="grow" contentClass="h-full flex flex-col">
           <div className="md:text-xl font-semibold flex md:flex-row flex-col justify-between md:items-center">

@@ -46,7 +46,8 @@ export const ShopCatalogClient = ({
       return await getCatalog(search, searchCat);
     },
   });
-
+  console.log(data);
+  
   useEffect(() => {
     async function getCatalogA() {
       const data = await getCatalog(search, searchCat);
