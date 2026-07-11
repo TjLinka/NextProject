@@ -13,6 +13,10 @@ import { Header } from "@/components/Navigations/Header";
 import { ClientWrapper } from "@/components/clientProvider";
 import { Cormorant_Garamond, Manrope, Raleway } from "next/font/google";
 import { useAgentStore } from "@/store/agentStore";
+import { Metadata } from "next";
+
+
+
 
 const inter = Manrope({
   subsets: ["latin"],

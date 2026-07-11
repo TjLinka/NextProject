@@ -82,14 +82,19 @@ export const ProductCard = React.memo(
               <span className="loader"></span>
             </div>
           )}
-          <Image
-            src={product.image_url}
-            alt="Product Image"
-            width={300}
-            height={350}
-            className={`w-full h-full rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-            onLoad={() => setImageLoaded(true)}
-          />
+          <Link
+            href={`/catalog/product/${product.id}`}
+            className="grow hover:underline leading-[100%]"
+          >
+            <Image
+              src={product.image_url}
+              alt="Product Image"
+              width={300}
+              height={350}
+              className={`w-full h-full rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              onLoad={() => setImageLoaded(true)}
+            />
+          </Link>
         </div>
         {!noCatalog ? (
           <Link
@@ -108,7 +113,7 @@ export const ProductCard = React.memo(
         <div className="flex justify-between items-end md:mt-2 mt-1">
           <div className="md:text-xl text-sm font-semibold">Цена</div>
           <div className="flex md:flex-row flex-col md:gap-2 items-end">
-            {((product.pricex !== product.price)) && (
+            {product.pricex !== product.price && (
               <span className="text-red-400 line-through md:text-[16px] text-xs">
                 {localInt(product.pricex)} ₽
               </span>
@@ -119,27 +124,27 @@ export const ProductCard = React.memo(
           </div>
         </div>
         {/* {!noCatalog && ( */}
-          <div className="flex md:gap-5 gap-2 items-center  md:mt-4 mt-1">
-            <Button
-              disabled={product.webreg <= 0}
-              onClick={handleProductAction}
-              className="grow w-full"
-            >
-              {product.webreg > 0
-                ? !inCart
-                  ? "Добавить в корзину"
-                  : "Перейти в корзину"
-                : "Ожидаем поступление"}
-            </Button>
-            <Image
-              onClick={handleFavouritesButtn}
-              alt="Favourites Btn"
-              src={`/icons/Heart${isFavourite ? "Fill" : ""}.svg`}
-              width={200}
-              height={200}
-              className="md:w-7 w-4 md:h-7 h-4 cursor-pointer md:block hidden"
-            />
-          </div>
+        <div className="flex md:gap-5 gap-2 items-center  md:mt-4 mt-1">
+          <Button
+            disabled={product.webreg <= 0}
+            onClick={handleProductAction}
+            className="grow w-full"
+          >
+            {product.webreg > 0
+              ? !inCart
+                ? "Добавить в корзину"
+                : "Перейти в корзину"
+              : "Ожидаем поступление"}
+          </Button>
+          <Image
+            onClick={handleFavouritesButtn}
+            alt="Favourites Btn"
+            src={`/icons/Heart${isFavourite ? "Fill" : ""}.svg`}
+            width={200}
+            height={200}
+            className="md:w-7 w-4 md:h-7 h-4 cursor-pointer md:block hidden"
+          />
+        </div>
         {/* // )} */}
         <Toast ref={toast} />
       </div>

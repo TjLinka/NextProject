@@ -15,6 +15,15 @@ import { validateOrRefreshToken } from "@/lib/auth2";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ClientLayout } from "./client-layout";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Antler Cosmetic — Партнёрский портал",
+    template: "%s | Antler Cosmetic", // подставляется в title дочерних страниц
+  },
+  description: "Партнёрский портал Antler Cosmetic",
+};
 
 const inter = Raleway({
   subsets: ["latin"],
