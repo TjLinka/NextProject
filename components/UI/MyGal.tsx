@@ -21,7 +21,7 @@ export default function MyGal({ imgs }: { imgs: any }) {
           <SwiperSlide className="" key={i}>
             <Image
               alt="image"
-              src={i}
+              src={`${i}?salt=${Math.random(0, 999999)}`}
               width={500}
               height={500}
               className="w-100 h-130 shrink-0 cursor-pointer"

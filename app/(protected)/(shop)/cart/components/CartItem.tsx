@@ -38,7 +38,7 @@ export const CartItem = ({ product }: { product: Product }) => {
           </div>
         )} */}
         <Image
-          src={product.image_url}
+          src={`${product.image_url}?salt=${Math.random(0, 999999)}`}
           alt="Cart Prod Image"
           width={700}
           height={700}
@@ -64,7 +64,9 @@ export const CartItem = ({ product }: { product: Product }) => {
               decr={decr}
               id={Number(product.id)}
             />
-            {product.count === product.webreg && <span className="text-red-500 font-medium">Макс. количество</span>}
+            {product.count === product.webreg && (
+              <span className="text-red-500 font-medium">Макс. количество</span>
+            )}
           </div>
         </div>
       </div>

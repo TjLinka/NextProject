@@ -87,7 +87,7 @@ export const ProductCard = React.memo(
             className="grow hover:underline leading-[100%]"
           >
             <Image
-              src={product.image_url}
+              src={`${product.image_url}?salt=${Math.random(0, 999999)}`}
               alt="Product Image"
               width={300}
               height={350}

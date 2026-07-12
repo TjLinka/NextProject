@@ -49,7 +49,7 @@ export const HeaderProductCard = ({
             </div>
           )}
           <Image
-            src={product.image_url}
+            src={`${product.image_url}?salt=${Math.random(0, 999999)}`}
             alt="Product Image"
             width={300}
             height={350}
