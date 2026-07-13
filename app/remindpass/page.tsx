@@ -11,6 +11,13 @@ import { useState } from "react";
 export default function RemindPassPage() {
   const [phone, setPhone] = useState<string>("");
 
+  const remindPassowrd = async () => {
+    const res = await fetch(`/api/misc/remind-password?email=${phone}`);
+    const data = await res.json()
+    console.log(data);
+    
+  };
+
   return (
     <>
       <div
@@ -41,7 +48,11 @@ export default function RemindPassPage() {
               placeholder="Номер телефона"
             />
           </div>
-          <Button className="mt-5 w-full" disabled={!phone}>
+          <Button
+            className="mt-5 w-full"
+            disabled={!phone}
+            onClick={remindPassowrd}
+          >
             Восстановить
           </Button>
           <hr className="my-5 border-0 h-0.5 bg-(--main-color)" />

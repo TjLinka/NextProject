@@ -12,7 +12,7 @@ import { getSponsorForRegistration } from "@/dbQuery/dbQuerys";
 import { InputMask } from "primereact/inputmask";
 import { Calendar } from "primereact/calendar";
 import { Nullable } from "primereact/ts-helpers";
-import { useWindowSize } from "@reactuses/core";
+import { useDebounce, useWindowSize } from "@reactuses/core";
 import { checkSmsCode, createAgent } from "@/lib/actions";
 import { useAgentStore } from "@/store/agentStore";
 import {
@@ -41,13 +41,21 @@ export default function RegistrationContent() {
   const [sponsor_id, setSponsorId] = useState("");
   const [sponsor_name, setSponsorName] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneText, setPhoneText] = useState("");
+  const [phoneUnic, setPhoneUnic] = useState(false);
+  const [phoneCheckAction, setphoneCheckAction] = useState(false);
   const [smsCode, setSmsCode] = useState<string>();
   const [isLoginSuccess, setisLoginSuccess] = useState(false);
   const [isSmsCodeModalOpen, setIsSmsCodeModalOpen] = useState(false);
   const setUserInfo = useAgentStore((state) => state.setAgentInfo);
 
   const isDisabled =
-    !surname || !email || !password || !phone || password !== passwordAgain;
+    !surname ||
+    !email ||
+    !password ||
+    !phone ||
+    password !== passwordAgain ||
+    !phoneUnic;
 
   const { width, height } = useWindowSize();
 
@@ -63,6 +71,8 @@ export default function RegistrationContent() {
 
         setSponsorId(sponsor_id);
         setSponsorName(sponsor_name);
+      } else {
+        setSponsorId("2");
       }
     }
     foo();
@@ -97,7 +107,7 @@ export default function RegistrationContent() {
   const endReg = async () => {
     const res = await checkSmsCode(newUserLogin, smsCode);
     if (res === 200) {
-      setIsSmsCodeModalOpen(false)
+      setIsSmsCodeModalOpen(false);
       const res2 = await fetch("/api/login", {
         method: "POST",
         body: JSON.stringify({
@@ -115,6 +125,32 @@ export default function RegistrationContent() {
       }, 500);
     }
   };
+
+  useEffect(() => {
+    // если номер ещё не введён полностью — не дёргаем API
+    if (phone.replace(/\D/g, "").length < 10) return;
+    const timer = setTimeout(async () => {
+      setphoneCheckAction(true);
+      const res = await fetch(`/api/misc/check-phone-unic?input=${phone}`);
+      const data = await res.json();
+      if (data.is_unique) {
+        setPhoneText("Телефон можно использовать");
+        setPhoneUnic(true);
+      } else {
+        setPhoneText("Телефон уже занят");
+        setPhoneUnic(false);
+      }
+      setphoneCheckAction(false);
+    }, 500);
+
+    return () => clearTimeout(timer); // отменяем предыдущий таймер при каждом новом рендере
+  }, [phone]);
+
+  // const handlePhoneCheck = async (val: string) => {
+  //   setPhoneCheck(val);
+  //   const res = await fetch(`/api/misc/check-phone-unic?input=9091619870`);
+  //   console.log(await res.json());
+  // };
 
   return (
     <div
@@ -173,9 +209,17 @@ export default function RegistrationContent() {
                 className="w-full"
                 value={phone}
                 autoComplete="new-password"
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.currentTarget.value)}
                 placeholder="7 (999) 999-99-99"
               />
+              <span
+                className={clsx("", {
+                  "text-green-500": phoneUnic && !phoneCheckAction,
+                  "text-red-500": !phoneUnic && !phoneCheckAction,
+                })}
+              >
+                {phoneCheckAction ? "Проверка..." : phoneText}
+              </span>
             </div>
             <div className="md:mt-4 mt-2">
               <p className="font-semibold md:text-lg text-sm">Пароль</p>

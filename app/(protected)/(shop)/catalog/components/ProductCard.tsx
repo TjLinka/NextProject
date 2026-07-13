@@ -73,10 +73,10 @@ export const ProductCard = React.memo(
     return (
       <div
         className={clsx(
-          `bg-white md:p-4 p-3 rounded-xl shadow-md flex flex-col ${className}`,
+          `bg-white p-1 rounded-xl shadow-lg flex flex-col ${className}`,
         )}
       >
-        <div className="md:h-70 h-35 bg-(--body-color) rounded py-2">
+        <div className="md:h-70 h-35  rounded py-2">
           {!imageLoaded && (
             <div className="w-full h-full bg-gray-200 rounded-lg animate-pulse space-x-4 flex justify-center items-center">
               <span className="loader"></span>
@@ -101,16 +101,16 @@ export const ProductCard = React.memo(
             href={`/catalog/product/${product.id}`}
             className="grow hover:underline leading-[100%]"
           >
-            <p className="mt-4 font-semibold md:text-lg text-xs truncate leading-[100%]">
+            <p className="mt-4 md:px-4 px-3 font-semibold md:text-lg text-xs truncate leading-[100%]">
               {product.name}
             </p>
           </Link>
         ) : (
-          <p className="mt-4 font-semibold md:text-lg text-xs leading-[100%]">
+          <p className="mt-4 md:p-4 p-3 font-semibold md:text-lg text-xs leading-[100%]">
             {product.name}
           </p>
         )}
-        <div className="flex justify-between items-end md:mt-2 mt-1">
+        <div className="flex justify-between items-end md:mt-2 mt-1 md:px-4 px-3">
           <div className="md:text-xl text-sm font-semibold">Цена</div>
           <div className="flex md:flex-row flex-col md:gap-2 items-end">
             {product.pricex !== product.price && (
@@ -124,7 +124,7 @@ export const ProductCard = React.memo(
           </div>
         </div>
         {/* {!noCatalog && ( */}
-        <div className="flex md:gap-5 gap-2 items-center  md:mt-4 mt-1">
+        <div className="flex md:gap-5 gap-2 items-center  md:mt-4 mt-1 md:p-4 p-3">
           <Button
             disabled={product.webreg <= 0}
             onClick={handleProductAction}

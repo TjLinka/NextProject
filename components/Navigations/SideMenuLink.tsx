@@ -30,7 +30,7 @@ export const SubMenuLink = ({
       onClick={() => {
         if (width < 700 || menuOpen) setSideMenuStore();
       }}
-      className={`flex items-center gap-4 hover:bg-(--body-color) py-1 px-2 rounded ${className}`}
+      className={`whitespace-nowrap flex items-center gap-4 hover:bg-(--body-color) py-1 px-2 rounded ${className}`}
     >
       {icon_name && (
         <div className="w-7 h-7 shrink-0">
@@ -43,9 +43,10 @@ export const SubMenuLink = ({
       )}
       <p
         className={clsx(
-          `transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg font-medium`, {
-            'text-[15px]' : lvl === '1'
-          }
+          `transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg font-medium`,
+          {
+            "text-[15px]": lvl === "1",
+          },
         )}
       >
         {title}

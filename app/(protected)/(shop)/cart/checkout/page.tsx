@@ -184,12 +184,12 @@ export default function CartCheckoutPage() {
       dsName: selectedDeliverySystem === 1 ? "CDEK" : "RussianPost",
       from:
         selectedDeliverySystem === 1
-          ? "г. Пермь, ул. Ветлужская, 3"
-          : String(await getIndexForDelivery("г. Пермь, ул. Ветлужская, 3")),
+          ? "Белокуриха , ул Бийская 24"
+          : String(await getIndexForDelivery("Белокуриха , ул Бийская 24")),
       from_city: String(
-        await getIndexForDelivery("г. Пермь, ул. Ветлужская, 3"),
+        await getIndexForDelivery("Белокуриха , ул Бийская 24"),
       ),
-      tariff_id: "482",
+      tariff_id: "137",
       price: String(totalCartPrice),
       to: String(selectedDeliverySystem === 1 ? val : index),
       to_city: String(index),
@@ -257,7 +257,6 @@ export default function CartCheckoutPage() {
         idacc: 0,
       });
       console.log(res);
-      
     }
     const data = await createOrderFinalStep({
       ruleId: 38,
@@ -275,7 +274,10 @@ export default function CartCheckoutPage() {
   };
 
   // Computed
-  const totalOrderPrice = Number(totalPrice) + Number(delPrice);
+  const totalOrderPrice =
+    selectedDeliverySystem !== 0
+      ? Number(totalPrice) + Number(delPrice)
+      : Number(totalPrice);
 
   const totalPayPrice = Number(totalOrderPrice) - Number(bonusSumm);
   const maxForWithdraw = Math.min(balance[0]?.summ, totalCartPrice * 0.7);
@@ -341,10 +343,10 @@ export default function CartCheckoutPage() {
             </SectionTitle>
             <Card className="mt-5" fit>
               <div className="md:flex grid grid-cols-2 md:gap-5 gap-2">
-                {/* <div
+                <div
                   onClick={() => setSelectedDeliverySystem(0)}
                   className={clsx(
-                    "md:w-1/4 md:h-20 h-15 py-1 px-2 capitalize transition-[background, opacity, box-shadow] outline-0 bg-gray-300 duration-250 opacity-60 grayscale-100 ease-in-out rounded-md text-center text-2xl font-semibold flex justify-center items-center  cursor-pointer",
+                    "md:h-20 h-15 py-1 px-2 capitalize transition-[background, opacity, box-shadow] outline-0 bg-gray-300 duration-250 opacity-60 grayscale-100 ease-in-out rounded-md text-center text-2xl font-semibold flex justify-center items-center  cursor-pointer",
                     {
                       "grayscale-0! bg-gray-100! opacity-100! ring-(--main-color) ring-2 ":
                         selectedDeliverySystem === 0,
@@ -352,7 +354,7 @@ export default function CartCheckoutPage() {
                   )}
                 >
                   Самовывоз
-                </div> */}
+                </div>
                 {deliverySystems.map((d) => {
                   return (
                     <div
@@ -385,7 +387,7 @@ export default function CartCheckoutPage() {
                   <span className="">
                     Адрес для самовывоза: <br className="md:hidden block" />
                     <span className="font-semibold text-lg">
-                      г. Пермь, ул. Ветлужская, 3
+                      Белокуриха , ул Бийская 24
                     </span>
                   </span>
                 </Card>
@@ -554,7 +556,7 @@ export default function CartCheckoutPage() {
                 <span>Сумма корзины: </span>
                 <span>{localInt(totalPrice)} ₽</span>
               </p>
-              {Number(delPrice) > 0 && (
+              {Number(delPrice) > 0 && selectedDeliverySystem !== 0 && (
                 <p>
                   <span>Стоимость доставки: </span>
                   <span>+ {localInt(Number(delPrice))} ₽</span>
@@ -572,7 +574,7 @@ export default function CartCheckoutPage() {
               </p>
             </Card>
             <Button
-              className=" w-full md:mt-10 mt-5"
+              className=" w-full text-xl! uppercase font-bold! md:mt-10 mt-5 h-15 bg-[#abf9ee]"
               onClick={createAndPayOrder}
             >
               Оформить заказ

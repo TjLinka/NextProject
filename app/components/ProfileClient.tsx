@@ -3,13 +3,14 @@
 import { Button } from "@/components/UI/Button";
 import { Caption } from "@/components/UI/Caption";
 import { Card } from "@/components/UI/Card";
+import { getMaterial } from "@/lib/actions";
 import { localInt } from "@/lib/utils";
 import { User } from "@/types/user/types";
 import { useCopyToClipboard } from "@reactuses/core";
 import Image from "next/image";
 import Link from "next/link";
 import { Dialog } from "primereact/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type socialsInfo = {
   nickname: string;
@@ -36,8 +37,16 @@ export default function ProfileClient({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [text, copy] = useCopyToClipboard();
-  console.log(agentInfo);
-  
+  const [matText, setMatText] = useState('')
+
+  useEffect(() => {
+    async function getMaterialText() {
+      const res = await getMaterial(771)
+      setMatText(res.content)
+    }
+    getMaterialText()
+  }, [])
+
   return (
     <div>
       <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
@@ -184,12 +193,7 @@ export default function ProfileClient({
             </div>
           </Card> */}
           <Card title="Хочешь заработать?" titleClass="text-xl" className="">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque
-            maiores iusto voluptatibus doloremque cumque minima, corrupti fugit
-            dolorem impedit ullam quasi autem at debitis iste beatae maxime qui
-            suscipit perspiciatis omnis reiciendis consequuntur pariatur
-            accusamus! Id eius nisi minus obcaecati.
-            {/* <Image alt="11" width={500} height={500} src={"/imgs/281297.jpg"} className="mt-5 rounded-lg shadow-md"/> */}
+            <div dangerouslySetInnerHTML={{ __html: matText }}></div>
           </Card>
         </div>
       </div>
