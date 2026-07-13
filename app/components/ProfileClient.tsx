@@ -120,12 +120,12 @@ export default function ProfileClient({
             {agentInfo.ms_type >= 20 && (
               <div className="flex md:gap-5 gap-2 items-center justify-between w-full mt-2">
                 <p className=" leading-[100%] text-gray-500 truncate text-sm">
-                  {`${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}&t=10`}
+                  {`${process.env.NEXT_PUBLIC_MAIN_URL}/registration?id=${agentInfo.id}&t=10`}
                 </p>
                 <Image
                   onClick={() =>
                     copy(
-                      `${process.env.NEXT_PUBLIC_BACKEND_URL}/registration?id=${agentInfo.id}&t=10`,
+                      `${process.env.NEXT_PUBLIC_MAIN_URL}/registration?id=${agentInfo.id}&t=10`,
                     )
                   }
                   alt="Copy Icon"
