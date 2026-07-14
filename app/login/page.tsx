@@ -34,7 +34,8 @@ export default function LoginPage() {
         window.location.href = "/";
       }, 500);
     } else {
-      setLoginError(data.Message);
+      setInAction(false);
+      setLoginError('Введён не верный логин или пароль!');
     }
   };
 

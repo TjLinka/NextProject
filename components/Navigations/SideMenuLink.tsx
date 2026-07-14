@@ -33,19 +33,19 @@ export const SubMenuLink = ({
       className={`whitespace-nowrap flex items-center gap-4 hover:bg-(--body-color) py-1 px-2 rounded ${className}`}
     >
       {icon_name && (
-        <div className="w-7 h-7 shrink-0">
+        <div className="md:w-7 md:h-7 shrink-0">
           <img
             src={`/icons/${icon_name}.svg`}
             alt=""
-            className="w-7 h-7 shrink-0"
+            className="md:w-7 w-5 md:h-7 h-5 shrink-0"
           />
         </div>
       )}
       <p
         className={clsx(
-          `transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg font-medium`,
+          `transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} md:text-lg text-sm font-medium`,
           {
-            "text-[15px]": lvl === "1",
+            "text-sm": lvl === "1",
           },
         )}
       >

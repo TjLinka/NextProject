@@ -58,7 +58,7 @@ export default function CartCheckoutPage() {
   const [deliverySystems, setDeliverySystems] = useState<
     { id: number; name: string }[]
   >([]);
-  const [selectedPaySystem, setselectedPaySystem] = useState(1);
+  const [selectedPaySystem, setselectedPaySystem] = useState(2);
   const [paySystems, setPaySystems] = useState<[]>([]);
   const [selectedDeliverySystem, setSelectedDeliverySystem] = useState<
     number | null

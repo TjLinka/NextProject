@@ -74,7 +74,7 @@ export const SideMenu = ({ className }: { className?: string }) => {
         </div>
       </div>
       <hr className="border-gray-400 mb-5" />
-      <ul className="flex flex-col gap-5 grow">
+      <ul className="flex flex-col md:gap-5 gap-2 grow overflow-y-auto">
         <li>
           <SubMenuLink url="/" icon_name="Home" title="Профиль" />
         </li>
@@ -95,6 +95,13 @@ export const SideMenu = ({ className }: { className?: string }) => {
         <li>
           <SubMenuCollapse title="Магазин" icon="BagShopping">
             <SubMenuCollapse title="Каталог" icon="ShoppingCatalog" scroll>
+              <SubMenuLink
+                lvl="1"
+                className="text-sm"
+                url={`/catalog`}
+                icon_name=""
+                title={'Все товары'}
+              />
               {c.map((c) => {
                 return (
                   <SubMenuLink

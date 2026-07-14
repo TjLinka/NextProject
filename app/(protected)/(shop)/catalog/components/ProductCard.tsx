@@ -6,11 +6,11 @@ import { Button } from "@/components/UI/Button";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 import clsx from "clsx";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addToFavourites, removeFromFavourites } from "../../favorite/action";
+// import { addToFavourites, removeFromFavourites } from "../../favorite/action";
 import { Toast } from "primereact/toast";
 import { useModalAndNotify } from "@/store/modalAndNotify";
 import { useIsFavourite, useToggleFavourite } from "@/hooks/useFavorites";
@@ -28,14 +28,17 @@ export const ProductCard = React.memo(
     const [imageLoaded, setImageLoaded] = useState(false);
     const toast = useRef<Toast>(null);
     const addToCart = useCartStore((state) => state.addToCart);
+    const incr = useCartStore((state) => state.incrCount);
 
-    const openToast = useModalAndNotify((state) => state.showNotification);
+    // const openToast = useModalAndNotify((state) => state.showNotification);
 
-    const router = useRouter();
+    // const router = useRouter();
 
     const inCart = useCartStore((state) => {
       return !!state.cart.find((p) => p.id === product.id);
     });
+
+    const prodCountInCart = useCartStore((state) => state.cart.find((p) => p.id === product.id))?.count
 
     const qc = useQueryClient();
 
@@ -58,11 +61,11 @@ export const ProductCard = React.memo(
       },
     });
 
-    const handleProductAction = () => {
-      if (!inCart) {
-        mutation.mutate({ id: product.id, prod: product });
-      } else router.push("/cart");
-    };
+    // const handleProductAction = () => {
+    //   if (!inCart) {
+    //     mutation.mutate({ id: product.id, prod: product });
+    //   } else router.push("/cart");
+    // };
     const handleFavouritesButtn = () => {
       toggleFavourite({ id: product.id, isFavourite });
     };
@@ -87,7 +90,7 @@ export const ProductCard = React.memo(
             className="grow hover:underline leading-[100%]"
           >
             <Image
-              src={`${product.image_url}?salt=${Math.random(0, 999999)}`}
+              src={`${product.image_url}?salt=${Math.random()}`}
               alt="Product Image"
               width={300}
               height={350}
@@ -125,17 +128,30 @@ export const ProductCard = React.memo(
         </div>
         {/* {!noCatalog && ( */}
         <div className="flex md:gap-5 gap-2 items-center  md:mt-4 mt-1 md:p-4 p-3">
-          <Button
-            disabled={product.webreg <= 0}
-            onClick={handleProductAction}
-            className="grow w-full"
-          >
-            {product.webreg > 0
-              ? !inCart
-                ? "Добавить в корзину"
-                : "Перейти в корзину"
-              : "Ожидаем поступление"}
-          </Button>
+          <div className="grow w-full">
+            {inCart ? (
+              <div className="flex gap-2 grow w-full">
+                <Link href={"/cart"} className="w-2/3">
+                  <Button className="w-full">Корзина {prodCountInCart} шт.</Button>
+                </Link>
+                <Button
+                  className="w-1/3"
+                  onClick={() => incr(Number(product.id))}
+                >
+                  + 1 шт
+                </Button>
+              </div>
+            ) : (
+              <Button
+                className="grow w-full"
+                onClick={() =>
+                  mutation.mutate({ id: product.id, prod: product })
+                }
+              >
+                Добавить в корзину
+              </Button>
+            )}
+          </div>
           <Image
             onClick={handleFavouritesButtn}
             alt="Favourites Btn"

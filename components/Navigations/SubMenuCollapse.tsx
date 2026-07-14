@@ -34,9 +34,9 @@ export const SubMenuCollapse = ({
         onClick={handleSubMenuOpen}
       >
         <div className="flex gap-4">
-          <img src={`/icons/${icon}.svg`} alt="" className="w-7 h-7" />
+          <img src={`/icons/${icon}.svg`} alt="" className="md:w-7 w-5 md:h-7 h-5" />
           <span
-            className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg font-medium`}
+            className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} md:text-lg text-sm font-medium`}
           >
             {title}
           </span>
@@ -54,9 +54,9 @@ export const SubMenuCollapse = ({
       </div>
       <div
         className={clsx(
-          ` ${subMenuOpen && menuOpen ? "max-h-120 mt-5 opacity-100" : "max-h-0 mt-0 opacity-0"} overflow-hidden transition-all duration-200 ease-in-out ml-5 flex flex-col justify-around gap-1`,
+          ` ${subMenuOpen && menuOpen ? "max-h-auto md:mt-5 mt-2 opacity-100" : "max-h-0 mt-0 opacity-0"} overflow-hidden transition-all duration-200 ease-in-out ml-5 flex flex-col justify-around gap-1`,
           {
-            "overflow-y-scroll": scroll
+            "overflow-y-scroll max-h-60": scroll && menuOpen && subMenuOpen,
           },
         )}
       >

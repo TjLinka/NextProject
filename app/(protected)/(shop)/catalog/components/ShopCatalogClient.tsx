@@ -47,7 +47,7 @@ export const ShopCatalogClient = ({
     },
   });
   console.log(data);
-  
+
   useEffect(() => {
     async function getCatalogA() {
       const data = await getCatalog(search, searchCat);
@@ -80,20 +80,19 @@ export const ShopCatalogClient = ({
   const visibleData = data?.slice(0, visibleCount);
 
   const handleSearch = () => {
-    if (searchInput) router.push(`/catalog/?find=${searchInput}`);
-    else router.push(`/catalog`);
+    if (searchCat) {
+      if (searchInput)
+        router.push(`/catalog/?cat=${searchCat}&find=${searchInput}`);
+      else {
+        router.push(`/catalog/?cat=${searchCat}`);
+      }
+    } else {
+      if (searchInput)
+        router.push(`/catalog/?cat=${searchCat}&find=${searchInput}`);
+    }
+    return;
+    // else router.push(`/catalog`);
   };
-
-  const onCategoryChange = (e: any) => {
-    let _selectedCategories = [...selectedCategories];
-    if (e.checked) _selectedCategories.push(e.value);
-    else
-      _selectedCategories = _selectedCategories.filter(
-        (category: any) => category.key !== e.value.key,
-      );
-    setSelectedCategories(_selectedCategories);
-  };
-
   const resetFilters = () => {
     router.push(`/catalog`);
     setSelectedCategory(null);
@@ -104,33 +103,6 @@ export const ShopCatalogClient = ({
     <div>
       <p className="text-3xl font-semibold">{catName}</p>
       <div className="gap-2 items-stretch grid grid-cols-5 mt-5">
-        {/* <div
-          className="flex shrink-0 justify-center items-center text-white gap-2 px-4 rounded-lg cursor-pointer bg-(--main-color)"
-          onClick={() => {
-            if (width > 800) setShowFilters(!showFilter);
-            else setShowMobileFilter(true);
-          }}
-        >
-          <Image
-            src="/icons/Filters.svg"
-            alt="Filters"
-            width={200}
-            height={200}
-            className="w-7"
-          />
-          <span className="text-lg lg:inline hidden">Фильтры</span>
-        </div> */}
-        {/* <Dropdown
-          value={selectedCategory}
-          showClear
-          optionValue="id"
-          virtualScrollerOptions={{ itemSize: 38 }}
-          onChange={(e) => setSelectedCategory(e.value)}
-          options={catagoryes}
-          optionLabel="name"
-          placeholder="Укажите категорию"
-          className="w-full md:w-14rem"
-        /> */}
         <div className="w-full flex justify-center items-center gap-2 col-span-5">
           <InputText
             value={searchInput}

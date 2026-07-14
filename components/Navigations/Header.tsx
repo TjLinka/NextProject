@@ -84,28 +84,9 @@ export const Header = () => {
           height={200}
           className={`w-45 ${!sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
         />
-        {/* <div>
-          <span className="font-semibold">GLEB.</span>
-          <span className="font-light">TEAM</span>
-        </div> */}
       </Link>
       <div className="flex items-center justify-end gap-5 grow">
-        {/* {!(pathname === "/catalog") && (
-          <InputText
-            value={headerSearch}
-            className="max-w-80 w-full lg:block hidden"
-            placeholder="Поиск в каталоге"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setheaderSearch(e.target.value)
-            }
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === "Enter") handleSearchInCatalog();
-            }}
-          />
-        )} */}
-        {/* <Link href={"/refs-link"} className="xl:block hidden"> */}
         <Button onClick={openRefsModal}>Пригласить партнёра</Button>
-        {/* </Link> */}
         {/* <Image
           alt="Support Icon"
           src={`/icons/Support.svg`}
