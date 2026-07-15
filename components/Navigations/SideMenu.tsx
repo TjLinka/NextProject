@@ -74,7 +74,7 @@ export const SideMenu = ({ className }: { className?: string }) => {
         </div>
       </div>
       <hr className="border-gray-400 mb-5" />
-      <ul className="flex flex-col md:gap-5 gap-2 grow overflow-y-auto">
+      <ul className="flex flex-col md:gap-5 gap-2 grow">
         <li>
           <SubMenuLink url="/" icon_name="Home" title="Профиль" />
         </li>

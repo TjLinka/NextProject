@@ -10,11 +10,16 @@ import { useState } from "react";
 
 export default function RemindPassPage() {
   const [phone, setPhone] = useState<string>("");
+  const [agentNotFound, setAgentNotFound] = useState(false)
 
   const remindPassowrd = async () => {
     const res = await fetch(`/api/misc/remind-password?email=${phone}`);
     const data = await res.json()
-    console.log(data);
+    if (data.StatusCode === 500) {
+      setAgentNotFound(true)
+    } else {
+      setAgentNotFound(false)
+    }
     
   };
 
@@ -47,6 +52,7 @@ export default function RemindPassPage() {
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Номер телефона"
             />
+            {agentNotFound && <span className="text-red-500">Пользователь не найден</span>}
           </div>
           <Button
             className="mt-5 w-full"
