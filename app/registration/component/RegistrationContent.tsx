@@ -264,10 +264,21 @@ export default function RegistrationContent() {
                 onClick={() => setStep(0)}
                 className=" md:text-[16px] text-sm mt-5 cursor-pointer underline"
               >
-                отредактируйте
+                <strong>отредактируйте</strong>
               </span>
               &nbsp;свои данные.
             </p>
+            <div className="mt-2">
+              <p className="">
+                Для <strong>входа</strong> в личный кабинет используйте{" "}
+                <strong>номер телефона</strong>, указанный при регистрации.{" "}
+                <br /> Он является вашим логином.
+              </p>
+              <p className="mt-2">
+                Если у вас возникнут сложности со входом, пожалуйста, свяжитесь с
+                нашей службой поддержки.
+              </p>
+            </div>
             <p className="md:text-lg  text-sm md:mt-5 mt-2">
               <span className=" font-semibold">ФИО:</span>
               <span className="ml-2">{surname}</span>
@@ -307,7 +318,7 @@ export default function RegistrationContent() {
       </div>
       <Dialog
         header=""
-        visible={isSmsCodeModalOpen}
+        visible={false}
         draggable={false}
         closeOnEscape={false}
         showCloseIcon={false}
@@ -315,7 +326,7 @@ export default function RegistrationContent() {
         breakpoints={{ "1024px": "65vw", "641px": "90vw" }}
         onHide={() => setIsSmsCodeModalOpen(false)}
       >
-        <div className="flex flex-col justify-center items-center gap-5">
+        <div className="flex flex-col justify-center items-center gap-2">
           <p>Введите код подтверждения из SMS</p>
           <InputOtp
             value={smsCode}

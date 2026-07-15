@@ -189,7 +189,7 @@ export default function CartCheckoutPage() {
       from_city: String(
         await getIndexForDelivery("Белокуриха , ул Бийская 24"),
       ),
-      tariff_id: "137",
+      tariff_id: "136",
       price: String(totalCartPrice),
       to: String(selectedDeliverySystem === 1 ? val : index),
       to_city: String(index),
@@ -332,7 +332,7 @@ export default function CartCheckoutPage() {
           <Card title="Телефон">
             <InputText value={userInfo?.mobile_phone} className="w-full" />
           </Card>
-          <Card title="Почта (необязательно" className="row-start-2">
+          <Card title="Почта (необязательно)" className="row-start-2">
             <InputText value={userInfo?.email} className="w-full" />
           </Card>
         </div>
