@@ -100,7 +100,7 @@ export const SideMenu = ({ className }: { className?: string }) => {
                 className="text-sm"
                 url={`/catalog`}
                 icon_name=""
-                title={'Все товары'}
+                title={"Все товары"}
               />
               {c.map((c) => {
                 return (
@@ -147,7 +147,11 @@ export const SideMenu = ({ className }: { className?: string }) => {
           </SubMenuCollapse>
         </li>
         <li>
-          <SubMenuLink url="/news" icon_name="News" title="Новости" />
+          <SubMenuLink
+            url="/news"
+            icon_name="News"
+            title="Возможности с Antler"
+          />
         </li>
         {/* <li>
           <SubMenuLink
