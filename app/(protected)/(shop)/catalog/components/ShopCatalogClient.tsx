@@ -122,7 +122,7 @@ export const ShopCatalogClient = ({
           "grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 w-full mt-5",
         )}
       >
-        {visibleData?.map((p) => (
+        {visibleData?.filter((p) => p.id !== 201).map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
         {/* sentinel внутри грида */}

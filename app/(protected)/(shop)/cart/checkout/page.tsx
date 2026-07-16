@@ -49,6 +49,7 @@ export default function CartCheckoutPage() {
 
   const [bonusSumm, setbonusSumm] = useState<Nullable<number | null>>(0);
   const cart = useCartStore((state) => state.cart);
+  const addProductToCart = useCartStore((state) => state.addToCart);
   const totalPrice = useCartStore((state) => {
     return state.cart.reduce((acc, p) => acc + p.price * p.count, 0);
   });
@@ -226,13 +227,18 @@ export default function CartCheckoutPage() {
 
     const res = await fetch(`/api/cart/del-price?${queryString}`);
     const data = await res.json();
-    console.log(data);
 
     if (isDeliveryFree) {
       setDelPrice("0");
     } else {
       if (JSON.parse(data).StatusCode !== 500) {
         setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
+        const res = await fetch(`/api/cart/product?id=${201}`);
+        const product = await res.json();
+        product.count = Number(
+          JSON.parse(data).delivery_prices[0]?.delivery_sum,
+        ).toFixed(0);
+        // addProductToCart(product)
       } else {
         setdelErrorMessage("По данному адресу доставка временно не доступна");
         setshowDelErrorModal(true);
@@ -278,9 +284,16 @@ export default function CartCheckoutPage() {
       return {
         webshop_id: Response.id,
         item_id: prod.id,
-        cnt: prod.id === 37888 ? Number(prod.price) : Number(prod.count),
+        cnt: prod.id === 201 ? Number(prod.price) : Number(prod.count),
       };
     });
+    if (selectedDeliverySystem && !isDeliveryFree) {
+      mass.push({
+        webshop_id: Response.id,
+        item_id: 201,
+        cnt: Number(delPrice),
+      });
+    }
     await createOrderStep2([...mass]);
     if (bonusSumm) {
       const res = await withdrawPoints({
@@ -497,7 +510,7 @@ export default function CartCheckoutPage() {
                     Стоимость доставки по указанному адресу составит:&nbsp;
                     <br className="block" />
                     <span className="font-semibold">
-                      {isDeliveryFree ? 0 : delPrice} ₽
+                      {isDeliveryFree ? "Бесплатно" : `${delPrice} ₽`}
                     </span>
                   </p>
                 </Card>

@@ -106,7 +106,7 @@ export const getCatalog = async (
   
   const res = serverFetch(`/api/partner/Catalog/get-catalog?${queryString}`);
   const data = (await res).json();
-  return data;
+  return data
 };
 
 // ПОЛЬЗОВАТЕЛЬ
