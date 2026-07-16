@@ -13,7 +13,7 @@ export default function RemindPassPage() {
   const [agentNotFound, setAgentNotFound] = useState(false)
 
   const remindPassowrd = async () => {
-    const res = await fetch(`/api/misc/remind-password?email=${phone}`);
+    const res = await fetch(`/api/misc/remind-password?email=${phone.replace(/\D/g, '').replace(/^8/, '7')}`);
     const data = await res.json()
     if (data.StatusCode === 500) {
       setAgentNotFound(true)

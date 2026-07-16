@@ -83,7 +83,7 @@ export default function RegistrationContent() {
     const res = await createAgent({
       sponsor_id,
       surname: surname,
-      mobile_phone: phone,
+      mobile_phone: phone.replace(/\D/g, '').replace(/^8/, '7'),
       birth_date: bth_dte,
       email: email,
       password: password,

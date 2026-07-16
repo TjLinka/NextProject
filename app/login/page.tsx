@@ -23,7 +23,7 @@ export default function LoginPage() {
     setInAction(true);
     const res = await fetch("/api/login", {
       method: "POST",
-      body: JSON.stringify({ login, password }),
+      body: JSON.stringify({ login: login.replace(/\D/g, '').replace(/^8/, '7'), password }),
       credentials: "include",
     });
     const data = await res.json();
