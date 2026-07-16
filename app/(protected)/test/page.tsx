@@ -1,7 +1,6 @@
 "use client";
-import PickupMap from "@/components/YMap/PickupMap";
-import React, { useState, useRef, useEffect } from "react";
-import AvatarEditor from "react-avatar-editor";
+import { useState, useEffect } from "react";
+import PickupMap from "./components/PickupMap";
 
 export default function AvatarEditorWidget() {
   const [allPVZ, setPVZ] = useState([]);
