@@ -19,7 +19,7 @@ import {
 } from "primereact/autocomplete";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { HeaderProductCard } from "../../catalog/components/HeaderProductCard";
 import { localInt } from "@/lib/utils";
 import { InputNumber } from "primereact/inputnumber";
@@ -31,6 +31,8 @@ import {
   withdrawPoints,
 } from "@/lib/actions";
 import _ from "lodash";
+import PickupMap from "@/app/(protected)/test/components/PickupMap";
+import { RadioButton } from "primereact/radiobutton";
 
 export default function CartCheckoutPage() {
   const { data } = useQuery({
@@ -67,6 +69,13 @@ export default function CartCheckoutPage() {
   const [items, setItems] = useState([]);
   const [comm, setComm] = useState("");
   const [inAction, setInAction] = useState(false);
+  const [allPVZ, setPVZ] = useState([]);
+  const [allPVZLoaded, setallPVZLoaded] = useState(false);
+  const [showDelErrorModal, setshowDelErrorModal] = useState(false);
+  const [selectedPVZ, setPVZAddress] = useState("");
+  const [CDEKDelType, setCDEKDelType] = useState(0);
+  const [UserLocation, setUserLocation] = useState([]);
+  const [delErrorMessage, setdelErrorMessage] = useState("");
 
   const { data: balance = [] } = useQuery({
     queryKey: ["balance"],
@@ -97,9 +106,27 @@ export default function CartCheckoutPage() {
 
       setPaySystems(data);
     }
-    // getUserData();
+    async function getPvz() {
+      const res = await fetch("/api/cart/pvz");
+      const data = await res.json();
+      console.log(data);
+      setPVZ(data);
+      setallPVZLoaded(true);
+    }
     getDelSystems();
     getPaySystems();
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const { latitude, longitude } = coords;
+        console.log(latitude, longitude);
+
+        setUserLocation([latitude, longitude]);
+        getPvz();
+      },
+      (error) => {
+        console.error(error);
+      },
+    );
   }, []);
 
   useEffect(() => {
@@ -204,7 +231,12 @@ export default function CartCheckoutPage() {
     if (isDeliveryFree) {
       setDelPrice("0");
     } else {
-      setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
+      if (JSON.parse(data).StatusCode !== 500) {
+        setDelPrice(JSON.parse(data).delivery_prices[0]?.delivery_sum);
+      } else {
+        setdelErrorMessage("По данному адресу доставка временно не доступна");
+        setshowDelErrorModal(true);
+      }
     }
     setDelPriceModal(false);
   };
@@ -281,6 +313,17 @@ export default function CartCheckoutPage() {
 
   const totalPayPrice = Number(totalOrderPrice) - Number(bonusSumm);
   const maxForWithdraw = Math.min(balance[0]?.summ, totalCartPrice * 0.7);
+
+  const setDeliveryAddress = useCallback(({ address }: any) => {
+    console.log(address);
+    setPVZAddress(address);
+  }, []);
+
+  useEffect(() => {
+    if (selectedPVZ !== "") getDelPrice(selectedPVZ);
+  }, [selectedPVZ]);
+
+  const showMap = allPVZLoaded && selectedDeliverySystem !== 0 && !CDEKDelType;
 
   return (
     <>
@@ -380,6 +423,43 @@ export default function CartCheckoutPage() {
                 })}
               </div>
             </Card>
+            {/* <Card fit className="mt-5">
+              <div className="flex flex-wrap gap-3">
+                <div className="flex align-items-center">
+                  <RadioButton
+                    inputId="ingredient1"
+                    name="pizza"
+                    value="Cheese"
+                    onChange={() => setCDEKDelType(0)}
+                    checked={CDEKDelType === 0}
+                  />
+                  <label htmlFor="ingredient1" className="ml-2">
+                    До ПВЗ
+                  </label>
+                </div>
+                <div>
+                  <RadioButton
+                    inputId="ingredient2"
+                    name="pizza"
+                    value="Mushroom"
+                    onChange={() => setCDEKDelType(1)}
+                    checked={CDEKDelType === 1}
+                  />
+                  <label htmlFor="ingredient2" className="ml-2">
+                    До двери
+                  </label>
+                </div>
+              </div>
+            </Card> */}
+            <div className="rounded-2xl overflow-hidden shadow-md mt-5">
+              {showMap && (
+                <PickupMap
+                  points={allPVZ}
+                  onSelect={setDeliveryAddress}
+                  userLocation={UserLocation}
+                />
+              )}
+            </div>
             <div className="grid md:grid-cols-2 md:gap-5 gap-2 md:mt-5 mt-2">
               {selectedDeliverySystem !== null &&
               selectedDeliverySystem === 0 ? (
@@ -392,17 +472,19 @@ export default function CartCheckoutPage() {
                   </span>
                 </Card>
               ) : (
-                <Card title="Адрес доставки">
-                  <AutoComplete
-                    inputClassName="w-full"
-                    className="block!"
-                    value={value}
-                    suggestions={items}
-                    onSelect={(e) => getDelPrice(e.value)}
-                    completeMethod={queryAddres}
-                    onChange={(e) => setValue(e.value)}
-                  />
-                </Card>
+                !showMap && (
+                  <Card title="Адрес доставки">
+                    <AutoComplete
+                      inputClassName="w-full"
+                      className="block!"
+                      value={value}
+                      suggestions={items}
+                      onSelect={(e) => getDelPrice(e.value)}
+                      completeMethod={queryAddres}
+                      onChange={(e) => setValue(e.value)}
+                    />
+                  </Card>
+                )
               )}
               {delAddress && delPrice && selectedDeliverySystem !== 0 ? (
                 <Card className="">
@@ -598,6 +680,19 @@ export default function CartCheckoutPage() {
         <p className="text-black font-semibold text-lg">
           Происходит расчёт стоимости доставки
         </p>
+      </Dialog>
+      <Dialog
+        footer={""}
+        content=""
+        header="Доставка"
+        visible={showDelErrorModal}
+        // style={{ width: "40vw" }}
+        onHide={() => {
+          if (!showDelErrorModal) return;
+          setshowDelErrorModal(false);
+        }}
+      >
+        <p className="text-red-500 font-semibold text-lg">{delErrorMessage}</p>
       </Dialog>
     </>
   );

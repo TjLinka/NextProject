@@ -1,6 +1,7 @@
 "use client";
 import Script from "next/script";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import $ from 'jquery'
 
 type PickupPoint = {
   address: string;
@@ -20,83 +21,121 @@ type PickupPoint = {
   work_time: string;
 };
 
-declare global {
-  interface Window {
-    ymaps3: any;
-  }
-}
-
-export default function PickupMap({
+const PickupMap = React.memo(function PickupMap({
   points,
   onSelect,
+  userLocation,
 }: {
   points: PickupPoint[];
   onSelect: (p: PickupPoint) => void;
+  userLocation: [];
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<any>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    console.log(userLocation);
+    
+    function init() {
+      const ymaps = (window as any).ymaps;
+      ymaps.ready(() => {
+        const map = new ymaps.Map(mapRef.current, {
+          center: [userLocation[0], userLocation[1]],
+          zoom: 12,
+          controls: ["zoomControl", "searchControl"],
+        });
 
-    async function init() {
-      await window.ymaps3.ready;
-      if (cancelled || !mapRef.current) return;
+        let objects = ymaps.geoQuery(
+          points.map((pvz) => {
+            const counter = 0,
+              BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+                `<div class="ballon_class"><strong style="font-size: 20px;">${pvz.typ_name}</strong> <br>` +
+                  `<span style='font-size: 16px;'>Адрес: ${pvz.address || "Не указано"} <br>` +
+                  `Время работы: ${pvz.work_time} </span> <br><br>` +
+                  `<span style='font-size: 16px;'>Ориентировочные сроки доставки: от 3 до 7 дней <br>
+                            Точные сроки доставки можете узнать по трек номеру на сайте службы доставки</span> <br>` +
+                  `<button id="counter-button" style="background: green; font-size: 18px; height:40px; width: 100%;
+                            cursor: pointer; border:0; color: white; border-radius: 4px; outline: none; padding: 0px 10px; margin-top: 10px;" data-address="${pvz.address || "Не указано"}"
+                            data-id="${pvz.id}" data-code="${pvz.code}" data-lat="${pvz.lat}" data-lng="${pvz.lng}"> Выбрать </button></div>`,
+                {
+                  // Переопределяем функцию build, чтобы при создании макета начинать
+                  // слушать событие click на кнопке-счетчике.
+                  build: function () {
+                    // Сначала вызываем метод build родительского класса.
+                    BalloonContentLayout.superclass.build.call(this);
+                    // А затем выполняем дополнительные действия.
+                    $("#counter-button").on("click", this.onCounterClick);
+                    $("#count").html(counter);
+                  },
 
-      const {
-        YMap,
-        YMapDefaultSchemeLayer,
-        YMapDefaultFeaturesLayer,
-        YMapMarker,
-        YMapControls,
-      } = window.ymaps3;
+                  // Аналогично переопределяем функцию clear, чтобы снять
+                  // прослушивание клика при удалении макета с карты.
 
-      const map = new YMap(mapRef.current, {
-        location: { center: [points[0].lng, points[0].lat], zoom: 13 },
-      });
-      mapInstance.current = map;
-
-      map.addChild(new YMapDefaultSchemeLayer());
-      map.addChild(new YMapDefaultFeaturesLayer());
-      map.addChild(new YMapControls({ position: "right" }));
-
-      points.forEach((point) => {
-        const el = document.createElement("div");
-        el.style.width = "28px";
-        el.style.height = "28px";
-        el.style.borderRadius = "50% 50% 50% 0";
-        el.style.background = "#D85A30";
-        el.style.transform = "rotate(-45deg)";
-        el.style.cursor = "pointer";
-        el.style.border = "2px solid white";
-        el.addEventListener("click", () => onSelect(point));
-
-        const marker = new YMapMarker(
-          { coordinates: [point.lng, point.lat] },
-          el,
+                  onCounterClick: function (e) {
+                    onSelect(pvz);
+                    // console.log(e.target.dataset);
+                    // const pvzId = e.target.dataset.code;
+                    // delivery_type.value = "pvz";
+                    // getNearestStock(e.target.dataset.lat, e.target.dataset.lng);
+                    // selectedPVZInfo.value = pvz;
+                    // selectedPVZId.value = pvzId;
+                  },
+                },
+              );
+            const newMark = new ymaps.Placemark(
+              [pvz.lat, pvz.lng],
+              {},
+              {
+                preset:
+                  pvz.delivery_system_id === 1
+                    ? "islands#darkGreenDotIcon"
+                    : "islands#darkBlueDotIcon",
+                balloonContentLayout: BalloonContentLayout,
+                balloonPanelMaxMapArea: 0,
+              },
+            );
+            newMark.events.add("click", () => {});
+            return newMark;
+          }),
         );
-        map.addChild(marker);
+        map.geoObjects.add(
+          objects.clusterize({
+            preset: "islands#invertedDarkGreenClusterIcons",
+          }),
+        );
+
+        // points.forEach((point) => {
+        //   const placemark = new ymaps.Placemark(
+        //     [point.lat, point.lng],
+        //     {
+        //       balloonContentHeader: `${point.typ_name} ${point.code}`,
+        //       balloonContentBody: `${point.address}<br>${point.work_time}`,
+        //       hintContent: point.address,
+        //     },
+        //     { preset: "islands#redDeliveryIcon" },
+        //   );
+
+        //   placemark.events.add("click", () => onSelect(point));
+        //   map.geoObjects.add(placemark);
+        // });
       });
     }
 
-    if (window.ymaps3) init();
-    else document.addEventListener("ymaps3-loaded", init);
+    if ((window as any).ymaps) init();
+    else document.addEventListener("ymaps-loaded", init);
 
-    return () => {
-      cancelled = true;
-      mapInstance.current?.destroy?.();
-    };
+    return () => document.removeEventListener("ymaps-loaded", init);
   }, [points, onSelect]);
 
   return (
     <>
       <Script
-        src="https://api-maps.yandex.ru/v3/?apikey=f04fd707-b63c-46bb-9e3b-d80307e9e3cd&lang=ru_RU"
+        src="https://api-maps.yandex.ru/2.1/?apikey=dfd9a635-2cb4-4e73-b502-37fb1289aa02&lang=ru_RU"
         strategy="afterInteractive"
-        type="module"
-        onLoad={() => document.dispatchEvent(new Event("ymaps3-loaded"))}
+        onLoad={() => document.dispatchEvent(new Event("ymaps-loaded"))}
       />
-      <div ref={mapRef} style={{ width: "100%", height: 420 }} />
+      <div ref={mapRef} style={{ width: "100%", height: 620 }} />
     </>
   );
-}
+});
+
+export default PickupMap;
