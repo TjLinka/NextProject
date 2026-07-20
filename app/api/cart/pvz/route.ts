@@ -4,7 +4,8 @@ export async function GET() {
   const res = await fetch(
     "https://test-back.artlife.ru/shop/delivery-points/1",
   );
-
+  console.log(res);
+  
   if (!res.ok) {
     return NextResponse.json(
       { error: `Upstream error: ${res.status}` },

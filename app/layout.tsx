@@ -44,16 +44,11 @@ export default function RootLayout({
           style={{ fontVariantNumeric: "lining-nums" }}
         >
           <SideMenu />
-
-          {/* эта обёртка уже есть у тебя — она правильно растягивается рядом с сайдбаром */}
           <div
             className={`grow flex flex-col min-w-0 ${isAuth ? "md:ml-21" : ""}`}
           >
             <Header />
-
-            {/* вот тут убираем pl-22 и mx-auto, добавляем flex + justify-center */}
             <div className="md:px-7 px-3 py-7 grow flex justify-center">
-              {/* а max-width ставим на внутренний блок */}
               <div className="w-full max-w-360">
                 <Providers>
                   <ClientWrapper>

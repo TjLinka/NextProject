@@ -5,22 +5,33 @@ import { SectionTitle } from "@/components/UI/SectionTitle";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
 
 export default function RemindPassPage() {
   const [phone, setPhone] = useState<string>("");
-  const [agentNotFound, setAgentNotFound] = useState(false)
+  const [agentNotFound, setAgentNotFound] = useState(false);
+  const router = useRouter();
 
   const remindPassowrd = async () => {
-    const res = await fetch(`/api/misc/remind-password?email=${phone.replace(/\D/g, '').replace(/^8/, '7')}`);
-    const data = await res.json()
-    if (data.StatusCode === 500) {
-      setAgentNotFound(true)
+    const res = await fetch(
+      `/api/misc/remind-password?email=${phone.replace(/\D/g, "").replace(/^8/, "7")}`,
+    );
+    const text = await res.text();
+    const result = text ? JSON.parse(text) : null;
+    console.log(result);
+    if (result !== null) {
+      if (result.StatusCode === 500) {
+        setAgentNotFound(true);
+      } else {
+        setAgentNotFound(false);
+        router.push("/login");
+      }
     } else {
-      setAgentNotFound(false)
+      setAgentNotFound(false);
+      router.push("/login");
     }
-    
   };
 
   return (
@@ -42,8 +53,14 @@ export default function RemindPassPage() {
         <div className="bg-white md:p-7 p-3 rounded-md shadow max-w-125 w-full mt-10 animate__animated animate__fadeIn">
           <SectionTitle>Восстановление пароля</SectionTitle>
           <p className="mt-2">
-            Укажите Ваш номер телефона и вам придёт SMS с новым паролем от
+            Укажите Ваш номер телефона, и вам придёт SMS с новым паролем от
             вашего личного кабинета
+            <br />
+            После того, как вам придёт SMS, вы будете перенаправлены на страницу
+            авторизации
+            <br />
+            Далее используйте <strong>пароль из SMS</strong> для входа в ваш
+            личный кабинет
           </p>
           <div className="mt-5">
             <InputText
@@ -52,7 +69,9 @@ export default function RemindPassPage() {
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Номер телефона"
             />
-            {agentNotFound && <span className="text-red-500">Пользователь не найден</span>}
+            {agentNotFound && (
+              <span className="text-red-500">Пользователь не найден</span>
+            )}
           </div>
           <Button
             className="mt-5 w-full"

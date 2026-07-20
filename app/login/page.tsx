@@ -4,14 +4,11 @@ import { useAgentStore } from "@/store/agentStore";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const setUserInfo = useAgentStore((state) => state.setAgentInfo);
   const logout = useAgentStore((state) => state.logout);
-  const isAuth = useAgentStore((state) => state.access_token);
-  const router = useRouter();
 
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
@@ -59,10 +56,6 @@ export default function LoginPage() {
           height={1000}
           className="w-60"
         />
-        {/* <div>
-          <span className="font-semibold ">GLEB.</span>
-          <span className="">TEAM</span>
-        </div> */}
       </div>
       <div className="bg-white p-7 rounded-md shadow max-w-125 w-full mt-10 animate__animated animate__fadeIn">
         <div>

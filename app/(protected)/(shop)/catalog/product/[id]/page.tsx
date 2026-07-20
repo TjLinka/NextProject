@@ -1,15 +1,11 @@
 import { serverFetch } from "@/lib/auth";
-import Image from "next/image";
 import { Product } from "../../types";
 import { Card } from "@/components/UI/Card";
-import DOMPurify from "isomorphic-dompurify";
 import { BackButton } from "./components/BackButton";
 import { MayNeddProducts } from "./components/MayNeedProducts";
 import { AddToCartButton } from "./components/AddToCartButton";
 import { ProdDesc } from "./components/ProductDesc";
 import { localInt } from "@/lib/utils";
-import * as motion from "motion/react-client";
-import { TabPanel, TabView } from "primereact/tabview";
 import { AddToFavor } from "./components/AddToFavor";
 import MyGal from "@/components/UI/MyGal";
 

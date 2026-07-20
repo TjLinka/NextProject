@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PickupMap from "./components/PickupMap";
 
 export default function AvatarEditorWidget() {
@@ -15,9 +15,9 @@ export default function AvatarEditorWidget() {
     getPvz();
   }, []);
 
-  const setDeliveryAddress = (val: any) => {
+  const setDeliveryAddress = useCallback((val: unknown) => {
     console.log(val);
-  };
+  }, [allPVZ])
 
   return (
     <PickupMap
