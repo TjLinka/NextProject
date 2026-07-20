@@ -275,3 +275,23 @@ export const checkSmsCode = async (agent_id: number | string, code: any) => {
 
   return res.status;
 };
+
+export const createWithdraw = async ({
+  amount,
+  requisites,
+  comm,
+}: {
+  amount: number | string | null | Nullable;
+  requisites: any;
+  comm?: string;
+}) => {
+  const res = await serverFetch("/api/partner/Account/add-withdraw", {
+    method: "POST",
+    body: JSON.stringify({
+      amount,
+      comm,
+      requisites,
+    }),
+  });
+  console.log(res);
+};

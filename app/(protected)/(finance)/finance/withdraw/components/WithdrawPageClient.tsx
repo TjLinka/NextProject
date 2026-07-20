@@ -110,7 +110,7 @@ export const WithdrawPageClient = () => {
         Создат заявку
       </Button>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-5 mt-5">
-        <Card title="Диапазон от и до"></Card>
+        {/* <Card title="Диапазон от и до"></Card> */}
         <Card title="Поиск по ID заявки">
           <InputText
             value={withdrawID}
