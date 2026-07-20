@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/UI/Button";
 import { SectionTitle } from "@/components/UI/SectionTitle";
+import { useModalAndNotify } from "@/store/modalAndNotify";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +14,7 @@ export default function RemindPassPage() {
   const [phone, setPhone] = useState<string>("");
   const [agentNotFound, setAgentNotFound] = useState(false);
   const router = useRouter();
-
+  const showToast = useModalAndNotify((state) => state.showNotification);
   const remindPassowrd = async () => {
     const res = await fetch(
       `/api/misc/remind-password?email=${phone.replace(/\D/g, "").replace(/^8/, "7")}`,
@@ -26,10 +27,17 @@ export default function RemindPassPage() {
         setAgentNotFound(true);
       } else {
         setAgentNotFound(false);
+        showToast('success', 'SMS отправлен на телефон', 'Восстановление пароля')
         router.push("/login");
       }
     } else {
       setAgentNotFound(false);
+        showToast(
+          "success",
+          "SMS отправлен на телефон",
+          "Восстановление пароля",
+        );
+
       router.push("/login");
     }
   };
