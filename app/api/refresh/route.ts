@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   }
 
   const res = await fetch(
-    "https://back.antlercosmetic.ru/api/partner/Agent/refresh-token",
+    "https://dev-back.gleb.team/api/partner/Agent/refresh-token",
     {
       method: "GET",
       headers: {

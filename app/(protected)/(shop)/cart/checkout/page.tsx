@@ -341,7 +341,7 @@ export default function CartCheckoutPage() {
   return (
     <>
       <div className="flex flex-col justify-center md:max-w-[80%] mx-auto">
-        <Link href={"/cart"}>
+        <Link href={"/cart"} className="w-fit">
           <Button>Назад в корзину</Button>
         </Link>
         <div className="flex justify-between items-end">
@@ -517,7 +517,7 @@ export default function CartCheckoutPage() {
               ) : null}
             </div>
             <SectionTitle className="md:mt-5 mt-2">Способ оплаты</SectionTitle>
-            <Card title="Выберите способ оплаты" className="md:mt-5 mt-2" fit>
+            <Card title="Выберите способ оплаты" className="md:mt-5 mt-2 md:w-fit">
               <div className="md:flex grid grid-cols-2 md:gap-5 gap-2">
                 {/* <div
                   onClick={() => setselectedPaySystem(1)}
@@ -611,7 +611,7 @@ export default function CartCheckoutPage() {
                 </div> */}
               </div>
             </Card>
-            <div className="grid grid-cols-2 md:gap-5 gap-2 mt-5">
+            <div className="grid md:grid-cols-2 md:gap-5 gap-2 mt-5">
               <Card title="Списать баллы">
                 <div>
                   <p>
@@ -669,7 +669,7 @@ export default function CartCheckoutPage() {
               </p>
             </Card>
             <Button
-              className=" w-full text-xl! uppercase font-bold! md:mt-10 mt-5 h-15 bg-[#abf9ee]"
+              className=" w-full text-xl! uppercase font-bold! md:mt-10 mt-5 h-15"
               onClick={createAndPayOrder}
             >
               Оформить заказ

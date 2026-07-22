@@ -46,6 +46,11 @@ export const Header = () => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+    async function getEvent() {
+      const res = await fetch("/api/events/get-closesed");
+      console.log(res);
+    }
+    getEvent();
   }, []);
 
   const handleSearchInCatalog = () => {
@@ -78,14 +83,26 @@ export const Header = () => {
         className={` text-2xl md:flex hidden gap-2 items-center cursor-pointer  uppercase text-center transition-opacity duration-400 ${!sideMenuStatus ? "opacity-100" : "opacity-0"}`}
       >
         <Image
-          src={`/imgs/AnterlLogo.png`}
+          src={`/imgs/logo_hippo_menu.svg`}
           alt="side menu logo"
           width={200}
           height={200}
-          className={`w-45 ${!sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
+          className={`w-full h-12 ${!sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
         />
+        <div>
+          <span className="font-semibold">GLEB.</span>
+          <span className="font-light">TEAM</span>
+        </div>
       </Link>
-      <div className="flex items-center justify-end gap-5 grow">
+      <div className="grow text-center text-xl font-medium">
+        Близжайшее мероприятие:{" "}
+        <Link href={"/event"}>
+          <span className="text-(--main-color) hover:underline cursor-pointer">
+            Добро пожаловать!
+          </span>
+        </Link>
+      </div>
+      <div className="flex items-center justify-end gap-5">
         <Button onClick={openRefsModal}>Пригласить партнёра</Button>
         {/* <Image
           alt="Support Icon"

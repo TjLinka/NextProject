@@ -30,7 +30,7 @@ export const SubMenuLink = ({
       onClick={() => {
         if (width < 700 || menuOpen) setSideMenuStore();
       }}
-      className={`whitespace-nowrap flex items-center gap-4 hover:bg-(--body-color) py-1 px-2 rounded ${className}`}
+      className={`whitespace-nowrap flex items-center gap-4 hover:bg-(--menu-color) py-1 px-2 rounded ${className}`}
     >
       {icon_name && (
         <div className="md:w-7 md:h-7 shrink-0">

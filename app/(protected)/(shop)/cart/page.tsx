@@ -76,9 +76,9 @@ export default function CartPage() {
   return (
     <>
       <div className="flex items-center  justify-between">
-        <h1 className="text-[56px] font-semibold inline-block border-b-2 leading-[100%] border-(--main-color)">
+        <div className="text-4xl font-semibold inline-block border-b-2 leading-[100%] border-(--main-color)">
           Корзина
-        </h1>
+        </div>
         <Button onClick={handleClearCart}>Очистить коризину</Button>
       </div>
       {/* <hr className="border-gray-300 my-5" /> */}

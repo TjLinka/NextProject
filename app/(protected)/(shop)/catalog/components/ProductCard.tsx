@@ -80,11 +80,11 @@ export const ProductCard = React.memo(
         )}
       >
         <div className="md:h-70 h-35  rounded py-2">
-          {!imageLoaded && (
+          {/* {!imageLoaded && (
             <div className="w-full h-full bg-gray-200 rounded-lg animate-pulse space-x-4 flex justify-center items-center">
               <span className="loader"></span>
             </div>
-          )}
+          )} */}
           <Link
             href={`/catalog/product/${product.id}`}
             className="grow hover:underline leading-[100%]"
@@ -95,7 +95,7 @@ export const ProductCard = React.memo(
               width={300}
               height={350}
               className={`w-full h-full rounded-xl object-contain ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-              onLoad={() => setImageLoaded(true)}
+              // onLoad={() => setImageLoaded(true)}
             />
           </Link>
         </div>

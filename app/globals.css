@@ -2,13 +2,14 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #eae0d2b8;
+  background-color: #ebebeb;
   box-sizing: border-box;
 }
 :root {
-  --main-color: #E7D2B8;
-  --main-text: #E7D2B8;
-  --body-color: #eae0d2b8;
+  --main-color: #8658e8;
+  --main-text: #8658e8;
+  --body-color: #ebebeb;
+  --menu-color: #8658e87a;
 }
 /* ANIMATIONS */
 .loader {
@@ -226,7 +227,7 @@ h1, h2 {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #faebd4;
+  background: var(--main-color);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {

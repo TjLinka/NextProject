@@ -9,7 +9,7 @@ export async function refreshAccessToken(): Promise<string> {
   if (!refreshToken) redirect("/login");
 
   const res = await fetch(
-    "https://back.radargp.com/api/partner/Agent/refresh-token",
+    "https://dev-back.gleb.team/api/partner/Agent/refresh-token",
     {
       method: "GET",
       headers: {

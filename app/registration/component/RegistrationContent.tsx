@@ -75,6 +75,65 @@ export default function RegistrationContent() {
         setSponsorId("2");
       }
     }
+    const input = document.getElementById("phone");
+
+    function formatPhone(value: string) {
+      // только цифры
+      let numbers = value.replace(/\D/g, "");
+
+      // убираем первую 7 или 8
+      if (numbers.startsWith("7") || numbers.startsWith("8")) {
+        numbers = numbers.slice(1);
+      }
+
+      // максимум 10 цифр
+      numbers = numbers.slice(0, 10);
+
+      let result = "+7";
+
+      if (numbers.length > 0) {
+        result += " (" + numbers.slice(0, 3);
+      }
+
+      if (numbers.length >= 4) {
+        result += ") " + numbers.slice(3, 6);
+      }
+
+      if (numbers.length >= 7) {
+        result += "-" + numbers.slice(6, 8);
+      }
+
+      if (numbers.length >= 9) {
+        result += "-" + numbers.slice(8, 10);
+      }
+
+      return result;
+    }
+    if (input) {
+      // при фокусе
+      input.addEventListener("focus", () => {
+        if (!input.value) {
+          input.value = "+7 ";
+        }
+      });
+
+      // ввод вручную
+      input.addEventListener("input", (e) => {
+        input.value = formatPhone(e.target.value);
+        setPhone(formatPhone(e.target.value));
+      });
+      // вставка номера
+      input.addEventListener("paste", (e) => {
+        e.preventDefault();
+
+        const pasted = (e.clipboardData || window.clipboardData).getData(
+          "text",
+        );
+
+        setPhone(formatPhone(pasted));
+      });
+    }
+    
     foo();
   }, []);
 
@@ -83,7 +142,7 @@ export default function RegistrationContent() {
     const res = await createAgent({
       sponsor_id,
       surname: surname,
-      mobile_phone: phone.replace(/\D/g, '').replace(/^8/, '7'),
+      mobile_phone: phone.replace(/\D/g, "").replace(/^8/, "7"),
       birth_date: bth_dte,
       email: email,
       password: password,
@@ -125,13 +184,18 @@ export default function RegistrationContent() {
       }, 500);
     }
   };
-
+  
   useEffect(() => {
+    console.log(phone.replace(/\D/g, "").length);
     // если номер ещё не введён полностью — не дёргаем API
-    if (phone.replace(/\D/g, "").length < 10) return;
+    if (phone.replace(/\D/g, "").length < 11) return;
     const timer = setTimeout(async () => {
       setphoneCheckAction(true);
-      const res = await fetch(`/api/misc/check-phone-unic?input=${phone}`);
+      console.log(phone.replace(/\D/g, ""));
+      
+      const res = await fetch(
+        `/api/misc/check-phone-unic?input=${phone.replace(/\D/g, "")}`,
+      );
       const data = await res.json();
       if (data.is_unique) {
         setPhoneText("Телефон можно использовать");
@@ -207,6 +271,7 @@ export default function RegistrationContent() {
               <input type="phone" style={{ display: "none" }} />
               <InputText
                 className="w-full"
+                id="phone"
                 value={phone}
                 autoComplete="new-password"
                 onChange={(e) => setPhone(e.currentTarget.value)}
@@ -275,8 +340,8 @@ export default function RegistrationContent() {
                 <br /> Он является вашим логином.
               </p>
               <p className="mt-2">
-                Если у вас возникнут сложности со входом, пожалуйста, свяжитесь с
-                нашей службой поддержки.
+                Если у вас возникнут сложности со входом, пожалуйста, свяжитесь
+                с нашей службой поддержки.
               </p>
             </div>
             <p className="md:text-lg  text-sm md:mt-5 mt-2">

@@ -35,7 +35,7 @@ export const Caption = ({
     captionContent = (
       <Link
         href={linkUrl}
-        className="hover:underline md:text-[16px] text-sm"
+        className="hover:underline md:text-[16px] text-sm text-(--main-color) font-medium"
       >
         {text}
       </Link>

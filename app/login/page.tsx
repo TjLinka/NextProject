@@ -17,6 +17,8 @@ export default function LoginPage() {
   const [loginError, setLoginError] = useState("");
 
   const handleSumbit = async () => {
+    console.log('click');
+    
     setInAction(true);
     const res = await fetch("/api/login", {
       method: "POST",
@@ -50,12 +52,16 @@ export default function LoginPage() {
     >
       <div className="flex gap-4 text-4xl items-center animate__animated animate__fadeIn">
         <Image
-          alt="Login Logo"
-          src={`/imgs/AnterlLogo.png`}
-          width={1000}
-          height={1000}
-          className="w-60"
+          src={`/imgs/logo_hippo_menu.svg`}
+          alt="side menu logo"
+          width={200}
+          height={200}
+          className={`w-full h-20 transition-opacity duration-400`}
         />
+        <div>
+          <span className="font-semibold">GLEB.</span>
+          <span className="font-light">TEAM</span>
+        </div>
       </div>
       <div className="bg-white p-7 rounded-md shadow max-w-125 w-full mt-10 animate__animated animate__fadeIn">
         <div>

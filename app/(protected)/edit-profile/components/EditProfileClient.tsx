@@ -4,12 +4,13 @@ import { Button } from "@/components/UI/Button";
 import { User } from "@/types/user/types";
 import { useRouter } from "next/navigation";
 import { InputText } from "primereact/inputtext";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Calendar } from "primereact/calendar";
 import moment from "moment";
 import { Nullable } from "primereact/ts-helpers";
 import { RadioButton } from "primereact/radiobutton";
 import { editAgentInfo } from "@/lib/actions";
+import clsx from "clsx";
 
 type socialsInfo = {
   nickname: string;
@@ -26,12 +27,14 @@ export const EditProfileClient = ({
   socials: socialsInfo[];
 }) => {
   console.log(data);
-  
+
   const [userInfo, setUserInfo] = useState<User>(data);
   const [birth_date, setbirth_date] = useState<Nullable<Date>>(
     new Date(data.birth_date),
   );
-
+  const [phoneCheckAction, setphoneCheckAction] = useState(false);
+  const [phoneText, setPhoneText] = useState("");
+  const [phoneUnic, setPhoneUnic] = useState(false);
   const router = useRouter();
 
   const handleInputForm = useCallback((val: string | number, key: string) => {
@@ -46,10 +49,47 @@ export const EditProfileClient = ({
   };
 
   const handleSaveChanges = async () => {
-    const res = await editAgentInfo(userInfo)
-    console.log(res);
-    
+    if (userInfo.mobile_phone.replace(/\D/g, "").length < 10) return;
+    setphoneCheckAction(true);
+    const res = await fetch(
+      `/api/misc/check-phone-unic?input=${userInfo.mobile_phone}`,
+    );
+    const data = await res.json();
+    if (data.is_unique) {
+      setPhoneText("Телефон можно использовать");
+      setPhoneUnic(true);
+    } else {
+      setPhoneText("Телефон уже занят");
+      setPhoneUnic(false);
+    }
+    setphoneCheckAction(false);
+    if (phoneUnic) {
+      const res = await editAgentInfo(userInfo);
+      console.log(res);
+    }
   };
+
+  // useEffect(() => {
+  //   // если номер ещё не введён полностью — не дёргаем API
+  //   if (userInfo.mobile_phone.replace(/\D/g, "").length < 10) return;
+  //   const timer = setTimeout(async () => {
+  //     setphoneCheckAction(true);
+  //     const res = await fetch(
+  //       `/api/misc/check-phone-unic?input=${userInfo.mobile_phone}`,
+  //     );
+  //     const data = await res.json();
+  //     if (data.is_unique) {
+  //       setPhoneText("Телефон можно использовать");
+  //       setPhoneUnic(true);
+  //     } else {
+  //       setPhoneText("Телефон уже занят");
+  //       setPhoneUnic(false);
+  //     }
+  //     setphoneCheckAction(false);
+  //   }, 500);
+
+  //   return () => clearTimeout(timer); // отменяем предыдущий таймер при каждом новом рендере
+  // }, [userInfo.mobile_phone]);
 
   return (
     <div className="h-full">
@@ -64,7 +104,7 @@ export const EditProfileClient = ({
         <p className="text-2xl font-semibold border-b-2 border-(--main-color) inline-block">
           Персональные даннные
         </p>
-        <div className="grid md:grid-cols-3 items-center gap-5 mt-5">
+        <div className="grid md:grid-cols-3 items-start gap-5 mt-5">
           <InputText
             value={userInfo.lastname}
             id="username"
@@ -78,12 +118,23 @@ export const EditProfileClient = ({
               handleInputForm(e.target.value, "email")
             }
           />
-          <InputText
-            value={userInfo.mobile_phone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleInputForm(e.target.value, "mobile_phone")
-            }
-          />
+          <div>
+            <InputText
+              value={userInfo.mobile_phone}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                handleInputForm(e.target.value, "mobile_phone")
+              }
+            />{" "}
+            <br />
+            <span
+              className={clsx("", {
+                "text-green-500": phoneUnic && !phoneCheckAction,
+                "text-red-500": !phoneUnic && !phoneCheckAction,
+              })}
+            >
+              {phoneCheckAction ? "Проверка..." : phoneText}
+            </span>
+          </div>
           <Calendar
             value={birth_date}
             onChange={(e) => handleChangeBthDte(e.value)}
@@ -93,7 +144,7 @@ export const EditProfileClient = ({
             readOnlyInput
             hideOnRangeSelection
           />
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap h-full items-center gap-3">
             <div className="flex align-items-center">
               <RadioButton
                 inputId="ingredient1"

@@ -30,7 +30,7 @@ export const SubMenuCollapse = ({
   return (
     <div className="cursor-pointer">
       <div
-        className="flex justify-between items-center hover:bg-(--body-color) py-1 px-2 rounded"
+        className="flex justify-between items-center hover:bg-(--menu-color) py-1 px-2 rounded"
         onClick={handleSubMenuOpen}
       >
         <div className="flex gap-4">

@@ -133,7 +133,7 @@ const PickupMap = React.memo(function PickupMap({
         strategy="afterInteractive"
         onLoad={() => document.dispatchEvent(new Event("ymaps-loaded"))}
       />
-      <div ref={mapRef} style={{ width: "100%", height: 620 }} />
+      <div ref={mapRef} className="w-full md:h-155 h-80"/>
     </>
   );
 });

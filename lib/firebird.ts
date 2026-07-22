@@ -4,7 +4,7 @@ import Firebird from "node-firebird";
 const options: Firebird.Options = {
   host: "188.127.250.123",
   port: 3050,
-  database: "C:/FIREBIRD/antler/PRODUCTION.FDB",
+  database: "C:/FIREBIRD/developer/DEVELOPER.FDB",
   user: "SYSDBA",
   password: "YD3gQheA",
 };

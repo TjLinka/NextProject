@@ -16,7 +16,7 @@ export async function validateOrRefreshToken(): Promise<string | null> {
 
   if (accessToken) {
     const res = await fetch(
-      "https://back.antlercosmetic.ru/api/partner/Account/get-short-info",
+      "https://dev-back.gleb.team/api/partner/Account/get-short-info",
       {
         method: "GET",
         headers: {

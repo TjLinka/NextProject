@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { SideMenu } from "@/components/Navigations/SideMenu";
 import "./globals.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
@@ -14,9 +14,6 @@ import { ClientWrapper } from "@/components/clientProvider";
 import { Cormorant_Garamond, Manrope, Raleway } from "next/font/google";
 import { useAgentStore } from "@/store/agentStore";
 import { Metadata } from "next";
-
-
-
 
 const inter = Manrope({
   subsets: ["latin"],
@@ -34,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   moment.locale("ru");
-  const isAuth = useAgentStore((state) => state.isAuth)
+  const isAuth = useAgentStore((state) => state.isAuth);
 
   return (
     <html lang="en" className={`h-full antialiased`}>

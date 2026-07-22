@@ -40,7 +40,7 @@ export const SideMenu = ({ className }: { className?: string }) => {
   return (
     <div
       className={clsx(
-        `bg-white flex flex-col pb-5 justify-between h-full shrink-0 px-0 ${sideMenuStatus ? "min-w-0 w-75 px-5" : "md:w-21 w-0"} 
+        `bg-white flex flex-col pb-5 justify-between h-full shrink-0 px-0 ${sideMenuStatus ? "min-w-0 md:w-90 w-70 px-5" : "md:w-21 w-0"} 
         shadow-md transition-[width, opacity] opacity-0 ease-in-out duration-500 overflow-hidden
          h-screen fixed z-100 top-0 ${className}`,
         {
@@ -52,19 +52,19 @@ export const SideMenu = ({ className }: { className?: string }) => {
       <div className={`py-4 flex justify-between items-center`}>
         <Link
           href={"/"}
-          className={`flex text-2xl gap-2 items-center cursor-pointer  uppercase text-center transition-opacity duration-400 ${sideMenuStatus ? "opacity-100" : "opacity-0 pointer-events-none cursor-auto"}`}
+          className={`flex text-2xl gap-2 items-center cursor-pointer uppercase text-center transition-opacity duration-400 ${sideMenuStatus ? "opacity-100" : "opacity-0 pointer-events-none cursor-auto"}`}
         >
           <Image
-            src={`/imgs/AnterlLogo.png`}
+            src={`/imgs/logo_hippo_menu.svg`}
             alt="side menu logo"
             width={200}
             height={200}
-            className={`w-40 h-12 ${sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
+            className={`w-full h-12 ${sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
           />
-          {/* <div>
+          <div>
             <span className="font-semibold">GLEB.</span>
             <span className="font-light">TEAM</span>
-          </div> */}
+          </div>
         </Link>
         <div
           className={`w-6 h-6 ${sideMenuStatus ? "rotate-0" : "rotate-180"} cursor-pointer absolute right-7 transition-[rotate] duration-300`}
@@ -89,6 +89,11 @@ export const SideMenu = ({ className }: { className?: string }) => {
               url="/marketing/structure"
               icon_name="TreeList"
               title="Структура"
+            />
+            <SubMenuLink
+              url="/marketing/binar"
+              icon_name="BinaryTree"
+              title="Бинар"
             />
           </SubMenuCollapse>
         </li>
