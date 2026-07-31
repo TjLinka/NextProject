@@ -1,7 +1,7 @@
 "use client";
 import Script from "next/script";
 import React, { useEffect, useRef } from "react";
-import $ from 'jquery'
+// import $ from "jquery";
 
 type PickupPoint = {
   address: string;
@@ -34,7 +34,7 @@ const PickupMap = React.memo(function PickupMap({
 
   useEffect(() => {
     console.log(userLocation);
-    
+
     function init() {
       const ymaps = (window as any).ymaps;
       ymaps.ready(() => {
@@ -63,8 +63,17 @@ const PickupMap = React.memo(function PickupMap({
                     // Сначала вызываем метод build родительского класса.
                     BalloonContentLayout.superclass.build.call(this);
                     // А затем выполняем дополнительные действия.
-                    $("#counter-button").on("click", this.onCounterClick);
-                    $("#count").html(counter);
+                    const button = this.getParentElement().querySelector(
+                      "#counter-button",
+                    ) as HTMLButtonElement | null;
+
+                    button?.addEventListener("click", this.onCounterClick);
+                    const count =
+                      this.getParentElement().querySelector("#count");
+
+                    if (count) {
+                      count.textContent = String(counter);
+                    }
                   },
 
                   // Аналогично переопределяем функцию clear, чтобы снять

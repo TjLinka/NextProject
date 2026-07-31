@@ -21,8 +21,13 @@ export const useFavourites = () =>
 
 // Проверка — есть ли товар в избранном
 export const useIsFavourite = (productId: string | number) => {
-  const { data } = useFavourites();
-  return data?.some((product) => product.id === productId) ?? false;
+  const isAuth = useAgentStore((state) => state.access_token);
+  if (isAuth) {
+    const { data } = useFavourites();
+    return data?.some((product) => product.id === productId) ?? false;
+  } else {
+    return false
+  }
 };
 // openToast("success", "Товар добавлен в избранно");
 // Добавление / удаление

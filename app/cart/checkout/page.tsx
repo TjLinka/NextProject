@@ -5,12 +5,10 @@ import { Button } from "@/components/UI/Button";
 import { Card } from "@/components/UI/Card";
 import { SectionTitle } from "@/components/UI/SectionTitle";
 import { getBalance, getProfileData } from "@/dbQuery/dbQuerys";
-import { serverFetch } from "@/lib/auth";
 import { useCartStore } from "@/store/cartStore";
 import { User } from "@/types/user/types";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
-import { Span } from "next/dist/trace";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -31,7 +29,6 @@ import {
 } from "@/lib/actions";
 import _ from "lodash";
 import PickupMap from "@/app/(protected)/test/components/PickupMap";
-import { RadioButton } from "primereact/radiobutton";
 import { HeaderProductCard } from "@/app/catalog/components/HeaderProductCard";
 
 export default function CartCheckoutPage() {
