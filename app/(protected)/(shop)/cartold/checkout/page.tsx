@@ -20,10 +20,6 @@ import {
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useCallback, useEffect, useState } from "react";
-<<<<<<<< HEAD:app/(protected)/(shop)/cartold/checkout/page.tsx
-import { HeaderProductCard } from "../../catalogold/components/HeaderProductCard";
-========
->>>>>>>> 69141b3 (1):app/cart/checkout/page.tsx
 import { localInt } from "@/lib/utils";
 import { InputNumber } from "primereact/inputnumber";
 import { Nullable } from "primereact/ts-helpers";
