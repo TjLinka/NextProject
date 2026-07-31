@@ -4,34 +4,36 @@ import { useAgentStore } from "@/store/agentStore";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const setUserInfo = useAgentStore((state) => state.setAgentInfo);
   const logout = useAgentStore((state) => state.logout);
-  const isAuth = useAgentStore((state) => state.access_token);
-  const router = useRouter();
 
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [inAction, setInAction] = useState(false);
   const [isLoginSuccess, setisLoginSuccess] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   const handleSumbit = async () => {
     setInAction(true);
     const res = await fetch("/api/login", {
       method: "POST",
-      body: JSON.stringify({ login, password }),
+      body: JSON.stringify({ login: login.replace(/\D/g, '').replace(/^8/, '7'), password }),
       credentials: "include",
     });
     const data = await res.json();
-    setisLoginSuccess(true);
-
-    setTimeout(() => {
-      setUserInfo(data);
-      router.push("/dashboard");
-    }, 500);
+    if (data.StatusCode !== 401) {
+      setisLoginSuccess(true);
+      setTimeout(() => {
+        setUserInfo(data);
+        window.location.href = "/";
+      }, 500);
+    } else {
+      setInAction(false);
+      setLoginError('Введён не верный логин или пароль!');
+    }
   };
 
   useEffect(() => {
@@ -49,25 +51,22 @@ export default function LoginPage() {
       <div className="flex gap-4 text-4xl items-center animate__animated animate__fadeIn">
         <Image
           alt="Login Logo"
-          src={`/imgs/logo_hippo_menu.svg`}
-          width={500}
-          height={500}
-          className="md:w-30 w-25"
+          src={`/imgs/AnterlLogo.png`}
+          width={1000}
+          height={1000}
+          className="w-60"
         />
-        <div>
-          <span className="font-semibold ">GLEB.</span>
-          <span className="">TEAM</span>
-        </div>
       </div>
       <div className="bg-white p-7 rounded-md shadow max-w-125 w-full mt-10 animate__animated animate__fadeIn">
         <div>
           <p className="font-semibold text-lg">Логин</p>
           <input
-            autoComplete="new-password"
+            // autoComplete="new-password"
             onInput={(e: React.InputEvent<HTMLInputElement>) =>
               setLogin(e.currentTarget.value)
             }
             type="text"
+            placeholder="Номер телефона"
             className="border w-full border-gray-300 rounded-sm h-10 outline-none pl-2 mt-1"
           />
         </div>
@@ -79,6 +78,7 @@ export default function LoginPage() {
               setPassword(e.currentTarget.value)
             }
             type="password"
+            placeholder="Пароль"
             className="border w-full border-gray-300 rounded-sm h-10 outline-none pl-2 mt-1"
           />
         </div>
@@ -89,13 +89,19 @@ export default function LoginPage() {
         >
           Войти
         </Button>
-        <p className="font-semibold flex md:flex-row flex-col items-center justify-center gap-2 mt-5">
+        {loginError && (
+          <span className="text-sm text-red-500">{loginError}</span>
+        )}
+        <p className="font-semibold flex md:flex-row flex-col items-center  gap-2 mt-5">
           Вы ещё не с нами?{" "}
-          <Link
-            href={"/registration"}
-            className="text-(--main-text) hover:underline"
-          >
+          <Link href={"/registration"} className="underline">
             Станьте частью нашей команды!
+          </Link>
+        </p>
+        <p className="font-semibold flex md:flex-row flex-col items-center gap-2 mt-2">
+          Забыли пароль?{" "}
+          <Link href={"/remindpass"} className="underline">
+            Восстановить
           </Link>
         </p>
       </div>

@@ -1,4 +1,4 @@
-import { Product } from "@/app/(protected)/(shop)/catalog/types";
+import { Product } from "@/app/(protected)/(shop)/catalogold/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -24,7 +24,7 @@ export const useCartStore = create<CartState>()(
         set((state) => {
           if (state.cart.find((prod) => prod.id === p.id))
             return { cart: state.cart };
-          p.count = 1;
+          if (p.id !== 201) p.count = 1;
           return { cart: [...state.cart, p] };
         }),
       removeFromCart: (id) =>

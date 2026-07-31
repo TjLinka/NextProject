@@ -140,7 +140,6 @@ export const PersonalAccoutClient = () => {
           <Button onClick={() => setVisible(true)}>
             Перевести средства между партнёрами
           </Button>
-          <Button>Перевод с лицевого на товарный счёт</Button>
           <Link href={`/finance/withdraw`} className="md:w-auto w-full">
             <Button className="md:w-auto w-full">Вывод средств</Button>
           </Link>

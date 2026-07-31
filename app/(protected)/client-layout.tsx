@@ -6,11 +6,11 @@ import { getFavouritesProducts } from "./(shop)/favorite/action";
 import React from "react";
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
-  const { data: favoriteIds } = useQuery({
-    queryKey: ["favourites"],
-    queryFn: () => getFavouritesProducts(),
-    staleTime: Infinity, // не рефетчит без причины
-  });
+  // const { data: favoriteIds } = useQuery({
+  //   queryKey: ["favourites"],
+  //   queryFn: () => getFavouritesProducts(),
+  //   staleTime: Infinity, // не рефетчит без причины
+  // });
 
   return <>{children}</>;
 }

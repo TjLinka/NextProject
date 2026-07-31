@@ -9,6 +9,7 @@ import { Calendar } from "primereact/calendar";
 import moment from "moment";
 import { Nullable } from "primereact/ts-helpers";
 import { RadioButton } from "primereact/radiobutton";
+import { editAgentInfo } from "@/lib/actions";
 
 type socialsInfo = {
   nickname: string;
@@ -24,6 +25,8 @@ export const EditProfileClient = ({
   data: User;
   socials: socialsInfo[];
 }) => {
+  console.log(data);
+  
   const [userInfo, setUserInfo] = useState<User>(data);
   const [birth_date, setbirth_date] = useState<Nullable<Date>>(
     new Date(data.birth_date),
@@ -42,6 +45,12 @@ export const EditProfileClient = ({
     setbirth_date(val);
   };
 
+  const handleSaveChanges = async () => {
+    const res = await editAgentInfo(userInfo)
+    console.log(res);
+    
+  };
+
   return (
     <div className="h-full">
       <Button
@@ -57,10 +66,10 @@ export const EditProfileClient = ({
         </p>
         <div className="grid md:grid-cols-3 items-center gap-5 mt-5">
           <InputText
-            value={userInfo.fullname}
+            value={userInfo.lastname}
             id="username"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleInputForm(e.target.value, "fullname")
+              handleInputForm(e.target.value, "lastname")
             }
           />
           <InputText
@@ -111,7 +120,7 @@ export const EditProfileClient = ({
             </div>
           </div>
         </div>
-        <p className="text-2xl font-semibold border-b-2 border-(--main-color) inline-block mt-10">
+        {/* <p className="text-2xl font-semibold border-b-2 border-(--main-color) inline-block mt-10">
           Адрес
         </p>
         <div className="grid md:grid-cols-3 gap-5 mt-5">
@@ -154,6 +163,11 @@ export const EditProfileClient = ({
               </div>
             );
           })}
+        </div> */}
+        <div className="grid grid-cols-3 gap-5 justify-end mt-5">
+          <Button onClick={handleSaveChanges} className="col-start-3">
+            Сохранить
+          </Button>
         </div>
       </div>
     </div>

@@ -8,11 +8,13 @@ import { useState } from "react";
 export const SubMenuCollapse = ({
   children,
   title,
-  icon
+  icon,
+  scroll
 }: {
   icon: string
   children: React.ReactNode;
   title: string;
+  scroll?: boolean
 }) => {
   const menuOpen = useSideMenu((state) => state.menuOpen);
   const menuOpenHandler = useSideMenu((state) => state.setMenuOpen)
@@ -28,13 +30,13 @@ export const SubMenuCollapse = ({
   return (
     <div className="cursor-pointer">
       <div
-        className="flex justify-between items-center hover:bg-[#bf94ff59] py-1 px-2 rounded"
+        className="flex justify-between items-center hover:bg-(--body-color) py-1 px-2 rounded"
         onClick={handleSubMenuOpen}
       >
         <div className="flex gap-4">
-          <img src={`/icons/${icon}.svg`} alt="" className="w-7 h-7" />
+          <img src={`/icons/${icon}.svg`} alt="" className="md:w-7 w-5 md:h-7 h-5" />
           <span
-            className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} text-lg font-medium`}
+            className={`transition-opacity duration-200 ${menuOpen ? "opacity-100" : "opacity-0"} md:text-lg text-sm font-medium`}
           >
             {title}
           </span>
@@ -51,7 +53,12 @@ export const SubMenuCollapse = ({
         />
       </div>
       <div
-        className={` ${subMenuOpen && menuOpen ? "max-h-50 mt-5 opacity-100" : "max-h-0 mt-0 opacity-0"} overflow-hidden transition-all duration-200 ease-in-out ml-5 flex flex-col justify-around gap-5`}
+        className={clsx(
+          ` ${subMenuOpen && menuOpen ? "max-h-auto md:mt-5 mt-2 opacity-100" : "max-h-0 mt-0 opacity-0"} overflow-hidden transition-all duration-200 ease-in-out ml-5 flex flex-col justify-around gap-1`,
+          {
+            "overflow-y-scroll max-h-60": scroll && menuOpen && subMenuOpen,
+          },
+        )}
       >
         {children}
       </div>

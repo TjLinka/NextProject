@@ -7,7 +7,6 @@ import { Button } from "../UI/Button";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
-import { HeaderProductCard } from "@/app/(protected)/(shop)/catalog/components/HeaderProductCard";
 import { useRouter } from "next/navigation";
 import { useModalAndNotify } from "@/store/modalAndNotify";
 import { useWindowSize } from "@reactuses/core";
@@ -16,6 +15,8 @@ import { usePathname } from "next/navigation";
 import { useSideMenu } from "@/store/sideMenuStore";
 import { Caption } from "../UI/Caption";
 import { localInt } from "@/lib/utils";
+import { HeaderProductCard } from "@/app/catalog/components/HeaderProductCard";
+import { useIsAuth } from "@/utils/hooks/isAuthHook";
 
 export const Header = () => {
   const openSuppModal = useModalAndNotify(
@@ -34,8 +35,9 @@ export const Header = () => {
   const totalPrice = useCartStore((state) => {
     return localInt(state.cart.reduce((acc, p) => acc + p.price * p.count, 0));
   });
-  const isAuth = useAgentStore((state) => state.isAuth);
-  const logout = useAgentStore((state) => state.logout);
+  const isAuth = useIsAuth();
+
+  console.log(pathname);
 
   const { width, height } = useWindowSize();
 
@@ -59,7 +61,11 @@ export const Header = () => {
       className={clsx(
         "h-0 bg-white shadow flex opacity-0 transition-[height, opacity] duration-500 justify-end items-center px-0 sticky top-0 z-20",
         {
-          "h-20! md:px-7! px-3 opacity-100!": isAuth && mounted,
+          "h-20! md:px-7! px-3 opacity-100!":
+            (isAuth ||
+              ["/catalog", "/cart", "/catalog/product"].includes(pathname) ||
+              pathname.startsWith("/catalog/product/")) &&
+            mounted,
         },
       )}
     >
@@ -74,46 +80,27 @@ export const Header = () => {
         />
       </div>
       <Link
-        href={"/dashboard"}
+        href={"/catalog"}
         className={` text-2xl md:flex hidden gap-2 items-center cursor-pointer  uppercase text-center transition-opacity duration-400 ${!sideMenuStatus ? "opacity-100" : "opacity-0"}`}
       >
         <Image
-          src={`/imgs/logo_hippo_menu.svg`}
+          src={`/imgs/AnterlLogo.png`}
           alt="side menu logo"
           width={200}
           height={200}
-          className={`w-10 h-10 ${!sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
+          className={`w-45 ${!sideMenuStatus ? "opacity-100" : "opacity-0"} transition-opacity duration-400`}
         />
-        <div>
-          <span className="font-semibold">GLEB.</span>
-          <span className="font-light">TEAM</span>
-        </div>
       </Link>
       <div className="flex items-center justify-end gap-5 grow">
-        {!(pathname === "/catalog") && (
-          <InputText
-            value={headerSearch}
-            className="max-w-80 w-full lg:block hidden"
-            placeholder="Поиск в каталоге"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setheaderSearch(e.target.value)
-            }
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === "Enter") handleSearchInCatalog();
-            }}
-          />
-        )}
-        {/* <Link href={"/refs-link"} className="xl:block hidden"> */}
-        <Button onClick={openRefsModal}>Пригласить партнёра</Button>
-        {/* </Link> */}
-        <Image
+        {isAuth && <Button onClick={openRefsModal}>Пригласить партнёра</Button>}
+        {/* <Image
           alt="Support Icon"
           src={`/icons/Support.svg`}
           width={200}
           height={200}
           className="w-7 h-7 cursor-pointer"
           onClick={openSuppModal}
-        />
+        /> */}
         <div className="relative cart_icon">
           <div
             className="relative shrink-0 w-7 h-7"
@@ -169,24 +156,29 @@ export const Header = () => {
             </div>
           </div>
         </div>
-        <Link href={"/"}>
-          <div className="flex gap-2 items-center">
-            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
-              {user.avatar && (
-                <Image
-                  src={user?.avatar}
-                  alt=""
-                  width={200}
-                  height={200}
-                  className="w-full h-full"
-                />
-              )}
+        {isAuth && (
+          <Link href={"/profile"}>
+            <div className="flex gap-2 items-center">
+              <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                {user.avatar && (
+                  <Image
+                    src={user?.avatar}
+                    alt=""
+                    width={200}
+                    height={200}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+              <span className="font-semibold cursor-pointer md:block hidden">
+                {user.name}
+              </span>
             </div>
-            <span className="font-semibold cursor-pointer md:block hidden">
-              {user.name}
-            </span>
-          </div>
-        </Link>
+          </Link>
+        )}
+        {
+          !isAuth && <Link href={'/login'} className="font-semibold hover:underline">Войти</Link>
+        }
       </div>
     </header>
   );

@@ -17,6 +17,7 @@ import {
 } from "./dbReuestSchemas";
 import { createMessageSchema } from "./zodValidators";
 import moment from "moment";
+import { serverFetch } from "@/lib/auth";
 
 export const getDashboard = async () => {
   const agentId = await getIdFromToken();
@@ -45,17 +46,20 @@ export const getBalance = async () => {
   return res;
 };
 export const getProfileData = async <T>() => {
-  const agentId = await getIdFromToken();
-  const res = await withDatabase((db) =>
-    queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
-  );
-  res.avatar = `${process.env.IMG_URL}/Avatars/${agentId}.jpg?salt=${Math.random(0, 999999)}`;
-  return res;
+  // const agentId = await getIdFromToken();
+  // const res = await withDatabase((db) =>
+  //   queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [agentId]),
+  // );
+  // res.avatar = `${process.env.IMG_URL}/Avatars/1.jpg?salt=${Math.random(0, 999999)}`;
+
+  const res = await serverFetch("/api/partner/Agent/get-agent-profile-info");
+  const data = await res.json()
+  return data;
 };
 
 export const getCatalog = async (
   find_str: string | null = null,
-  section_id: number | null = null,
+  section_id: number| null | string = null,
   i_name = null,
   i_articul = null,
   catalog_id = null,
@@ -65,46 +69,58 @@ export const getCatalog = async (
   i_show_lk = null,
   i_frontend_id = null,
 ) => {
-  const agent_id = await getIdFromToken();
-  const res = await withDatabase((db) => {
-    return query(
-      db,
-      "SELECT * FROM SP_GET_CATALOG_IN_SECTIONS(?,?,?,?,?,?,?,?,?,?,?)",
-      buildParams(getCatalogSchema, {
-        find_str,
-        section_id,
-        i_name,
-        agent_id,
-        i_articul,
-        catalog_id,
-        isadmin,
-        i_stock_id,
-        i_creator_id,
-        i_show_lk,
-        i_frontend_id,
-      }),
-    );
-  });
-  res.forEach((p) => {
-    p.image_url = `${process.env.IMG_URL}/GoodsPics/${p.id}_0.jpg?salt=${Math.random(0, 999999)}`;
-  });
-  return res;
+  // const agent_id = await getIdFromToken();
+  // const res = await withDatabase((db) => {
+  //   return query(
+  //     db,
+  //     "SELECT * FROM SP_GET_CATALOG_IN_SECTIONS(?,?,?,?,?,?,?,?,?,?,?)",
+  //     buildParams(getCatalogSchema, {
+  //       find_str,
+  //       section_id,
+  //       i_name,
+  //       agent_id,
+  //       i_articul,
+  //       catalog_id,
+  //       isadmin,
+  //       i_stock_id,
+  //       i_creator_id,
+  //       i_show_lk,
+  //       i_frontend_id,
+  //     }),
+  //   );
+  // });
+  // res.forEach((p) => {
+  //   p.image_url = `${process.env.IMG_URL}/GoodsPics/${p.id}_0.jpg?salt=${Math.random(0, 999999)}`;
+  // });
+  // return res;
+
+
+  const params = new URLSearchParams();
+  if (find_str) {
+    params.append("find_str", find_str);
+  }
+  if (section_id) {
+    params.append("sectionId", String(section_id));
+  }
+  const queryString = params.toString();
+  
+  const res = serverFetch(`/api/partner/Catalog/get-catalog?${queryString}`);
+  const data = (await res).json();
+  return data
 };
 
 // ПОЛЬЗОВАТЕЛЬ
 
-
-
 export const getPersonalAccountInfo = async (
   from: Date | null = null,
   to: Date | null = null,
-  acc: number | null = 0
+  acc: number | null = 0,
 ) => {
   console.log(acc);
-  
+
   const agentId = await getIdFromToken();
   const res = await withDatabase((db) =>
-    query<{ income: number, outcome: number }>(
+    query<{ income: number; outcome: number }>(
       db,
       "SELECT * FROM SP_AGENTPERSACCOUNTFILTERGET(?,?,?,?)",
       [agentId, from, to, acc],
@@ -121,7 +137,7 @@ export const getSponsorInfo = async <T>() => {
     const res2 = await withDatabase((db) =>
       queryOne<T>(db, "SELECT * FROM SP_AGENTSGET(?)", [res1.id_parent]),
     );
-    res2.avatar = `${process.env.IMG_URL}/Avatars/${res1.id_parent}.jpg?salt=${Math.random(0, 999999)}`;
+    // res2.avatar = `${process.env.IMG_URL}/Avatars/1.jpg`;
     return res2;
   }
 };
@@ -236,9 +252,15 @@ export const createMessage = async (
 
 // Заказы
 export const getOrdersList = async (from: unknown, to: unknown) => {
-  const agentId = await getIdFromToken();
+  // const agentId = await getIdFromToken();
 
-  return await makeReq("SP_WEBSHOPGETBYAGENTFILTER", [agentId, from, to, null]);
+  // return await makeReq("SP_WEBSHOPGETBYAGENTFILTER", [agentId, from, to, null]);
+  const res = await serverFetch("/api/partner/Webshop/get-list", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+
+  return await res.json();
 };
 
 export const getOrderInfo = async (doc_id: string | number) => {
@@ -293,14 +315,17 @@ export const getStructureData = async (
 
 // Новости
 export const getNewsList = async () => {
-  const res = await makeReq("SP_NEWSGET", [null, 0, 0]);
-  res.forEach((n) => {
-    n.image_url = `${process.env.IMG_URL}/NewsPics/${n.id}.jpg?salt=${Math.random(0, 999999)}`;
-  });
-  return res;
+  // const res = await makeReq("SP_NEWSGET", [null, 0]);
+  // res.forEach((n) => {
+  //   n.image_url = `${process.env.IMG_URL}/NewsPics/${n.id}.jpg?salt=${Math.random(0, 999999)}`;
+  // });
+  const res = await serverFetch("/api/partner/News/get-list");
+  return await res.json();
 };
 export const getNews = async (id: number) => {
-  return await makeReqSingle("SP_NEWSGET", [id, 0, 0]);
+  // return await makeReqSingle("SP_NEWSGET", [id, 0]);
+  const res = await serverFetch(`/api/partner/News/get/${id}`);
+  return await res.json()
 };
 
 // Вывод средств
@@ -326,9 +351,9 @@ export const getWithdrawList = async (
 // MISC
 export const getSponsorForRegistration = async (hash: string) => {
   const res = await makeReqSingle("AGENTS_ID_HASH_GET ", [hash]);
-  const { id, name } = await makeReqSingle("SP_AGENTSGET", [res.id]);
+  const { id, lastname } = await makeReqSingle("SP_AGENTSGET", [res.id]);
   return {
     sponsor_id: id,
-    sponsor_name: name,
+    sponsor_name: lastname,
   };
 };

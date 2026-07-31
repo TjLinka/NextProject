@@ -38,7 +38,9 @@ export const TransferMoneyBetweenUsersModal = () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["balance"] }),
         queryClient.invalidateQueries({ queryKey: ["personal_acc"] }),
+        resetForm()
       ]);
+
     },
   });
 
@@ -67,6 +69,13 @@ export const TransferMoneyBetweenUsersModal = () => {
     });
   };
 
+  const resetForm = () => {
+    setSumm(null)
+    setComm("");
+    setSelectedUserId(null);
+    setPassword('')
+  };
+
   return (
     <div>
       {!isLoading ? (
@@ -84,10 +93,11 @@ export const TransferMoneyBetweenUsersModal = () => {
             value={summ}
             onValueChange={(e) => setSumm(e.value)}
             mode="currency"
+            placeholder="Сумма перевода"
             currency="RUB"
             locale="ru"
           />
-          <InputText value={comm} onChange={(e) => setComm(e.target.value)} />
+          <InputText value={comm} placeholder="Комментарий" onChange={(e) => setComm(e.target.value)} />
           <Dropdown
             value={selectedUserId}
             filter
@@ -103,7 +113,9 @@ export const TransferMoneyBetweenUsersModal = () => {
           <InputText
             className="w-full"
             type="password"
+            placeholder="Ваш пароль"
             value={password}
+            autoComplete="new-password"
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button className="col-start-2">Перевести</Button>

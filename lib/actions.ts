@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { serverFetch } from "@/lib/auth";
 import { transferMoneyBetweenUserRequest } from "@/requsetModel/types";
+import { param } from "framer-motion/client";
 import moment from "moment";
 import { Nullable } from "primereact/ts-helpers";
 // import { testConnection } from "./firebird";
@@ -58,7 +60,6 @@ export const getPersonalAccountHistory = async ({
   from: Date | null | string;
   to: Date | null | string;
 }) => {
-
   const res = await serverFetch("/api/partner/Account/get-operations/0", {
     method: "POST",
     body: JSON.stringify({
@@ -76,7 +77,6 @@ export const getBonusAccountHistory = async ({
   from: Date | null | string;
   to: Date | null | string;
 }) => {
-
   const res = await serverFetch("/api/partner/Account/get-operations/1", {
     method: "POST",
     body: JSON.stringify({
@@ -127,4 +127,171 @@ export const getBinar = async (id_ins: string | number) => {
   });
 
   return await res.json();
+};
+
+export const createAgent = async ({
+  sponsor_id,
+  surname,
+  mobile_phone,
+  birth_date,
+  email,
+  password,
+  ms_type,
+  country_id,
+}: {
+  sponsor_id: number | string;
+  password: string;
+  surname: string;
+  mobile_phone: string;
+  email: string;
+  birth_date: Date | string | null | Nullable;
+  ms_type: string | number | null;
+  country_id: string | number | null;
+}) => {
+  const res = await serverFetch("/api/partner/SignUp/create-agent", {
+    method: "POST",
+    body: JSON.stringify({
+      sponsor_id,
+      name: "",
+      surname,
+      mobile_phone,
+      birth_date,
+      email,
+      password,
+      country_id,
+      ms_type,
+    }),
+  });
+  console.log(res);
+
+  return {
+    status: res.status,
+    data: await res.json(),
+  };
+};
+
+export const editAgentInfo = async (data: any) => {
+  data.surname = data.lastname;
+  const res = await serverFetch("/api/partner/Agent/edit-agent-profile-info", {
+    method: "POST",
+    body: JSON.stringify({
+      ...data,
+    }),
+  });
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
+
+  return result;
+};
+
+export const createOrderStep1 = async (params: any) => {
+  const res = await serverFetch("/api/partner/Webshop/create", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  return await res.json();
+};
+export const createOrderStep2 = async (params: any) => {
+  const res = await serverFetch("/api/partner/Webshop/add-basket-detail", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
+
+  return result;
+};
+
+export const withdrawPoints = async (params: any) => {
+  console.log(params);
+
+  const res = await serverFetch("/api/partner/Webshop/withdraw-gp", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
+};
+export const createOrderFinalStep = async (params: any) => {
+  const res = await serverFetch("/api/partner/Payment/do", {
+    method: "POST",
+    body: JSON.stringify(params),
+  });
+
+  console.log(res);
+
+  return await res.json();
+};
+
+export const CancleOrder = async (id: string | number) => {
+  const res = await serverFetch(`/api/partner/Webshop/cancel/${id}`, {
+    method: "POST",
+    body: JSON.stringify({
+      doc_id: id,
+    }),
+  });
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  console.log(result);
+
+  return result;
+};
+
+export const getMaterial = async (id: any) => {
+  console.log(id);
+  const res = serverFetch(`/api/partner/Materials/get/${id}`);
+  return (await res).json();
+};
+
+export const finishPayment = async (invId: string) => {
+  const res = await serverFetch(`/api/partner/Payment/${invId}/finish`);
+  console.log(res);
+
+  const text = await res.text();
+  const result = text ? JSON.parse(text) : null;
+
+  return result;
+};
+
+export const checkSmsCode = async (agent_id: number | string, code: any) => {
+  const res = await serverFetch("/api/partner/SignUp/email-approve-by-code", {
+    method: "POST",
+    body: JSON.stringify({ agent_id: Number(agent_id), code }),
+  });
+  // console.log(res.status);
+
+  // const text = await res.text();
+  // const result = text ? JSON.parse(text) : null;
+
+  return res.status;
+};
+
+export const createWithdraw = async ({
+  amount,
+  requisites,
+  comm,
+}: {
+  amount: number | string | null | Nullable;
+  requisites: any;
+  comm?: string;
+}) => {
+  const res = await serverFetch("/api/partner/Account/add-withdraw", {
+    method: "POST",
+    body: JSON.stringify({
+      amount,
+      comm,
+      requisites,
+    }),
+  });
+  console.log(res);
 };

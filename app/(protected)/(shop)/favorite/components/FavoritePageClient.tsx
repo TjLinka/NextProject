@@ -1,8 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { getFavouritesProducts } from "../action";
-import { ProductCard } from "../../catalog/components/ProductCard";
-import { Product } from "../../catalog/types";
+import { ProductCard } from "../../catalogold/components/ProductCard";
+import { Product } from "../../catalogold/types";
 import { EmptyFavor } from "./EmptyFavor";
 export const FavoritePageClient = () => {
   const { data = [] } = useQuery<Product[]>({

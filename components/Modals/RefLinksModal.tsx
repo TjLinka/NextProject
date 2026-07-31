@@ -1,15 +1,46 @@
+"use client";
 import Image from "next/image";
-import { Card } from "../UI/Card";
 import { SectionTitle } from "../UI/SectionTitle";
 import { QRCodeSVG } from "qrcode.react";
+import { useAgentStore } from "@/store/agentStore";
+import { useCopyToClipboard } from "@reactuses/core";
+import { useModalAndNotify } from "@/store/modalAndNotify";
 
 export const RefLinksModal = () => {
+  const agentInfo = useAgentStore((state) => state.agentInfo);
+  const showNotification = useModalAndNotify((state) => state.showNotification);
+  const [text, copy] = useCopyToClipboard();
+
+  const handleCopy = (url: string) => {
+    copy(url);
+    showNotification("success", "Ссылка скопирована", "Реф. сслыка");
+  };
+
   return (
     <div className="flex flex-col items-center">
       <SectionTitle>Реферальная ссылка</SectionTitle>
-      <div className="md:mt-3 mt-1 md:text-lg font-medium">
-        https://my.radargp.com/club/00000069
-      </div>
+      <p
+        className=" leading-[100%] truncate  hover:underline cursor-pointer mt-5"
+        onClick={() =>
+          handleCopy(
+            `${process.env.NEXT_PUBLIC_MAIN_URL}/registration?id=${agentInfo.id}&t=0`,
+          )
+        }
+      >
+        {`${process.env.NEXT_PUBLIC_MAIN_URL}/registration?id=${agentInfo.id}&t=0`}
+      </p>
+      {agentInfo.msflag >= 20 && (
+        <p
+          className=" leading-[100%] truncate hover:underline cursor-pointer mt-5"
+          onClick={() =>
+            handleCopy(
+              `${process.env.NEXT_PUBLIC_MAIN_URL}/registration?id=${agentInfo.id}&t=10`,
+            )
+          }
+        >
+          {`${process.env.NEXT_PUBLIC_MAIN_URL}/registration?id=${agentInfo.id}&t=10`}
+        </p>
+      )}
       <SectionTitle className="mt-4">
         Поделиться ссылкой в соц. сетях
       </SectionTitle>
@@ -40,7 +71,10 @@ export const RefLinksModal = () => {
       </div>
       <SectionTitle className=" mt-4">QR Сode</SectionTitle>
       <div className="flex mt-5">
-        <QRCodeSVG size={180} value="https://reactjs.org/" />
+        <QRCodeSVG
+          size={180}
+          value="https://office.antler/registration/00000069"
+        />
       </div>
     </div>
   );

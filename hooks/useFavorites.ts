@@ -1,11 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Product } from "@/app/(protected)/(shop)/catalog/types";
+import { Product } from "@/app/(protected)/(shop)/catalogold/types";
 import {
   addToFavourites,
   getFavouritesProducts,
   removeFromFavourites,
 } from "@/app/(protected)/(shop)/favorite/action";
 import { useModalAndNotify } from "@/store/modalAndNotify";
+import { useAgentStore } from "@/store/agentStore";
+
+
+
 
 // Запрос списка избранного
 export const useFavourites = () =>
@@ -17,8 +21,13 @@ export const useFavourites = () =>
 
 // Проверка — есть ли товар в избранном
 export const useIsFavourite = (productId: string | number) => {
-  const { data } = useFavourites();
-  return data?.some((product) => product.id === productId) ?? false;
+  const isAuth = useAgentStore((state) => state.access_token);
+  if (isAuth) {
+    const { data } = useFavourites();
+    return data?.some((product) => product.id === productId) ?? false;
+  } else {
+    return false
+  }
 };
 // openToast("success", "Товар добавлен в избранно");
 // Добавление / удаление

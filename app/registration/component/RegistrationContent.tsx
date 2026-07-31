@@ -1,0 +1,347 @@
+"use client";
+import { Button } from "@/components/UI/Button";
+import clsx from "clsx";
+import Image from "next/image";
+import { InputText } from "primereact/inputtext";
+import { useEffect, useState } from "react";
+
+import { Password } from "primereact/password";
+import { SectionTitle } from "@/components/UI/SectionTitle";
+import Link from "next/link";
+import { getSponsorForRegistration } from "@/dbQuery/dbQuerys";
+import { InputMask } from "primereact/inputmask";
+import { Calendar } from "primereact/calendar";
+import { Nullable } from "primereact/ts-helpers";
+import { useDebounce, useWindowSize } from "@reactuses/core";
+import { checkSmsCode, createAgent } from "@/lib/actions";
+import { useAgentStore } from "@/store/agentStore";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import { Dialog } from "primereact/dialog";
+import { InputOtp } from "primereact/inputotp";
+
+export default function RegistrationContent() {
+  const router = useRouter();
+  const userHashId = useSearchParams().get("id");
+  const userHashMsType = useSearchParams().get("t");
+
+  const [regErrorText, setregErrorText] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setLastname] = useState("");
+  const [middlename, setMiddlename] = useState("");
+  const [bth_dte, setDate] = useState<Nullable<Date>>(null);
+  const [password, setPassword] = useState("");
+  const [passwordAgain, setPasswordAgain] = useState("");
+  const [email, setEmail] = useState("");
+  const [newUserLogin, setNewUserLogin] = useState("");
+  const [sponsor_id, setSponsorId] = useState("");
+  const [sponsor_name, setSponsorName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneText, setPhoneText] = useState("");
+  const [phoneUnic, setPhoneUnic] = useState(false);
+  const [phoneCheckAction, setphoneCheckAction] = useState(false);
+  const [smsCode, setSmsCode] = useState<string>();
+  const [isLoginSuccess, setisLoginSuccess] = useState(false);
+  const [isSmsCodeModalOpen, setIsSmsCodeModalOpen] = useState(false);
+  const setUserInfo = useAgentStore((state) => state.setAgentInfo);
+
+  const isDisabled =
+    !surname ||
+    !email ||
+    !password ||
+    !phone ||
+    password !== passwordAgain ||
+    !phoneUnic;
+
+  const { width, height } = useWindowSize();
+
+  const [step, setStep] = useState<number>(0);
+  const [inAction, setInAction] = useState(false);
+
+  useEffect(() => {
+    async function foo() {
+      if (userHashId) {
+        const { sponsor_id, sponsor_name } =
+          await getSponsorForRegistration(userHashId);
+        console.log(sponsor_id, sponsor_name);
+
+        setSponsorId(sponsor_id);
+        setSponsorName(sponsor_name);
+      } else {
+        setSponsorId("2");
+      }
+    }
+    foo();
+  }, []);
+
+  const handleRegistration = async () => {
+    setInAction(true);
+    const res = await createAgent({
+      sponsor_id,
+      surname: surname,
+      mobile_phone: phone.replace(/\D/g, '').replace(/^8/, '7'),
+      birth_date: bth_dte,
+      email: email,
+      password: password,
+      ms_type: userHashMsType,
+      country_id: sponsor_id ? 1 : 2,
+    });
+
+    if (res.status !== 400 && res.status !== 500) {
+      setIsSmsCodeModalOpen(true);
+      setNewUserLogin(res.data.login);
+    } else {
+      setInAction(false);
+      if (res.status === 400) {
+        setregErrorText(res.data);
+      } else {
+        setregErrorText(res.data.Message);
+      }
+    }
+  };
+
+  const endReg = async () => {
+    const res = await checkSmsCode(newUserLogin, smsCode);
+    if (res === 200) {
+      setIsSmsCodeModalOpen(false);
+      const res2 = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          login: String(newUserLogin),
+          password: password,
+        }),
+        credentials: "include",
+      });
+      const data = await res2.json();
+      setisLoginSuccess(true);
+
+      setTimeout(() => {
+        setUserInfo(data);
+        router.push("/");
+      }, 500);
+    }
+  };
+
+  useEffect(() => {
+    // если номер ещё не введён полностью — не дёргаем API
+    if (phone.replace(/\D/g, "").length < 10) return;
+    const timer = setTimeout(async () => {
+      setphoneCheckAction(true);
+      const res = await fetch(`/api/misc/check-phone-unic?input=${phone}`);
+      const data = await res.json();
+      if (data.is_unique) {
+        setPhoneText("Телефон можно использовать");
+        setPhoneUnic(true);
+      } else {
+        setPhoneText("Телефон уже занят");
+        setPhoneUnic(false);
+      }
+      setphoneCheckAction(false);
+    }, 500);
+
+    return () => clearTimeout(timer); // отменяем предыдущий таймер при каждом новом рендере
+  }, [phone]);
+
+  // const handlePhoneCheck = async (val: string) => {
+  //   setPhoneCheck(val);
+  //   const res = await fetch(`/api/misc/check-phone-unic?input=9091619870`);
+  //   console.log(await res.json());
+  // };
+
+  return (
+    <div
+      className={clsx(
+        "flex flex-col justify-center items-center h-full opacity-100 transition-opacity duration-500 ease-in-out",
+        {
+          "opacity-0!": isLoginSuccess,
+        },
+      )}
+    >
+      <div className="flex gap-4 text-4xl items-center animate__animated animate__fadeIn">
+        <Image
+          alt="Login Logo"
+          src={`/imgs/AnterlLogo.png`}
+          width={1000}
+          height={1000}
+          className="w-55"
+        />
+      </div>
+      <div className="bg-white md:p-7 p-3 rounded-md shadow max-w-125 w-full mt-10 animate__animated animate__fadeIn">
+        {step === 0 && (
+          <div>
+            <SectionTitle>Регистрация</SectionTitle>
+            <div className="mt-5">
+              <p className="font-semibold md:text-lg text-sm">ФИО</p>
+              <InputText
+                autoComplete="new-password"
+                value={surname}
+                className="w-full"
+                onChange={(e) => setLastname(e.target.value)}
+              />
+            </div>
+            <div className="mt-2">
+              <p className="font-semibold md:text-lg text-sm">Дата рождения</p>
+              <Calendar
+                touchUI={width < 800}
+                locale="ru"
+                className="w-full"
+                value={bth_dte}
+                onChange={(e) => setDate(e.value)}
+              />
+            </div>
+            <div className="md:mt-4 mt-2">
+              <p className="font-semibold md:text-lg text-sm">E-mail</p>
+              <input type="email" style={{ display: "none" }} />
+              <InputText
+                value={email}
+                className="w-full"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="md:mt-4 mt-2">
+              <p className="font-semibold md:text-lg text-sm">Телефон</p>
+              <input type="phone" style={{ display: "none" }} />
+              <InputText
+                className="w-full"
+                value={phone}
+                autoComplete="new-password"
+                onChange={(e) => setPhone(e.currentTarget.value)}
+                placeholder="7 (999) 999-99-99"
+              />
+              <span
+                className={clsx("", {
+                  "text-green-500": phoneUnic && !phoneCheckAction,
+                  "text-red-500": !phoneUnic && !phoneCheckAction,
+                })}
+              >
+                {phoneCheckAction ? "Проверка..." : phoneText}
+              </span>
+            </div>
+            <div className="md:mt-4 mt-2">
+              <p className="font-semibold md:text-lg text-sm">Пароль</p>
+              <Password
+                value={password}
+                feedback={false}
+                className="w-full"
+                autoComplete="new-password"
+                onChange={(e) => setPassword(e.target.value)}
+                inputClassName="w-full"
+              />
+            </div>
+            <div className="md:mt-4 mt-2">
+              <p className="font-semibold md:text-lg text-sm">Пароль ещё раз</p>
+              <Password
+                value={passwordAgain}
+                feedback={false}
+                className="w-full"
+                autoComplete="new-password"
+                onChange={(e) => setPasswordAgain(e.target.value)}
+                inputClassName="w-full"
+              />
+            </div>
+            <Button
+              disabled={isDisabled}
+              className="text-center w-full text-white rounded-sm mt-4"
+              loading={inAction}
+              onClick={() => setStep(1)}
+            >
+              Далее
+            </Button>
+          </div>
+        )}
+        {step === 1 && (
+          <div>
+            <SectionTitle>Завершение регистрации</SectionTitle>
+            <br />
+            <p className="mt-2 md:text-[16px] text-sm">
+              Проверьте ваши данные ниже. <br /> Если всё правильно то нажмите
+              зарегистрироваться <br /> или &nbsp;
+              <span
+                onClick={() => setStep(0)}
+                className=" md:text-[16px] text-sm mt-5 cursor-pointer underline"
+              >
+                <strong>отредактируйте</strong>
+              </span>
+              &nbsp;свои данные.
+            </p>
+            <div className="mt-2">
+              <p className="">
+                Для <strong>входа</strong> в личный кабинет используйте{" "}
+                <strong>номер телефона</strong>, указанный при регистрации.{" "}
+                <br /> Он является вашим логином.
+              </p>
+              <p className="mt-2">
+                Если у вас возникнут сложности со входом, пожалуйста, свяжитесь с
+                нашей службой поддержки.
+              </p>
+            </div>
+            <p className="md:text-lg  text-sm md:mt-5 mt-2">
+              <span className=" font-semibold">ФИО:</span>
+              <span className="ml-2">{surname}</span>
+            </p>
+            <p className="mt-2 md:text-lg text-sm ">
+              <span className="font-semibold">E-mail:</span>
+              <span className="ml-2">{email}</span>
+            </p>
+            <p className="mt-2 md:text-lg text-sm ">
+              <span className="font-semibold">Телефон:</span>
+              <span className="ml-2">{phone}</span>
+            </p>
+            {/* <p className="mt-2 md:text-lg text-sm ">
+              <span className="font-semibold">Пригласитель:</span>
+              <span className="ml-2">
+                {sponsor_id} - {sponsor_name}
+              </span>
+            </p> */}
+
+            <Button
+              onClick={handleRegistration}
+              className="text-center w-full rounded-sm md:mt-10 mt-5"
+              loading={inAction}
+            >
+              Зарегистрироваться
+            </Button>
+            {regErrorText && (
+              <p className="text-red-500 font-semibold mt-1">{regErrorText}</p>
+            )}
+          </div>
+        )}
+        <hr className="my-5 border-0 h-0.5 bg-(--main-color)" />
+        {/* <p className="my-5 text-lg font-semibold text-center">ИЛИ</p> */}
+        <Link href={"/login"}>
+          <Button className="w-full">Авторизироваться</Button>
+        </Link>
+      </div>
+      <Dialog
+        header=""
+        visible={false}
+        draggable={false}
+        closeOnEscape={false}
+        showCloseIcon={false}
+        style={{ width: "40vw" }}
+        breakpoints={{ "1024px": "65vw", "641px": "90vw" }}
+        onHide={() => setIsSmsCodeModalOpen(false)}
+      >
+        <div className="flex flex-col justify-center items-center gap-2">
+          <p>Введите код подтверждения из SMS</p>
+          <InputOtp
+            value={smsCode}
+            onChange={(e) => setSmsCode(e.value)}
+            integerOnly
+          />
+          <Button
+            className="w-full"
+            disabled={smsCode?.length < 4}
+            onClick={endReg}
+          >
+            Войти
+          </Button>
+        </div>
+      </Dialog>
+    </div>
+  );
+}

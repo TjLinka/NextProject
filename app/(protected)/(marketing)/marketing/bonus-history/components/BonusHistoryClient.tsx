@@ -152,7 +152,6 @@ export const BonusHistoryClient = () => {
           emptyMessage="Нет данных"
           stripedRows
           value={data}
-          virtualScrollerOptions={{ itemSize: 46 }}
           tableStyle={{ minWidth: "50rem" }}
           size="small"
         >

@@ -1,125 +1,29 @@
-'use client'
-import React, { useState, useRef } from "react";
-import AvatarEditor from "react-avatar-editor";
+"use client";
+import { useState, useEffect, useCallback } from "react";
+import PickupMap from "./components/PickupMap";
 
 export default function AvatarEditorWidget() {
-  const editorRef = useRef(null);
-  const fileRef = useRef(null);
+  const [allPVZ, setPVZ] = useState([]);
 
-  const [image, setImage] = useState(null);
-  const [scale, setScale] = useState(1.2);
-  const [rotate, setRotate] = useState(0);
-  const [position, setPosition] = useState({ x: 0.5, y: 0.5 });
-  const [previewUrl, setPreviewUrl] = useState(null);
+  useEffect(() => {
+    async function getPvz() {
+      const res = await fetch("/api/cart/pvz");
+      const data = await res.json();
+      console.log(data);
+      setPVZ(data);
+    }
+    getPvz();
+  }, []);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImage(file);
-    setPreviewUrl(null);
-  };
-
-  const handlePreview = () => {
-    if (!editorRef.current) return;
-
-    const canvas = editorRef.current.getImageScaledToCanvas();
-    canvas.toBlob(
-      (blob) => {
-        // Освобождаем предыдущий blob URL
-        if (previewUrl) URL.revokeObjectURL(previewUrl);
-        const url = URL.createObjectURL(blob);
-        setPreviewUrl(url);
-      },
-      "image/jpeg",
-      0.92,
-    );
-  };
+  const setDeliveryAddress = useCallback((val: unknown) => {
+    console.log(val);
+  }, [allPVZ])
 
   return (
-    <div style={styles.wrapper}>
-      {/* Загрузка файла */}
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileRef}
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
-
-      <div style={styles.uploadRow}>
-        <button style={styles.btn} onClick={() => fileRef.current.click()}>
-          {image ? "Сменить фото" : "Загрузить фото"}
-        </button>
-        {image && (
-          <span style={styles.fileName}>
-            {typeof image === "string" ? image : image.name}
-          </span>
-        )}
-      </div>
-
-      {/* Редактор + контролы */}
-      {image && (
-        <div style={styles.editorRow}>
-          <AvatarEditor
-            ref={editorRef}
-            image={image}
-            width={280}
-            height={280}
-            border={40}
-            borderRadius={140} // круглая маска, 0 = квадрат
-            color={[0, 0, 0, 0.55]} // [r, g, b, прозрачность маски]
-            scale={scale}
-            rotate={rotate}
-            position={position}
-            onPositionChange={setPosition}
-            style={{ cursor: "grab", borderRadius: 8 }}
-          />
-
-          <div style={styles.controls}>
-            <label style={styles.label}>Масштаб — {scale.toFixed(2)}×</label>
-            <input
-              type="range"
-              min={1}
-              max={3}
-              step={0.01}
-              value={scale}
-              onChange={(e) => setScale(parseFloat(e.target.value))}
-              style={styles.range}
-            />
-
-            <label style={styles.label}>Поворот — {rotate}°</label>
-            <input
-              type="range"
-              min={0}
-              max={360}
-              step={1}
-              value={rotate}
-              onChange={(e) => setRotate(parseInt(e.target.value))}
-              style={styles.range}
-            />
-
-            <button style={styles.primaryBtn} onClick={handlePreview}>
-              Просмотреть
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Превью результата */}
-      {previewUrl && (
-        <div style={styles.previewSection}>
-          <p style={styles.previewLabel}>Результат</p>
-          <img src={previewUrl} alt="Аватар" style={styles.previewImg} />
-          <a
-            href={previewUrl}
-            download="avatar.jpg"
-            style={styles.downloadLink}
-          >
-            Скачать
-          </a>
-        </div>
-      )}
-    </div>
+    <PickupMap
+      points={allPVZ}
+      onSelect={(point) => setDeliveryAddress(point)}
+    />
   );
 }
 

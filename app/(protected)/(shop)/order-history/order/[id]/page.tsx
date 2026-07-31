@@ -7,6 +7,9 @@ import moment from "moment";
 import Link from "next/link";
 import { CartComponent } from "./components/CartComplect";
 import { getOrderInfo } from "@/dbQuery/dbQuerys";
+import { CancleOrderButton } from "./components/CancleOrderButton";
+import { RepeatOrderButton } from "./components/RepeatOrderButton";
+import { Product } from "../../../catalogold/types";
 
 interface PageProps {
   params: {
@@ -18,14 +21,23 @@ export default async function OrderPage({ params }: PageProps) {
   const { id } = await params;
 
   const { sale, cart = [], delivery } = await getOrderInfo(id);
+
+  console.log(cart, 2222);
+  
+
   return (
     <>
       <Link href={"/order-history"} className="w-fit block">
         <Button>Вернуться к заказам</Button>
       </Link>
-      <p className="text-3xl font-semibold border-b-2 border-(--main-color) inline-block mt-5">
-        Заказ № {id}
-      </p>
+      <div className="mt-10 flex gap-10 items-center justify-between">
+        <div className="flex gap-10 items-center">
+          <span className="text-3xl font-semibold border-b-2 border-(--main-color)">
+            Заказ № {id}
+          </span>
+        </div>
+        <RepeatOrderButton ids={[...cart.map((p) => p.catalog_id)]} />
+      </div>
       <div className="grid md:grid-cols-2 gap-5 mt-5">
         <Card>
           <div className="grid grid-cols-2 gap-5">
@@ -64,6 +76,9 @@ export default async function OrderPage({ params }: PageProps) {
       <Card className="mt-5">
         <CartComponent data={cart} />
       </Card>
+      <div className="flex justify-end mt-10">
+        <CancleOrderButton id={id} />
+      </div>
     </>
   );
 }

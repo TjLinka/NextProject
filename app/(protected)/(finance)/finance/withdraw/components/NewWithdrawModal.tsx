@@ -2,7 +2,7 @@
 import { Button } from "@/components/UI/Button";
 import { getBalance } from "@/dbQuery/dbQuerys";
 import { localInt } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { Dialog } from "primereact/dialog";
 import { InputNumber } from "primereact/inputnumber";
@@ -11,18 +11,43 @@ import { Nullable } from "primereact/ts-helpers";
 import { useState } from "react";
 import { RequisModal } from "./RequisModal";
 import { useRequisStore } from "@/store/requisStore";
+import { createWithdraw } from "@/lib/actions";
+import { useModalAndNotify } from "@/store/modalAndNotify";
 
 export const NewWithdrawModal = () => {
   const requis = useRequisStore((state) => state.requis);
 
   const isReqGood = Object.keys(requis).some((key: any) => requis[key]);
 
+  const qc = useQueryClient();
+
   const [summ, setSumm] = useState<Nullable<number>>(null);
+  const [comm, setComm] = useState("");
   const [openRequisModal, setopenRequisModal] = useState<boolean>(false);
   const { data: balance, isLoading } = useQuery({
     queryKey: ["balance"],
     queryFn: getBalance,
   });
+
+  const showToast = useModalAndNotify((state) => state.showNotification);
+
+  const mutation = useMutation({
+    mutationFn: createWithdraw,
+    onSuccess: async () => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["balance"] }),
+        qc.invalidateQueries({ queryKey: ["personal_acc"] }),
+        qc.invalidateQueries({ queryKey: ["withdrawlist"] }),
+      ]);
+      showToast('success', 'Заявка успешно сформирована', 'Вывод средств')
+      setSumm(null)
+      setComm('')
+    },
+  });
+
+  const createWithdrawHandle = async () => {
+    mutation.mutate({ amount: summ, requisites: requis, comm });
+  };
 
   return (
     <>
@@ -66,9 +91,11 @@ export const NewWithdrawModal = () => {
       </div>
       <div className="mt-5">
         <p className="font-semibold mb-2">Комментарий</p>
-        <textarea className="border border-[#d1d5db] w-full h-30 rounded-lg resize-none outline-(--main-color) p-2"></textarea>
+        <textarea value={comm} onChange={(e) => setComm(e.currentTarget.value)} className="border border-[#d1d5db] w-full h-30 rounded-lg resize-none outline-(--main-color) p-2"></textarea>
       </div>
-      <Button className="w-full mt-5">Вывести</Button>
+      <Button className="w-full mt-5" onClick={createWithdrawHandle}>
+        Вывести
+      </Button>
       <Dialog
         draggable={false}
         style={{ width: "30vw" }}
