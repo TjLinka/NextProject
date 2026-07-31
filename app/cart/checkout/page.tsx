@@ -18,7 +18,6 @@ import {
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useCallback, useEffect, useState } from "react";
-import { HeaderProductCard } from "../../catalogold/components/HeaderProductCard";
 import { localInt } from "@/lib/utils";
 import { InputNumber } from "primereact/inputnumber";
 import { Nullable } from "primereact/ts-helpers";
