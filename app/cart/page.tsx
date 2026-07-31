@@ -8,27 +8,38 @@ import Link from "next/link";
 import { Button } from "@/components/UI/Button";
 import { useModalAndNotify } from "@/store/modalAndNotify";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { MayNeddProducts } from "../catalog/product/[id]/components/MayNeedProducts";
 import { SectionTitle } from "@/components/UI/SectionTitle";
 import { useEffect, useRef, useState } from "react";
 import { useToggleFavourite } from "@/hooks/useFavorites";
 import clsx from "clsx";
+import { MayNeddProducts } from "../catalog/product/[id]/components/MayNeedProducts";
+import { useAgentStore } from "@/store/agentStore";
+import { useParamsForReg } from "@/store/paramsForReg";
+import { useRouter } from "next/navigation";
+import { Dialog } from "primereact/dialog";
+import { useWindowSize } from "@reactuses/core";
 
 export default function CartPage() {
   const isFirstRender = useRef(true);
+
+  const router = useRouter();
+
+  const { width, height } = useWindowSize();
 
   const cart = useCartStore((state) => state.cart);
   const clearCart = useCartStore((state) => state.clearCart);
   const totalCartPrice = useCartStore((state) => {
     return state.cart.reduce((acc, p) => acc + p.price * p.count, 0);
   });
-  const [isDeliveryFree, setIsDeliveryFree] = useState(false)
-  const [deliveryFreeMessage, setDeliveryFreeMessage] = useState('')
+  const [isDeliveryFree, setIsDeliveryFree] = useState(false);
+  const [deliveryFreeMessage, setDeliveryFreeMessage] = useState("");
   const totlaCartProdutsUnic = useCartStore((state) => state.cart.length);
   const totlaCartProduts = useCartStore((state) => {
     return state.cart.reduce((acc, p) => acc + p.count, 0);
   });
   const showToast = useModalAndNotify((state) => state.showNotification);
+
+  const [visible, setVisible] = useState(false);
 
   const handleClearCart = () => {
     confirmDialog({
@@ -54,22 +65,35 @@ export default function CartPage() {
         method: "POST",
         body: JSON.stringify({ volume: totalCartPrice }),
       });
-      const data = await res.json()
+      const data = await res.json();
       setDeliveryFreeMessage(data.control_resume);
-      if (data.upgrade_enabled) setIsDeliveryFree(true)
+      if (data.upgrade_enabled) setIsDeliveryFree(true);
       else setIsDeliveryFree(false);
     }
     checkFreeDelivery();
   }, [totalCartPrice]);
+
+  const paramsForReg = useParamsForReg((state) => state.params);
 
   const { mutate: toggleFavourite } = useToggleFavourite();
 
   const handleAddProuctsInFavourites = () => {
     cart.forEach((p) => {
       toggleFavourite({ id: p.id, isFavourite: false });
-    })
+    });
   };
 
+  const isAuth = useAgentStore((state) => state.access_token);
+
+  const handleChecoutBtn = () => {
+    if (isAuth) {
+      router.push("/cart/checkout");
+      return;
+    } else {
+      setVisible(true);
+      // router.push(`/registration?id=${paramsForReg.aid}&t=${paramsForReg.t}`);
+    }
+  };
 
   if (cart.length <= 0) return <EmptyCart />;
 
@@ -116,21 +140,25 @@ export default function CartPage() {
                 {localInt(totlaCartProduts)} шт.
               </span>
             </p>
-            <span className={clsx('', {
-              'text-green-600 font-semibold' : isDeliveryFree
-            })}>
+            <span
+              className={clsx("", {
+                "text-green-600 font-semibold": isDeliveryFree,
+              })}
+            >
               {deliveryFreeMessage}
             </span>
           </div>
-          <Button
-            className="w-full mt-5"
-            onClick={handleAddProuctsInFavourites}
-          >
-            Добавить все товары в избранное
+          {isAuth && (
+            <Button
+              className="w-full mt-5"
+              onClick={handleAddProuctsInFavourites}
+            >
+              Добавить все товары в избранное
+            </Button>
+          )}
+          <Button className="w-full mt-5" onClick={handleChecoutBtn}>
+            Перейти к оформлению
           </Button>
-          <Link href="/cart/checkout">
-            <Button className="w-full mt-5">Перейти к оформлению</Button>
-          </Link>
         </div>
         <ConfirmDialog draggable={false} />
       </div>
@@ -138,6 +166,30 @@ export default function CartPage() {
       <div className="mt-5">
         <MayNeddProducts />
       </div>
+      <Dialog
+        header="Оформление зказа"
+        draggable={false}
+        visible={visible}
+        style={{ width: `${width > 700 ? "30vw" : "80vw"}` }}
+        onHide={() => {
+          if (!visible) return;
+          setVisible(false);
+        }}
+      >
+        <div className="flex flex-col items-center gap-2 font-semibold text-lg">
+          <div>Для оформления заказа вам необходимо</div>
+          <Link href={"/login"} className="w-fit flex justify-center">
+            <Button className="w-50">Войти</Button>
+          </Link>
+          <div>или</div>
+          <Link
+            href={`/registration?id=${paramsForReg.aid}&t=${paramsForReg.t}`}
+            className="w-fit flex justify-center"
+          >
+            <Button className="w-50">Зарегистрироваться</Button>
+          </Link>
+        </div>
+      </Dialog>
     </>
   );
 }

@@ -29,11 +29,6 @@ export const ProductCard = React.memo(
     const toast = useRef<Toast>(null);
     const addToCart = useCartStore((state) => state.addToCart);
     const incr = useCartStore((state) => state.incrCount);
-
-    // const openToast = useModalAndNotify((state) => state.showNotification);
-
-    // const router = useRouter();
-
     const inCart = useCartStore((state) => {
       return !!state.cart.find((p) => p.id === product.id);
     });

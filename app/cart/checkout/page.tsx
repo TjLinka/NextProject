@@ -20,7 +20,6 @@ import {
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useCallback, useEffect, useState } from "react";
-import { HeaderProductCard } from "../../catalog/components/HeaderProductCard";
 import { localInt } from "@/lib/utils";
 import { InputNumber } from "primereact/inputnumber";
 import { Nullable } from "primereact/ts-helpers";
@@ -33,6 +32,7 @@ import {
 import _ from "lodash";
 import PickupMap from "@/app/(protected)/test/components/PickupMap";
 import { RadioButton } from "primereact/radiobutton";
+import { HeaderProductCard } from "@/app/catalog/components/HeaderProductCard";
 
 export default function CartCheckoutPage() {
   const { data } = useQuery({

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Product } from "../../catalog/types";
+import { Product } from "../../catalogold/types";
 import { localInt } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";

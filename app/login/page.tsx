@@ -61,11 +61,12 @@ export default function LoginPage() {
         <div>
           <p className="font-semibold text-lg">Логин</p>
           <input
-            autoComplete="new-password"
+            // autoComplete="new-password"
             onInput={(e: React.InputEvent<HTMLInputElement>) =>
               setLogin(e.currentTarget.value)
             }
             type="text"
+            placeholder="Номер телефона"
             className="border w-full border-gray-300 rounded-sm h-10 outline-none pl-2 mt-1"
           />
         </div>
@@ -77,6 +78,7 @@ export default function LoginPage() {
               setPassword(e.currentTarget.value)
             }
             type="password"
+            placeholder="Пароль"
             className="border w-full border-gray-300 rounded-sm h-10 outline-none pl-2 mt-1"
           />
         </div>

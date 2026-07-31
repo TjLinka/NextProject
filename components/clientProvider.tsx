@@ -9,7 +9,6 @@ import { SubMenuLink } from "./Navigations/SideMenuLink";
 import { SubMenuCollapse } from "./Navigations/SubMenuCollapse";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef } from "react";
-import { getFavouritesProducts } from "@/app/(protected)/(shop)/favorite/action";
 import { RefLinksModal } from "./Modals/RefLinksModal";
 
 export function ClientWrapper({ children }: { children: React.ReactNode }) {

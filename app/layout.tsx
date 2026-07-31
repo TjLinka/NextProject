@@ -14,6 +14,7 @@ import { ClientWrapper } from "@/components/clientProvider";
 import { Cormorant_Garamond, Manrope, Raleway } from "next/font/google";
 import { useAgentStore } from "@/store/agentStore";
 import { Metadata } from "next";
+import { usePathname } from "next/navigation";
 
 
 
@@ -33,6 +34,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
   moment.locale("ru");
   const isAuth = useAgentStore((state) => state.isAuth)
 
@@ -45,7 +47,7 @@ export default function RootLayout({
         >
           <SideMenu />
           <div
-            className={`grow flex flex-col min-w-0 ${isAuth ? "md:ml-21" : ""}`}
+            className={`grow flex flex-col min-w-0 ${isAuth || ["/catalog", "/cart"].includes(pathname) || pathname.startsWith("/catalog/product/") ? "md:ml-21" : ""}`}
           >
             <Header />
             <div className="md:px-7 px-3 py-7 grow flex justify-center">

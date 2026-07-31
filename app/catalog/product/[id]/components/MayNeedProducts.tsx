@@ -10,7 +10,6 @@ import { ProductCard } from "../../../components/ProductCard";
 import { useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
 import { getCatalog } from "@/dbQuery/dbQuerys";
-import { getFavouritesProducts } from "@/app/(protected)/(shop)/favorite/action";
 export const MayNeddProducts = () => {
   const cart = useCartStore((state) => state.cart);
   const hasHydrated = useCartStore((state) => state.hasHydrated);

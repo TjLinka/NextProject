@@ -9,11 +9,13 @@ import { SubMenuLink } from "./SideMenuLink";
 import Image from "next/image";
 import { useAgentStore } from "@/store/agentStore";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { getShopCategoryes } from "@/app/(protected)/(shop)/catalog/actions";
+import { getShopCategoryes } from "@/app/(protected)/(shop)/catalogold/actions";
 
 export const SideMenu = ({ className }: { className?: string }) => {
+  const pathname = usePathname();
+
   const router = useRouter();
   const logout = useAgentStore((state) => state.logout);
   const [mounted, setMounted] = useState(false);
@@ -44,14 +46,22 @@ export const SideMenu = ({ className }: { className?: string }) => {
         shadow-md transition-[width, opacity] opacity-0 ease-in-out duration-500 overflow-hidden
          h-screen fixed z-100 top-0 ${className}`,
         {
-          "md:min-w-10 md:px-5  opacity-100": isAuth && mounted,
-          "w-0! px-0 opacity-0": !isAuth && mounted,
+          "md:min-w-10 md:px-5 opacity-100":
+            (isAuth ||
+              ["/catalog", "/cart"].includes(pathname) ||
+              pathname.startsWith("/catalog/product/")) &&
+            mounted,
+          "w-0! px-0 opacity-0":
+            !isAuth &&
+            !["/catalog", "/cart"].includes(pathname) &&
+            !pathname.startsWith("/catalog/product/") &&
+            mounted,
         },
       )}
     >
       <div className={`py-4 flex justify-between items-center`}>
         <Link
-          href={"/"}
+          href={"/profile"}
           className={`flex text-2xl gap-2 items-center cursor-pointer  uppercase text-center transition-opacity duration-400 ${sideMenuStatus ? "opacity-100" : "opacity-0 pointer-events-none cursor-auto"}`}
         >
           <Image
@@ -75,23 +85,27 @@ export const SideMenu = ({ className }: { className?: string }) => {
       </div>
       <hr className="border-gray-400 mb-5" />
       <ul className="flex flex-col md:gap-5 gap-2 grow">
-        <li>
-          <SubMenuLink url="/" icon_name="Home" title="Профиль" />
-        </li>
-        <li>
-          <SubMenuCollapse title="Маркетинг" icon="MultipleUsers">
-            <SubMenuLink
-              url="/marketing/bonus-history"
-              icon_name="BonusHistory"
-              title="История бонусов"
-            />
-            <SubMenuLink
-              url="/marketing/structure"
-              icon_name="TreeList"
-              title="Структура"
-            />
-          </SubMenuCollapse>
-        </li>
+        {isAuth && (
+          <>
+            <li>
+              <SubMenuLink url="/profile" icon_name="Home" title="Профиль" />
+            </li>
+            <li>
+              <SubMenuCollapse title="Маркетинг" icon="MultipleUsers">
+                <SubMenuLink
+                  url="/marketing/bonus-history"
+                  icon_name="BonusHistory"
+                  title="История бонусов"
+                />
+                <SubMenuLink
+                  url="/marketing/structure"
+                  icon_name="TreeList"
+                  title="Структура"
+                />
+              </SubMenuCollapse>
+            </li>
+          </>
+        )}
         <li>
           <SubMenuCollapse title="Магазин" icon="BagShopping">
             <SubMenuCollapse title="Каталог" icon="ShoppingCatalog" scroll>
@@ -120,85 +134,80 @@ export const SideMenu = ({ className }: { className?: string }) => {
               icon_name="ShoppingCatalog"
               title="Каталог"
             /> */}
-            <SubMenuLink
-              url="/order-history"
-              icon_name="BaselineHistory"
-              title="История заказов"
-            />
-            <SubMenuLink
-              url="/favorite"
-              icon_name="Favorite"
-              title="Избранное"
-            />
+            {isAuth && (
+              <>
+                <SubMenuLink
+                  url="/order-history"
+                  icon_name="BaselineHistory"
+                  title="История заказов"
+                />
+                <SubMenuLink
+                  url="/favorite"
+                  icon_name="Favorite"
+                  title="Избранное"
+                />
+              </>
+            )}
           </SubMenuCollapse>
         </li>
-        <li>
-          <SubMenuCollapse title="Финансы" icon="FinanceMode">
-            <SubMenuLink
-              url="/finance/personal-account"
-              icon_name="FinanceManager"
-              title="Лицевой счет"
-            />
-            <SubMenuLink
-              url="/finance/withdraw"
-              icon_name="LowIncomeLevelOutline24px"
-              title="История вывода"
-            />
-          </SubMenuCollapse>
-        </li>
-        <li>
-          <SubMenuLink
-            url="/news"
-            icon_name="News"
-            title="Возможности с Antler"
-          />
-        </li>
-        {/* <li>
-          <SubMenuLink
-            url="/news"
-            icon_name="HelpQuestionmark"
-            title="Информация"
-          />
-        </li> */}
-        <li>
-          <SubMenuCollapse title="Информация" icon="About">
-            {/* <SubMenuLink
-              url="/about"
-              icon_name="HelpQuestionmark"
-              title="О компании"
-            /> */}
-            <SubMenuLink
-              url="/delivery"
-              icon_name="Delivery"
-              title="О доставке"
-            />
-          </SubMenuCollapse>
-        </li>
-        {/* <li>
-          <SubMenuLink
-            url="/refs-link"
-            icon_name="InviteUser"
-            title="Пригласить"
-          />
-        </li> */}
+        {isAuth && (
+          <>
+            <li>
+              <SubMenuCollapse title="Финансы" icon="FinanceMode">
+                <SubMenuLink
+                  url="/finance/personal-account"
+                  icon_name="FinanceManager"
+                  title="Лицевой счет"
+                />
+                <SubMenuLink
+                  url="/finance/withdraw"
+                  icon_name="LowIncomeLevelOutline24px"
+                  title="История вывода"
+                />
+              </SubMenuCollapse>
+            </li>
+            <li>
+              <SubMenuLink
+                url="/news"
+                icon_name="News"
+                title="Возможности с Antler"
+              />
+            </li>
+            <li>
+              <SubMenuCollapse title="Информация" icon="About">
+                <SubMenuLink
+                  url="/delivery"
+                  icon_name="Delivery"
+                  title="О доставке"
+                />
+              </SubMenuCollapse>
+            </li>
+          </>
+        )}
       </ul>
-      <div
-        onClick={() => {
-          closeMenu();
-          logout();
-          router.push("/login");
-        }}
-        className={`whitespace-nowrap flex items-center gap-4 hover:bg-(--body-color) py-1 px-2 rounded cursor-pointer`}
-      >
-        <div className="w-7 h-7 shrink-0">
-          <img src={`/icons/Logout.svg`} alt="" className="w-7 h-7 shrink-0" />
-        </div>
-        <span
-          className={`transition-opacity duration-200 ${sideMenuStatus ? "opacity-100" : "opacity-0"} text-lg font-medium`}
+      {isAuth && (
+        <div
+          onClick={() => {
+            closeMenu();
+            logout();
+            router.push("/login");
+          }}
+          className={`whitespace-nowrap flex items-center gap-4 hover:bg-(--body-color) py-1 px-2 rounded cursor-pointer`}
         >
-          Выйти
-        </span>
-      </div>
+          <div className="w-7 h-7 shrink-0">
+            <img
+              src={`/icons/Logout.svg`}
+              alt=""
+              className="w-7 h-7 shrink-0"
+            />
+          </div>
+          <span
+            className={`transition-opacity duration-200 ${sideMenuStatus ? "opacity-100" : "opacity-0"} text-lg font-medium`}
+          >
+            Выйти
+          </span>
+        </div>
+      )}
     </div>
   );
 };

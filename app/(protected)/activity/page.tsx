@@ -6,8 +6,8 @@ import clsx from "clsx";
 import moment from "moment";
 import Image from "next/image";
 import { useState } from "react";
-import { ProductCard } from "../(shop)/catalog/components/ProductCard";
-import { Product } from "../(shop)/catalog/types";
+import { ProductCard } from "../(shop)/catalogold/components/ProductCard";
+import { Product } from "../(shop)/catalogold/types";
 
 interface ActivityProps {
   activ: number;

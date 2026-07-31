@@ -1,11 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Product } from "@/app/(protected)/(shop)/catalog/types";
+import { Product } from "@/app/(protected)/(shop)/catalogold/types";
 import {
   addToFavourites,
   getFavouritesProducts,
   removeFromFavourites,
 } from "@/app/(protected)/(shop)/favorite/action";
 import { useModalAndNotify } from "@/store/modalAndNotify";
+import { useAgentStore } from "@/store/agentStore";
+
+
+
 
 // Запрос списка избранного
 export const useFavourites = () =>

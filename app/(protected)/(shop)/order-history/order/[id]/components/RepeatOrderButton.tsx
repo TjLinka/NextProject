@@ -1,5 +1,5 @@
 "use client";
-import { Product } from "@/app/(protected)/(shop)/catalog/types";
+import { Product } from "@/app/(protected)/(shop)/catalogold/types";
 import { Button } from "@/components/UI/Button";
 import { getCatalog } from "@/dbQuery/dbQuerys";
 import { useCartStore } from "@/store/cartStore";

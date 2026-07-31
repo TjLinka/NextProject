@@ -16,11 +16,8 @@ export default async function ProductPage({
 }) {
   const { id } = await params;
   const res = await serverFetch(`/api/partner/Catalog/get-single/${id}`);
-  console.log(res);
-  
+
   const data: Product = await res.json();
-  console.log(data);
-  
 
   return (
     <div>

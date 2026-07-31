@@ -9,7 +9,7 @@ import { CartComponent } from "./components/CartComplect";
 import { getOrderInfo } from "@/dbQuery/dbQuerys";
 import { CancleOrderButton } from "./components/CancleOrderButton";
 import { RepeatOrderButton } from "./components/RepeatOrderButton";
-import { Product } from "../../../catalog/types";
+import { Product } from "../../../catalogold/types";
 
 interface PageProps {
   params: {
