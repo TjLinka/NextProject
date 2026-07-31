@@ -39,7 +39,7 @@ export default function RootLayout({
   const isAuth = useAgentStore((state) => state.isAuth)
 
   return (
-    <html lang="en" className={`h-full antialiased`}>
+    <html lang="en" className={`h-full antialiased 1`}>
       <ProvidersTanStack>
         <body
           className={`${inter.className} ${playfair.variable} min-h-screen flex`}
